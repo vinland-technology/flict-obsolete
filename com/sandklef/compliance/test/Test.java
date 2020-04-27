@@ -1,7 +1,11 @@
-package com.sandklef.compliance;
+package com.sandklef.compliance.test;
+
 
 import java.util.List;
 import java.util.ArrayList;
+
+import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.utils.*;
 
 
 public class Test {

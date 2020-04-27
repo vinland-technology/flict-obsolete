@@ -1,6 +1,7 @@
 package com.sandklef.compliance.json;
 
-import com.sandklef.compliance.*;
+import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.utils.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;

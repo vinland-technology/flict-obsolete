@@ -1,4 +1,4 @@
-package com.sandklef.compliance;
+package com.sandklef.compliance.domain;
 
 public class LicenseViolationException extends Exception {
 

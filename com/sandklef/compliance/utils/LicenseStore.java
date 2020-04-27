@@ -1,11 +1,13 @@
-package com.sandklef.compliance;
+package com.sandklef.compliance.utils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sandklef.compliance.domain.*;
+
 // TODO: include notice
 
-import static com.sandklef.compliance.Obligation.*;
+import static com.sandklef.compliance.domain.Obligation.*;
 /*import static Obligation.MODIFY_NAME;
   import static Obligation.DISTRIBUTE_NAME;
   import static Obligation.PLACE_WARRANTY_NAME;

@@ -1,12 +1,16 @@
-package com.sandklef.compliance;
+package com.sandklef.compliance.domain;
 
 import java.util.HashMap;
 import java.util.Map;
-  
+
+import com.sandklef.compliance.utils.*;
+
 public class License {
 
   // TODO: add support for "or later"
-  
+
+  public static String LOG_TAG = License.class.getSimpleName();
+
   private String spdxTag;
   private Map<String, LicenseObligation> obligations;
   private LicenseType type;
@@ -26,12 +30,12 @@ public class License {
     }*/
 
   public static LicenseType concludeType(LicenseType type1, LicenseType type2) {
-    System.out.print(" concluding -- : " + type1.name() + " oder " + type2.toString() + " ==> ");
+    Log.dn(LOG_TAG," concluding -- : " + type1.name() + " oder " + type2.toString() + " ==> ");
     if (type1.value() < type2.value() ) {
-      System.out.println(type1.toString());
+      Log.d(LOG_TAG, type1.toString());
       return type1;
     }
-    System.out.println(type2.toString());
+    Log.d(LOG_TAG, type2.toString());
     return type2;
   }
   

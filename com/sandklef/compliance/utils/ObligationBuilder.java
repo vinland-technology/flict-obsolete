@@ -1,7 +1,10 @@
-package com.sandklef.compliance;
+package com.sandklef.compliance.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.sandklef.compliance.domain.*;
+
 
 public class ObligationBuilder{
 

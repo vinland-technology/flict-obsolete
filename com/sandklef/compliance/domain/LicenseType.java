@@ -1,4 +1,4 @@
-package com.sandklef.compliance;
+package com.sandklef.compliance.domain;
 
 public enum LicenseType {
   COPYLEFT_STRONG(0),
