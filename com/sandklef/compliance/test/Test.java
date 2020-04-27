@@ -90,24 +90,65 @@ public class Test {
     Component top = new Component("Top", gpl2, deps);
 
 
-    System.out.println(top);
+    System.out.println("Short listing: " + top);
+    System.out.println("Long listing:  " + top.toStringLong());
     System.out.println();
     System.out.println();
     System.out.println();
-    top.checkViolationSafely();
+    LicenseArbiter.checkViolationSafely(top);
     //    System.out.println("concluded top: " + top.concludedLicenseType());
   }
+
+  private static void checkSub() {
+    // a1 
+    Component a1 = new Component("a1", apache2, null);
+
+    // a2 
+    Component a2 = new Component("a2", null, null);
+
+    // a    q
+    ArrayList<Component> aDeps = new ArrayList<>();
+    aDeps.add(a1);
+    aDeps.add(a2);
+    Component a = new Component("a", apache2, aDeps);
+
+    if (LicenseArbiter.checkSubComponentsSafely(a)) {
+      System.out.println("Did not find faulty sub license");
+      System.exit(1);
+    }
+    System.out.println("Found faulty sub license :)");
+
+    
+     a2 = new Component("a2", gpl2, null);
+     aDeps = new ArrayList<>();
+     aDeps.add(a1);
+     aDeps.add(a2);
+     a = new Component("a", apache2, aDeps);
+     
+     if (LicenseArbiter.checkSubComponentsSafely(a)) {
+       System.out.println("Did not find faulty sub license :)");
+     } else {
+       System.out.println("Found faulty sub license :(");
+       System.exit(1);
+     }       
+  }
   
-  public static void main(String[] args) {
+  private void printLicenses() {
     System.out.println("LGPLv2:  " + lgpl2);
     System.out.println("GPLv2:  " + gpl2);
     System.out.println("Apache: " + apache2);
     System.out.println();
     System.out.println();
-    
+  }
+  
+  public static void main(String[] args) {
+    //printLicenses();
 
     //    testLicense();
-    testComponents();
+    //testComponents();
+
+    checkSub();
+    
     //    testCanAUseB(gpl, apa);
     //testCanAUseB(apa, gpl);
   }
