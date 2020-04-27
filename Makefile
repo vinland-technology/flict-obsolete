@@ -1,4 +1,5 @@
 JAVA_SOURCES=\
+  ./com/sandklef/compliance/utils/MostPermissiveLicenseComparator.java \
   ./com/sandklef/compliance/domain/Component.java \
   ./com/sandklef/compliance/domain/LicenseObligation.java \
   ./com/sandklef/compliance/domain/LicenseViolationException.java \
@@ -12,14 +13,26 @@ JAVA_SOURCES=\
   ./com/sandklef/compliance/utils/LicenseArbiter.java \
   ./com/sandklef/compliance/json/JsonParser.java \
 
+TEST_SOURCES=\
+  com/sandklef/compliance/test/Test.java \
+  com/sandklef/compliance/test/TestSubComponents.java \
+  com/sandklef/compliance/test/TestDualLicenses.java \
+  com/sandklef/compliance/test/TestComponents.java \
+  com/sandklef/compliance/test/TestPrintLicenses.java \
+  com/sandklef/compliance/test/TestCanAUseB.java \
+  com/sandklef/compliance/test/TestLicense.java \
+
+
 CLASSES=$(JAVA_SOURCES:.java=.class)
+TEST_CLASSES=$(TEST_SOURCES:.java=.class)
 
 CLASSPATH="lib/org.json.jar:."
 
 %.class:%.java
 	javac -cp "$(CLASSPATH)" $<
 
-all:$(CLASSES) $(JSON_JAR) 
+all: $(CLASSES) $(JSON_JAR) 
+
 
 JSON_JAR=lib/org.json.jar
 
@@ -42,10 +55,16 @@ clean:
 	find -name "*~" | xargs rm -f
 	find -name "*.class" | xargs rm -f
 
-test: test-json test-basic
+test: test-json test-all
 
-test-basic: ./com/sandklef/compliance/test/Test.class  $(CLASSES) $(JSON_JAR)
-	java -cp $(CLASSPATH) com.sandklef.compliance.test.Test
+test-all: $(TEST_CLASSES)
+	for i in $(TEST_CLASSES); \
+	do \
+		export CLASS=`echo $$i | sed -e 's,\.class,,g' -e 's,/,\.,g'` ; \
+		echo "Test: $$CLASS"; \
+		java -ea -cp $(CLASSPATH) $$CLASS ; \
+		if [ $$? -ne 0 ] ; then echo "$$CLASS failed"; break; fi ; \
+	done;
 
 test-json: ./com/sandklef/compliance/json/test/TestJsonParser.class  $(CLASSES) $(JSON_JAR)
 	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --verbose ./com/sandklef/compliance/json/test/simple.json
