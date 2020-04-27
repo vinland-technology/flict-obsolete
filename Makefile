@@ -29,15 +29,24 @@ $(JSON_JAR):
 
 $(CLASSES): $(JSON_JAR)
 
-
+stat:
+	@echo "Java: " ; 
+	@echo -n " * files: " ; find . -name "*.java" | wc -l
+	@echo -n " * loc: " ; find . -name "*.java" | xargs wc -l| tail -1
+	@echo "Json: " ; 
+	@echo -n " * files: " ; find . -name "*.json" | wc -l
+	@echo -n " * loc: " ; find . -name "*.json" | xargs wc -l| tail -1
 
 clean:
 	rm -f $(CLASSES)
 	find -name "*~" | xargs rm -f
 	find -name "*.class" | xargs rm -f
 
-test: test-json
+test: test-json test-basic
+
+test-basic: ./com/sandklef/compliance/test/Test.class  $(CLASSES) $(JSON_JAR)
+	java -cp $(CLASSPATH) com.sandklef.compliance.test.Test
 
 test-json: ./com/sandklef/compliance/json/test/TestJsonParser.class  $(CLASSES) $(JSON_JAR)
-	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser ./com/sandklef/compliance/json/test/simple.json
-	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --violation ./com/sandklef/compliance/json/test/simple-problem.json
+	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --verbose ./com/sandklef/compliance/json/test/simple.json
+	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --violation --verbose ./com/sandklef/compliance/json/test/simple-problem.json
