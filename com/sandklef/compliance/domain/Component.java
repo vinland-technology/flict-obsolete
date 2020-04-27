@@ -11,30 +11,55 @@ public class Component {
 
   // name, enough for now
   private String name;
-  private License license;
+  private License concludedLicense;
+  private List<License> licenses;
   private List<Component> dependencies;
   
-  public Component(String name, License license, List<Component> dependencies) {
+  public Component(String name, List<License> licenses, List<Component> dependencies) {
     this.name = name;
-    this.license = license;
+    this.licenses = licenses;
     this.dependencies = dependencies;
     if (dependencies==null) {
       this.dependencies = new ArrayList<>();
     }
+    if (licenses.size()==1) {
+      concludedLicense = licenses.get(0);
+    }
+  }
+
+  public Component(String name, License license, List<Component> dependencies) {
+    this.name = name;
+    this.dependencies = dependencies;
+    if (dependencies==null) {
+      this.dependencies = new ArrayList<>();
+    }
+    concludedLicense = license;
   }
 
   public String name() {
     return name;
   }
   
-  public License license() {
-    return license;
+  public License concludedLicense() {
+    return concludedLicense;
+  }
+  
+  public List<License> licenses() {
+    return licenses;
+  }
+  
+  public void concludedLicense(License license) {
+    // TODO: observer/observerable pattern here
+    System.out.println("\n ======== UPDATING LICENSE on \"" + name +  "\" to \"" +
+                       (license!=null?""+license.spdxTag():license) + "\" ==========\n");
+    concludedLicense = license;
   }
   
   public List<Component> dependencies() {
     return dependencies;
   }
-  
+
+  /*
   public List<LicenseType> concludedLicenseTypes() {
     List<LicenseType> licenseTypes = new ArrayList<>();
     if (dependencies.size()==0) {
@@ -95,12 +120,12 @@ public class Component {
     Log.d(LOG_TAG, " INFO: checking " + name() + " (" + dependencies.size()+ "):  " + license().type() + "  concluded: " + licenseType);
     return licenseType;
   }
-
+  */
   
   
   public String toStringLong() {
     StringBuffer sb = new StringBuffer();
-    sb.append("{ " + name + " (" + license.spdxTag() +") [" );
+    sb.append("{ " + name + " (" + concludedLicense().spdxTag() +") [" );
     for (Component c : dependencies) {
       sb.append( "  " + c.toStringLong()  );
     }
@@ -111,7 +136,7 @@ public class Component {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    sb.append(name + " (" + license.spdxTag() +"): [" );
+    sb.append(name + " (" + concludedLicense().spdxTag() +"): [" );
     for (Component c : dependencies) {
       sb.append( " " + c.name() );
     }
