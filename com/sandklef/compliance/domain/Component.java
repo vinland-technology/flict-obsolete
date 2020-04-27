@@ -97,15 +97,25 @@ public class Component {
   }
 
   
+  
+  public String toStringLong() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("{ " + name + " (" + license.spdxTag() +") [" );
+    for (Component c : dependencies) {
+      sb.append( "  " + c.toStringLong()  );
+    }
+    sb.append(" ] }" );
+    return sb.toString();
+  }
+  
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    sb.append("Component: " + name + "\nLicense: " + license +"\nDependencies: [" );
+    sb.append(name + " (" + license.spdxTag() +"): [" );
     for (Component c : dependencies) {
-      sb.append( "  " + c.name());
+      sb.append( " " + c.name() );
     }
     sb.append("]" );
-    sb.append("\n" );
     return sb.toString();
   }
   
