@@ -13,7 +13,7 @@ public class LicenseArbiter {
   public static boolean aUsesB(License user, License usee) throws LicenseViolationException {
     
     if (user.spdxTag().equals(usee.spdxTag())) {
-      //      Log.d(LOG_TAG, "Same license: true");
+      Log.d(LOG_TAG, "Same license: true");
       return true;
     }
 
@@ -22,7 +22,7 @@ public class LicenseArbiter {
     // If usee cannot be sublicensed with changed license
     //      => violation
     if (state(usee, Obligation.LINKING_AND_CHANGE_LICENSE_NAME) == ObligationState.CANNOT) {
-      //Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : violation");
+      Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : violation");
       throw new LicenseViolationException(user.spdxTag() + " can not sublicense " + usee.spdxTag(), user, usee);
     }
     return true;
@@ -60,6 +60,19 @@ public class LicenseArbiter {
     }      
     
   }
+
+  public static boolean checkSubComponentsSafely(Component c)  {
+    for (Component d : c.dependencies()) {
+      if ( d.license()==null ||
+           d.license().spdxTag()==null ||
+           d.license().spdxTag().equals("UNKNOWN")) {
+        return false;
+      }
+    }      
+    return true;
+  }
+  
+
   
   public static boolean checkViolationSafely(Component c)  {
     //    System.out.print(" checkViolation: " + this.name);
