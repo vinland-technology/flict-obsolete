@@ -16,9 +16,14 @@ public class TestJsonParser {
       System.out.println("Missing argument");
     }
 
-    if (args[0].equals("--violation")) {
+    if (args[fileIndex].equals("--violation")) {
       compliant = false;
-      fileIndex=1;
+      fileIndex++;
+    }
+
+    if (args[fileIndex].equals("--verbose")) {
+      Log.level(Log.VERBOSE);
+      fileIndex++;
     }
 
     
