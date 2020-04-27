@@ -1,6 +1,9 @@
 package com.sandklef.compliance.utils;
 
+import java.util.List;
+
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.utils.*;
 
 public class LicenseArbiter {
 
@@ -32,7 +35,10 @@ public class LicenseArbiter {
     try {
       return aUsesB(user, usee);
     } catch (LicenseViolationException e) {
-      Log.e(LOG_TAG, "INFO: License violation found, returning false.  Cause: \"" + e.getMessage() + "\"");
+      Log.d(LOG_TAG, "Exception");      
+      Log.d(LOG_TAG, "    message: " + e.getMessage());
+      Log.d(LOG_TAG, "    user:    (" + e.user.spdxTag()+ ")");
+      Log.d(LOG_TAG, "    usee:    (" + e.usee.spdxTag()+ ")");
       return false;
     }
   }
@@ -54,53 +60,81 @@ public class LicenseArbiter {
     Log.d(LOG_TAG, " checkViolation " + c.name() );
     Log.d(LOG_TAG, " -----------------------------");
     for (Component d : c.dependencies()) {
-      Log.d(LOG_TAG, " * can " + c.license().spdxTag() + " use " + d.license().spdxTag() + " : " );
-      LicenseArbiter.aUsesB(c.license(), d.license());
+      Log.d(LOG_TAG, " * can " + c.concludedLicense().spdxTag() + " use " + d.concludedLicense().spdxTag() + " : " );
+      LicenseArbiter.aUsesB(c.concludedLicense(), d.concludedLicense());
       Log.d(LOG_TAG, "OK");      
     }      
     
   }
 
   public static boolean checkSubComponentsSafely(Component c)  {
+    System.out.println("--------------------------------------------- ");
     for (Component d : c.dependencies()) {
-      if ( d.license()==null ||
-           d.license().spdxTag()==null ||
-           d.license().spdxTag().equals("UNKNOWN")) {
+      if ( d.concludedLicense()==null ||
+           d.concludedLicense().spdxTag()==null ||
+           d.concludedLicense().spdxTag().equals("UNKNOWN")) {
         return false;
       }
     }      
     return true;
   }
-  
 
   
+  
+  /*  public static License mostPermissive(List<License> licenses) {
+    int index = 0;
+    License license = licenses.get(index);
+    for (int i=0; i<licenses.size(); i++) {
+      System.err.println("Check license: " + licenses.get(i).spdxTag());
+      if (MostPermissiveLicenseComparator.
+          comparator.
+          compare(license, licenses.get(i))
+          < 0 ) {
+        System.err.println("Updating license"  + licenses.get(i).spdxTag());
+        license = licenses.get(i);
+        index=i;
+      }
+    }
+    System.err.println("Updating license"  + license.spdxTag());
+    return index;
+    }*/
+
   public static boolean checkViolationSafely(Component c)  {
     //    System.out.print(" checkViolation: " + this.name);
+
+    // First of all - return true if no deps
     if (c.dependencies().size()==0) {
       Log.d(LOG_TAG, " checkViolation: " + c.name() + ": OK  (no deps)");
       return true;
     } else {
       Log.d(LOG_TAG, "");
       for (Component d : c.dependencies()) {
-        checkViolationSafely(d);
+        if (!checkViolationSafely(d)) {
+          return false;
+        }
       }      
     }
     Log.d(LOG_TAG, " checkViolation: " + c.name() + ": OK so far (" + c.dependencies().size() + " deps)");
-
+    
     Log.d(LOG_TAG, " checkViolation " + c.name() );
     Log.d(LOG_TAG, " -----------------------------");
+
     for (Component d : c.dependencies()) {
-      Log.dn(LOG_TAG, " ** can " + c.license().spdxTag() + " use " + d.license().spdxTag() + " : " );
-      try {
-        LicenseArbiter.aUsesB(c.license(), d.license());
-      } catch (LicenseViolationException e) {
-        Log.d(LOG_TAG, "Exception");      
-        Log.d(LOG_TAG, "    message: " + e.getMessage());
-        Log.d(LOG_TAG, "    user:    " + c.name() + " (" + e.user.spdxTag()+ ")");
-        Log.d(LOG_TAG, "    usee:    " + d.name() + " (" + e.usee.spdxTag()+ ")");
-        return false;
+      if (d.concludedLicense()==null) {
+        d.licenses().sort(new MostPermissiveLicenseComparator());
+        Log.d(LOG_TAG, " * Choosing among " + d.licenses().size() + " licenses  DINK");
+        for (int i=0; i<d.licenses().size(); i++) {
+          boolean ret = canAUseB(c.concludedLicense(), d.licenses().get(i));
+          Log.d(LOG_TAG, " ** can " + c.concludedLicense().spdxTag() 
+                             + " use " + d.licenses().get(i).spdxTag() + " : " + ret );
+          if (ret) {
+            d.concludedLicense( d.licenses().get(i));
+            return true;
+          }
+        }
+      } else {
+        return canAUseB(c.concludedLicense(), d.concludedLicense());
       }
-      Log.d(LOG_TAG, "OK");      
     }      
     return true;
   }
