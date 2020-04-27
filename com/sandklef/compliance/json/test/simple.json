@@ -1,0 +1,29 @@
+{
+    "name": "Main program",
+    "license": "GPL-2.0-only",
+    "dependencies": [
+        {
+            "name": "LGPL-lib",
+            "license": "LGPL-2.1-only",
+            "dependencies": []
+        },
+        {
+            "name": "A-lib",
+            "license": "Apache-2.0",
+            "dependencies": [
+                {
+                    "name": "LGPL-lib2",
+                    "license": "LGPL-2.1-only",
+                    "dependencies": []
+                },
+                {
+                    "name": "GPL-lib2",
+                    "license": "GPL-2.0-only",
+                    "dependencies": []
+                }
+            ]
+        }
+        
+
+    ]
+}
