@@ -22,32 +22,91 @@ public class Obligation{
   public String toString() {
     return name;
   }
-  
+
+  public static final String LINKING_COPYLEFTED_TAG = "linking_copylefted";
+  public static final String LINKING_COPYLEFTED_NAME = "Linking is copylefted";
+  public static final Obligation LINKING_COPYLEFTED = new Obligation(LINKING_COPYLEFTED_NAME, "");
+
+  public static final String MODIFICATION_ALLOWED_TAG = "modification_allowed";
+  public static final String MODIFICATION_ALLOWED_NAME = "Modification is allowed";
+  public static final Obligation MODIFICATION_ALLOWED = new Obligation( MODIFICATION_ALLOWED_NAME, "");
+
+  public static final String MODIFICATION_COPYLEFTED_TAG = "modification_copylefted";
+  public static final String MODIFICATION_COPYLEFTED_NAME = "Modification is copylefted";
+  public static final Obligation MODIFICATION_COPYLEFTED = new Obligation( MODIFICATION_COPYLEFTED_NAME, "");
+
+  public static final String SUBLICENSING_ALLOWED_TAG = "sublicensing_allowed";
+  public static final String SUBLICENSING_ALLOWED_NAME = "Sublicensing is allowed";
+  public static final Obligation SUBLICENSING_ALLOWED = new Obligation( SUBLICENSING_ALLOWED_NAME, "");
+
+  public static final String DISTRIBUTION_ALLOWED_TAG = "distribution_allowed";
+  public static final String DISTRIBUTION_ALLOWED_NAME = "Distribution is allowed";
+  public static final Obligation DISTRIBUTION_ALLOWED = new Obligation( DISTRIBUTION_ALLOWED_NAME, "");
+
+  public static final String DISTRIBUTION_COPYLEFTED_TAG = "distribution_copylefted";
+  public static final String DISTRIBUTION_COPYLEFTED_NAME = "Distribution is copylefted";
+  public static final Obligation DISTRIBUTION_COPYLEFTED = new Obligation( DISTRIBUTION_COPYLEFTED_NAME, "");
+
+  public static final String DISCLOSE_SOURCE_TAG = "disclose_source";
+  public static final String DISCLOSE_SOURCE_NAME = "Disclose source";
+  public static final Obligation DISCLOSE_SOURCE = new Obligation(DISCLOSE_SOURCE_NAME, "");
+
+  public static final String STATE_CHANGES_TAG = "state_changes";
+  public static final String STATE_CHANGES_NAME = "State changes";
+  public static final Obligation STATE_CHANGES = new Obligation(STATE_CHANGES_NAME, "");
+
+  public static final String INCLUDE_COPYRIGHT_TAG = "include_copyright";
+  public static final String INCLUDE_COPYRIGHT_NAME = "Include copyright";
+  public static final Obligation INCLUDE_COPYRIGHT = new Obligation(INCLUDE_COPYRIGHT_NAME, "");
+
+  public static final String INCLUDE_LICENSE_TAG = "include_license";
+  public static final String INCLUDE_LICENSE_NAME = "Include license";
+  public static final Obligation INCLUDE_LICENSE = new Obligation(INCLUDE_LICENSE_NAME, "");
+
+  public static final String INCLUDE_INSTALL_INSTRUCTIONS_TAG = "include_install_instructions";
+  public static final String INCLUDE_INSTALL_INSTRUCTIONS_NAME = "Include install_instructions";
+  public static final Obligation INCLUDE_INSTALL_INSTRUCTIONS = new Obligation(INCLUDE_LICENSE_NAME, "");
+
+  public static final String INCLUDE_NOTICE_FILE_TAG = "include_notice_file";
+  public static final String INCLUDE_NOTICE_FILE_NAME = "Include notice_file";
+  public static final Obligation INCLUDE_NOTICE_FILE = new Obligation(INCLUDE_NOTICE_FILE_NAME, "");
+
+  public static final String INCLUDE_NOTICE_ABOUT_LICENSE_TAG = "include_notice_about_license";
+  public static final String INCLUDE_NOTICE_ABOUT_LICENSE_NAME = "Include notice_about_license";
+  public static final Obligation INCLUDE_NOTICE_ABOUT_LICENSE = new Obligation(INCLUDE_NOTICE_ABOUT_LICENSE_NAME, "");
+
+
+  /*
   public static final String COMMERCIAL_USE_NAME = "Commercial use";
   public static final String MODIFY_NAME = "Modify";
   public static final String DISTRIBUTE_NAME = "Distribute";
-  public static final String PLACE_WARRANTY_NAME = "Place warranty";
-  public static final String SUB_LICENSE_NAME = "Sublicense";
-  public static final String HOLD_LIABLE_NAME = "Hold liable";
+  //  public static final String PLACE_WARRANTY_NAME = "Place warranty";
+  //public static final String SUB_LICENSE_NAME = "Sublicense";
+  //public static final String HOLD_LIABLE_NAME = "Hold liable";
   public static final String INCLUDE_ORIGINAL_NAME = "Include original";
   public static final String DISCLOSE_SOURCE_NAME = "Disclose source";
   public static final String INCLUDE_COPYRIGHT_NAME = "Include copyright";
   public static final String STATE_CHANGES_NAME = "State changes";
   public static final String INCLUDE_LICENSE_NAME = "Include license";
+  //  public static final String USE_PATENT_CLAIM_NAME = "User patent claims";
+  //  public static final String USE_TRADEMARK_NAME = "Use Trademark";
 
   public static final String LINKING_AND_CHANGE_LICENSE_NAME = "Linking and change license";
 
   public static final Obligation COMMERCIAL_USE = new Obligation(COMMERCIAL_USE_NAME, "");
   public static final Obligation MODIFY = new Obligation(MODIFY_NAME, "");
   public static final Obligation DISTRIBUTE = new Obligation(DISTRIBUTE_NAME, "");
-  public static final Obligation PLACE_WARRANTY = new Obligation(PLACE_WARRANTY_NAME, "");
-  public static final Obligation SUB_LICENSE = new Obligation(SUB_LICENSE_NAME, "");
-  public static final Obligation HOLD_LIABLE = new Obligation(HOLD_LIABLE_NAME, "");
+  //  public static final Obligation PLACE_WARRANTY = new Obligation(PLACE_WARRANTY_NAME, "");
+  //  public static final Obligation SUB_LICENSE = new Obligation(SUB_LICENSE_NAME, "");
+  //  public static final Obligation HOLD_LIABLE = new Obligation(HOLD_LIABLE_NAME, "");
   public static final Obligation INCLUDE_ORIGINAL = new Obligation(INCLUDE_ORIGINAL_NAME, "");
   public static final Obligation DISCLOSE_SOURCE = new Obligation(DISCLOSE_SOURCE_NAME, "");
   public static final Obligation INCLUDE_COPYRIGHT = new Obligation(INCLUDE_COPYRIGHT_NAME, "");
-  public static final Obligation STATE_CHANGES = new Obligation(STATE_CHANGES_NAME, "");
+  public static final Obligation STATE_CHANGES = new Obligation(STATE_CHANGES_NAME, "Stating significant changes made to software.");
   public static final Obligation INCLUDE_LICENSE = new Obligation(INCLUDE_LICENSE_NAME, "");
   public static final Obligation LINKING_AND_CHANGE_LICENSE = new Obligation(LINKING_AND_CHANGE_LICENSE_NAME, "");
+  //  public static final Obligation USE_PATENT_CLAIM = new Obligation(USE_PATENT_CLAIM_NAME, "");
+  //  public static final Obligation USE_TRADEMARK = new Obligation(USE_TRADEMARK_NAME, "");
+  */
 }
 

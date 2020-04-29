@@ -22,9 +22,11 @@ public class LicenseArbiter {
 
     // Below it will be assumed that the licenses differ
     
-    // If usee cannot be sublicensed with changed license
+    // If usee is copylefted AND licenses differs 
     //      => violation
-    if (state(usee, Obligation.LINKING_AND_CHANGE_LICENSE_NAME) == ObligationState.CANNOT) {
+    
+    if (state(usee, Obligation.LINKING_COPYLEFTED_NAME) == ObligationState.TRUE &&
+        (!user.equals(usee))) {
       Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : violation");
       throw new LicenseViolationException(user.spdxTag() + " can not sublicense " + usee.spdxTag(), user, usee);
     }

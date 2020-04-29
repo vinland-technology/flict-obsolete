@@ -1,6 +1,7 @@
 package com.sandklef.compliance.json.test;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.*;
@@ -27,9 +28,18 @@ public class TestJsonParser {
     }
 
     
-    JsonParser jp = new JsonParser(args[fileIndex]);
-    Component c = jp.readComponent();
-    System.out.println("component: " + c);
+    
+    JsonParser jp = new JsonParser();
+
+    Map<String, License> licenses = jp.readLicenseDir("licenses/json");
+    LicenseStore.getInstance().addLicenses(licenses);
+    System.out.println("component file: " + args[fileIndex]);
+    Component c = jp.readComponent(args[fileIndex]);
+
+    
+    System.out.println(" --- licenses ...------");
+
+    System.out.println("component read: " + c);
 
     if (compliant) {
       LicenseArbiter.checkViolationSafely(c);

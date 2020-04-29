@@ -76,5 +76,10 @@ public class License {
     return sb.toString();
   }
 
-  
+  public final static String GPL_2_0_SPDX = "GPL-2.0-only";
+  public final static String GPL_3_0_SPDX = "GPL-3.0-only";  
+  public final static String LGPL_3_0_SPDX = "LGPL-3.0-only";  
+  public final static String LGPL_2_0_SPDX = "LGPL-2.1-only";
+  public final static String APACHE_2_0_SPDX = "Apache-2.0";
+
 }
