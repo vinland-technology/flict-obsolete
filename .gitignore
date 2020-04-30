@@ -1,4 +1,31 @@
+# Library folder for 3p sw - this is populated by Makefile
 lib/
+
+# Emacs save files
 *~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Java byte code
 *.class
+
+# Logs
+*.log
+
+# Packages
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.bzip
+*.tar.gz
+
+# crash log
+hs_err_pid*
 
