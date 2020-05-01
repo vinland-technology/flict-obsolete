@@ -23,6 +23,14 @@ public class Conclusion {
             component = c;
             license = l;
         }
+
+        public Component component() {
+            return component;
+        }
+
+        public License license() {
+            return license;
+        }
     }
 
     public Conclusion(Component component) {

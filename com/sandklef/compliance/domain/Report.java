@@ -20,7 +20,7 @@ public class Report {
         return concern;
     }
 
-    public Conclusion conslusion() {
+    public Conclusion conclusion() {
         return conclusion;
     }
 

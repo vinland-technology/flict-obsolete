@@ -40,6 +40,10 @@ public class Concern {
 
     private static final String LOG_TAG = Concern.class.getSimpleName() ;
 
+    public Component component() {
+        return component;
+    }
+
     private Component component;
     private List<LicenseConcern> licenseConcerns;
 
@@ -51,6 +55,11 @@ public class Concern {
     public void addLicenseConcern(LicenseConcern concern) {
         licenseConcerns.add(concern);
     }
+
+    public List<LicenseConcern> licenseConcerns() {
+        return licenseConcerns;
+    }
+
 
     @Override
     public String toString() {

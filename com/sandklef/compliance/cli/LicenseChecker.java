@@ -5,7 +5,9 @@
 package com.sandklef.compliance.cli;
 
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.exporter.ReportExporter;
 import com.sandklef.compliance.json.JsonComponentParser;
+import com.sandklef.compliance.json.JsonExporter;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.json.JsonPolicyParser;
 import com.sandklef.compliance.utils.LicenseArbiter;
@@ -14,7 +16,6 @@ import com.sandklef.compliance.utils.Log;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class LicenseChecker {
 
@@ -42,7 +43,6 @@ public class LicenseChecker {
         String licenseDir = "licenses/json";
         String policyFile = null;
         LicensePolicy policy = null;
-
 
         CommandLineParser parser = new DefaultParser();
 
@@ -94,7 +94,7 @@ public class LicenseChecker {
         if (policyFile!=null) {
             JsonPolicyParser jp = new JsonPolicyParser();
             policy = jp.readLicensePolicy(policyFile);
-            System.out.println("policy: " + policy );
+    //        System.out.println("policy: " + policy );
 
            // System.exit(0);
         }
@@ -116,10 +116,18 @@ public class LicenseChecker {
 
 
             Report report = LicenseArbiter.report(c, policy);
-            System.out.println("Report from analysing component: \"" + c.name() + "\"");
+            System.out.println("Report from analysing component: \"" + c.name() + "\"\n");
             System.out.println("violation report:  " + report.violation());
-            System.out.println("conclusion report: " + report.conslusion());
+            System.out.println("conclusion report: " + report.conclusion());
             System.out.println("concern report: " + report.concern());
+
+            System.out.println("--- JSON ----");
+            ReportExporter exporter = new JsonExporter();
+            System.out.println("violation report:  \n\n" + exporter.exportLicenseViolation(report.violation()));
+            System.out.println("conclusion report:  \n\n" + exporter.exportConclusion(report.conclusion()));
+            System.out.println("conclusion report:  \n\n" + exporter.exportConcern(report.concern()));
+            System.out.println("report:  \n\n" + exporter.exportReport(report));
+
 
         }
     }

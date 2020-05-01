@@ -25,9 +25,11 @@ JAVA_SOURCES=\
   com/sandklef/compliance/utils/LicenseArbiter.java \
   com/sandklef/compliance/json/JsonLicenseParser.java \
   com/sandklef/compliance/json/JsonPolicyParser.java \
+  com/sandklef/compliance/json/JsonExporter.java \
   com/sandklef/compliance/json/JsonUtils.java \
   com/sandklef/compliance/json/JsonComponentParser.java \
   com/sandklef/compliance/cli/LicenseChecker.java \
+  com/sandklef/compliance/exporter/ReportExporter.java \
 
 
 TEST_SOURCES=\
@@ -53,7 +55,7 @@ CLASSPATH=".:$(JSON_JAR):$(CLI_JAR)"
 	javac  -Xdiags:verbose -cp "$(CLASSPATH)" $<
 
 all: $(CLASSES) $(JSON_JAR) 
-
+	@echo
 
 
 $(CLI_JAR):

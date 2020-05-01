@@ -16,7 +16,7 @@ public class TestLicense {
   private static License lgpl2 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
   private static License gpl2 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
   private static License apache2 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
-
+/*
   private static void testAUsesB(License user, License usee) {
     System.out.print(user.spdxTag() + " can use " + usee.spdxTag() + " :::  " );
     try {
@@ -40,5 +40,5 @@ public class TestLicense {
       testAUsesB(lgpl2, gpl2);
       testAUsesB(lgpl2, lgpl2);
     }
-  
+  */
 }
