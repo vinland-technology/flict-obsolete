@@ -45,6 +45,7 @@ public class TestJsonComponentParser {
 
     System.out.println("component read: " + c);
 
+    /*
     if (compliant) {
       LicenseArbiter.checkViolationSafely(c);
       try {
@@ -63,6 +64,8 @@ public class TestJsonComponentParser {
         System.out.println("Violation detected ... this was expected");
       }
     }
+
+     */
   }
   
 }

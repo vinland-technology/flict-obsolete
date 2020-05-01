@@ -35,15 +35,22 @@ public class LicenseArbiter {
 
         // Below it will be assumed that the licenses differ
 
-        // If usee is copylefted AND licenses differs
-        //      => violation
+        // if not copylefted - ok to use
+        if ( !usee.isCopyleft()  ) {
+            Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : non copyleft so OK, no possible violation");
+            return true;
+        }
 
-        Log.d(LOG_TAG, "aUsesB: start checking  ");
-        if (state(usee, Obligation.LINKING_COPYLEFTED_NAME) == ObligationState.TRUE &&
-                (!user.equals(usee))) {
-            Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : violation detected");
+        // If usee is copylefted AND user NOT copylefted  => violation
+        if (usee.isCopyleft() && (!user.isCopyleft()) ) {
+            Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : possible violation detected");
             throw new LicenseViolationException(user.spdxTag() + " can not sublicense " + usee.spdxTag(), user, usee);
         }
+
+        // TODO: If usee is copylefted AND user copylefted  => check gpl etc
+
+
+        Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : no possible violation detected");
         return true;
     }
 

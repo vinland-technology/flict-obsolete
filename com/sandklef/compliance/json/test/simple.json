@@ -13,7 +13,7 @@
             "dependencies": [
                 {
                     "name": "LGPL-lib2",
-                    "license": "LGPL-2.1-only",
+                    "license": "LGPL-2.1-only | GPL-2.0-only",
                     "dependencies": []
                 },
                 {

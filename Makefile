@@ -35,7 +35,7 @@ TEST_SOURCES=\
   ./com/sandklef/compliance/test/TestComponents.java \
   ./com/sandklef/compliance/test/TestPrintLicenses.java \
   ./com/sandklef/compliance/test/TestLicense.java \
-
+  com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.java
 
 
 CLASSES=$(JAVA_SOURCES:.java=.class)
@@ -96,6 +96,9 @@ test-all: $(TEST_CLASSES)
 		java -ea -cp $(CLASSPATH) $$CLASS ; \
 		if [ $$? -ne 0 ] ; then echo "$$CLASS failed"; break; fi ; \
 	done;
+
+test-comparator:com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.class $(CLASSES) $(JSON_JAR)
+	java -cp $(CLASSPATH) com/sandklef/compliance/test/TestMostPermissiveLicenseComparator
 
 test-json: ./com/sandklef/compliance/json/test/TestJsonParser.class  com/sandklef/compliance/json/test/TestLicenseParser.class $(CLASSES) $(JSON_JAR)
 	@echo " --- License parsers ----"
