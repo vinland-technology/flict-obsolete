@@ -88,13 +88,13 @@ public class LicenseArbiter {
             Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " DINKEY concluded:      " + license);
             Log.d(LOG_TAG, " DINKEY " + c.name() + " ch licenses:       no deps: " + c.licenses());
             Log.d(LOG_TAG, " DINKEY " + c.name() + " choice:  " + license);
-            if (policy.blackList().contains(license)) {
+            if (policy!=null && policy.blackList().contains(license)) {
                 Log.d(LOG_TAG, "Black colored license found: " + license);
                 report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.BLACK_LIST));
                 report.violation().addObligationViolation(
                         new LicenseViolation.ObligationViolation(c));
                 return;
-            } else if (policy.grayList().contains(license)) {
+            } else if (policy!=null && policy.grayList().contains(license)) {
                 Log.d(LOG_TAG, "Gray colored license found: " + license);
                 report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.GRAY_LIST));
             }
