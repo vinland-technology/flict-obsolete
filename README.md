@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # License Checker
 
 License Checker is an Free and Open Source Software compliance tool aimed at detecting

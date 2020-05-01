@@ -32,6 +32,8 @@ TEST_SOURCES=\
   ./com/sandklef/compliance/test/TestPrintLicenses.java \
   ./com/sandklef/compliance/test/TestLicense.java \
 
+
+
 CLASSES=$(JAVA_SOURCES:.java=.class)
 TEST_CLASSES=$(TEST_SOURCES:.java=.class)
 
@@ -98,3 +100,4 @@ test-json: ./com/sandklef/compliance/json/test/TestJsonParser.class  com/sandkle
 	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --verbose ./com/sandklef/compliance/json/test/simple.json
 	@echo " --- Json parsers with violation expected ----"
 	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --violation --verbose ./com/sandklef/compliance/json/test/simple-problem.json
+

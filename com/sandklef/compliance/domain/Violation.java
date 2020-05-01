@@ -1,6 +1,8 @@
-package com.sandklef.compliance.domain;
+// SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-//import sun.nio.cs.ext.COMPOUND_TEXT;
+package com.sandklef.compliance.domain;
 
 import java.util.ArrayList;
 import java.util.List;
