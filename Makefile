@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 JAVA_SOURCES=\
   ./com/sandklef/compliance/domain/Violation.java \
   ./com/sandklef/compliance/domain/Component.java \
@@ -100,4 +104,3 @@ test-json: ./com/sandklef/compliance/json/test/TestJsonParser.class  com/sandkle
 	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --verbose ./com/sandklef/compliance/json/test/simple.json
 	@echo " --- Json parsers with violation expected ----"
 	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --violation --verbose ./com/sandklef/compliance/json/test/simple-problem.json
-
