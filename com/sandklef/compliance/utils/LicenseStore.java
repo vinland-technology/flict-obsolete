@@ -2,24 +2,8 @@ package com.sandklef.compliance.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
 import com.sandklef.compliance.domain.*;
-
-// TODO: include notice
-
-import static com.sandklef.compliance.domain.Obligation.*;
-/*import static Obligation.MODIFY_NAME;
-  import static Obligation.DISTRIBUTE_NAME;
-  import static Obligation.PLACE_WARRANTY_NAME;
-  import static Obligation.SUB_LICENSE_NAME;
-  import static Obligation.HOLD_LIABLE_NAME;
-  import static Obligation.INCLUDE_ORIGINAL_NAME;
-  import static Obligation.DISCLOSE_SOURCE_NAME;
-  import static Obligation.INCLUDE_COPYRIGHT_NAME;
-  import static Obligation.STATE_CHANGES_NAME;
-  import static Obligation.INCLUDE_LICENSE_NAME;
-*/
 
 public class LicenseStore {
 
@@ -28,7 +12,7 @@ public class LicenseStore {
     getInstance();
   }
   
-  //TODO: Private use, patent claims, trademark
+  //TODO: add support for Private use, Patent claims, Trademark, Notice
   private Map<String, License> licenses;
 
   private static LicenseStore store;

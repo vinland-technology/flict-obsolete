@@ -99,15 +99,6 @@ public class LicenseChecker {
             System.out.println("violation report:  " + report.violation());
             System.out.println("conclusion report: " + report.conslusion());
 
-            /*
-            try {
-                LicenseArbiter.checkViolation(c);
-            } catch (LicenseViolationException e) {
-                Log.d(LOG_TAG, "Violation detected ... this was unexpected");
-                System.exit(1);
-            }
-
- */
         }
     }
 

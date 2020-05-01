@@ -1,32 +1,36 @@
 JAVA_SOURCES=\
-  ./com/sandklef/compliance/utils/MostPermissiveLicenseComparator.java \
+  ./com/sandklef/compliance/domain/Violation.java \
   ./com/sandklef/compliance/domain/Component.java \
-  ./com/sandklef/compliance/domain/LicenseObligation.java \
-  ./com/sandklef/compliance/domain/LicenseViolationException.java \
-  ./com/sandklef/compliance/domain/License.java \
+  ./com/sandklef/compliance/domain/NoLicenseException.java \
+  ./com/sandklef/compliance/domain/Conclusion.java \
   ./com/sandklef/compliance/domain/LicenseObligation.java \
   ./com/sandklef/compliance/domain/Report.java \
+  ./com/sandklef/compliance/domain/LicenseViolationException.java \
+  ./com/sandklef/compliance/domain/License.java \
   ./com/sandklef/compliance/domain/Obligation.java \
   ./com/sandklef/compliance/domain/ObligationState.java \
   ./com/sandklef/compliance/domain/LicenseType.java \
-  ./com/sandklef/compliance/domain/Conclusion.java \
+  ./com/sandklef/compliance/utils/LeastPermissiveLicenseComparator.java \
+  ./com/sandklef/compliance/utils/MostPermissiveLicenseComparator.java \
   ./com/sandklef/compliance/utils/Log.java \
   ./com/sandklef/compliance/utils/ObligationBuilder.java \
   ./com/sandklef/compliance/utils/LicenseStore.java \
   ./com/sandklef/compliance/utils/LicenseArbiter.java \
-  ./com/sandklef/compliance/json/JsonComponentParser.java \
   ./com/sandklef/compliance/json/JsonLicenseParser.java \
   ./com/sandklef/compliance/json/JsonUtils.java \
+  ./com/sandklef/compliance/json/JsonComponentParser.java \
   ./com/sandklef/compliance/cli/LicenseChecker.java \
 
-TEST_SOURCES=\
-  com/sandklef/compliance/test/TestSubComponents.java \
-  com/sandklef/compliance/test/TestDualLicenses.java \
-  com/sandklef/compliance/test/TestComponents.java \
-  com/sandklef/compliance/test/TestPrintLicenses.java \
-  com/sandklef/compliance/test/TestCanAUseB.java \
-  com/sandklef/compliance/test/TestLicense.java \
 
+TEST_SOURCES=\
+  ./com/sandklef/compliance/json/test/TestLicenseParser.java \
+  ./com/sandklef/compliance/json/test/TestJsonComponentParser.java \
+  ./com/sandklef/compliance/test/TestSubComponents.java \
+  ./com/sandklef/compliance/test/TestDualLicenses.java \
+  ./com/sandklef/compliance/test/TestCanAUseB.java \
+  ./com/sandklef/compliance/test/TestComponents.java \
+  ./com/sandklef/compliance/test/TestPrintLicenses.java \
+  ./com/sandklef/compliance/test/TestLicense.java \
 
 CLASSES=$(JAVA_SOURCES:.java=.class)
 TEST_CLASSES=$(TEST_SOURCES:.java=.class)
