@@ -10,4 +10,21 @@ CLASSPATH="$INSTALL_DIR:$INSTALL_DIR/lib/org.json.jar:$INSTALL_DIR/lib/commons-c
 DEFAULT_ARGS=" --license-dir licenses/json "
 CLASS="com.sandklef.compliance.cli.LicenseChecker"
 
+
+
+# basic verification of json files
+JSON_FILES=$(echo $* | tr ' ' '\n' | grep json )
+for FILE in $JSON_FILES
+do
+ #   echo check file $FILE
+#    wc -l $FILE
+    jq '.' $FILE >/dev/null 2>&1
+    RET=$?
+    if [ $RET -ne 0 ]
+    then
+        echo "$LINE does not seem to be a valid JSON file"
+        exit 1
+    fi
+done
+
 java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $*
