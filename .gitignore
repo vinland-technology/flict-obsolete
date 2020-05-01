@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Library folder for 3p sw - this is populated by Makefile
 lib/
 
