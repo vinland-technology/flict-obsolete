@@ -6,19 +6,25 @@ package com.sandklef.compliance.domain;
 
 public class Report {
 
-    public Violation violation;
+    public LicenseViolation violation;
     public Conclusion conclusion;
+    public Concern concern;
 
     public Report(Component c) {
-        violation = new Violation(c);
+        violation = new LicenseViolation(c);
         conclusion = new Conclusion(c);
+        this.concern = new Concern(c);
+    }
+
+    public Concern concern() {
+        return concern;
     }
 
     public Conclusion conslusion() {
         return conclusion;
     }
 
-    public Violation violation() {
+    public LicenseViolation violation() {
         return violation;
     }
 

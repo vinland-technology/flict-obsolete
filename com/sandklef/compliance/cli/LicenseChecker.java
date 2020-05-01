@@ -7,6 +7,7 @@ package com.sandklef.compliance.cli;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonComponentParser;
 import com.sandklef.compliance.json.JsonLicenseParser;
+import com.sandklef.compliance.json.JsonPolicyParser;
 import com.sandklef.compliance.utils.LicenseArbiter;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
@@ -31,6 +32,7 @@ public class LicenseChecker {
         options.addOption(new Option("dc", "debug-cli", false, "Turn on debug for cli only."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
         options.addOption(new Option("l", "license-dir", true, "Directory with license files."));
+        options.addOption(new Option("pl", "policy-file", true, "Path to policy file."));
         options.addOption(new Option("p", "print-licenses", false, "Output list of licenses"));
         options.addOption(new Option("c", "component", true, "Component file to check"));
 
@@ -38,6 +40,9 @@ public class LicenseChecker {
 
         String componentFile = null;
         String licenseDir = "licenses/json";
+        String policyFile = null;
+        LicensePolicy policy = null;
+
 
         CommandLineParser parser = new DefaultParser();
 
@@ -70,6 +75,10 @@ public class LicenseChecker {
                 licenseDir = line.getOptionValue("license-dir");
                 Log.d(LOG_TAG, " License dir: " + licenseDir);
             }
+            if( line.hasOption( "policy-file" ) ) {
+                policyFile = line.getOptionValue("policy-file");
+                Log.d(LOG_TAG, " Policy file: " + policyFile);
+            }
         }
         catch( ParseException exp ) {
             System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
@@ -82,6 +91,13 @@ public class LicenseChecker {
         Log.d(LOG_TAG, "license dir: " + licenseDir);
         LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir(licenseDir));
 
+        if (policyFile!=null) {
+            JsonPolicyParser jp = new JsonPolicyParser();
+            policy = jp.readLicensePolicy(policyFile);
+            System.out.println("policy: " + policy );
+
+           // System.exit(0);
+        }
 
 
         Log.d(LOG_TAG, "licenses read: " + LicenseStore.getInstance().licenses().size());
@@ -98,10 +114,12 @@ public class LicenseChecker {
             Log.d(LOG_TAG, "Component read: " + c.name());
             Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 
-            Report report = LicenseArbiter.report(c);
+
+            Report report = LicenseArbiter.report(c, policy);
             System.out.println("Report from analysing component: \"" + c.name() + "\"");
             System.out.println("violation report:  " + report.violation());
             System.out.println("conclusion report: " + report.conslusion());
+            System.out.println("concern report: " + report.concern());
 
         }
     }

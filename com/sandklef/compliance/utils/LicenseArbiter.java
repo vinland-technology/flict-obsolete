@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.utils.*;
 
 public class LicenseArbiter {
 
@@ -22,7 +21,7 @@ public class LicenseArbiter {
         if (usee == null) {
             Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...)  ===>  false");
             report.violation().addObligationViolation(
-                    new Violation.ObligationViolation(c));
+                    new LicenseViolation.ObligationViolation(c));
             throw new NoLicenseException("Used licenses unknown ", user, usee);
         }
         Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...)");
@@ -67,27 +66,20 @@ public class LicenseArbiter {
     }
 
 
-    public static Report report(Component c) {
+    public static Report report(Component c, LicensePolicy policy) {
         Log.d(LOG_TAG, "reportViolations()    c: " + c.name());
         Report report = new Report(c);
-        report(c, report);
+        report(c, policy, report);
         return report;
     }
 
-    private static void report(Component c, Report report) {
+    private static void report(Component c, LicensePolicy policy, Report report) {
         Log.d(LOG_TAG, "report() component: " + c.name() + " violation: " + c.name() + "   viols: " + report.violation.obligations().size());
-
-
-        if (report.hasViolation()) {
-            Log.d(LOG_TAG, c.name() + " violation already detected, bailing out");
-            return;
-        }
 
         // Sort the licenses in permissive order
         Log.d(LOG_TAG, c.name() + " licenses: " + c.licenses());
         c.licenses().sort(MostPermissiveLicenseComparator.comparator);
         Log.d(LOG_TAG, c.name() + " licenses: " + c.licenses());
-
 
         // second - return true if no deps
         if (c.dependencies().size() == 0) {
@@ -96,14 +88,25 @@ public class LicenseArbiter {
             Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " DINKEY concluded:      " + license);
             Log.d(LOG_TAG, " DINKEY " + c.name() + " ch licenses:       no deps: " + c.licenses());
             Log.d(LOG_TAG, " DINKEY " + c.name() + " choice:  " + license);
+            if (policy.blackList().contains(license)) {
+                Log.d(LOG_TAG, "Black colored license found: " + license);
+                report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.BLACK_LIST));
+                report.violation().addObligationViolation(
+                        new LicenseViolation.ObligationViolation(c));
+                return;
+            } else if (policy.grayList().contains(license)) {
+                Log.d(LOG_TAG, "Gray colored license found: " + license);
+                report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.GRAY_LIST));
+            }
             c.concludedLicense(license);
             report.conslusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, license));
+
             return;
         } else {
             Log.d(LOG_TAG, " * checking dependencies for : " + c + "   nr: " + c.dependencies().size());
             for (Component d : c.dependencies()) {
                 Log.d(LOG_TAG, " * checking component: " + d);
-                report(d, report);
+                report(d, policy, report);
             }
         }
 
@@ -147,7 +150,7 @@ public class LicenseArbiter {
                     Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  FAIL: " + e.getMessage());
                     allCleared = false;
                     report.violation().addObligationViolation(
-                            new Violation.ObligationViolation(c));
+                            new LicenseViolation.ObligationViolation(c));
                     return;
                 }
             }

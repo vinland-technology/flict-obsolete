@@ -7,7 +7,7 @@ package com.sandklef.compliance.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Violation {
+public class LicenseViolation {
 
     public static class ObligationViolation {
         public Component user;
@@ -21,12 +21,12 @@ public class Violation {
 
     private List<ObligationViolation> violatedObligations;
 
-    public Violation(Component component) {
+    public LicenseViolation(Component component) {
         this.component = component;
         violatedObligations = new ArrayList<>();
     }
 
-    public Violation(Component component, List<ObligationViolation> violatedObligations) {
+    public LicenseViolation(Component component, List<ObligationViolation> violatedObligations) {
         this.component = component;
         this.violatedObligations = violatedObligations;
     }
