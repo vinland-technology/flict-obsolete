@@ -54,6 +54,20 @@ public class LicensePolicy {
         return blackList;
     }
 
+    public static String listType (ListType listType) {
+        switch (listType) {
+            case WHITE_LIST:
+                return "Whitelist";
+            case GRAY_LIST:
+                return "Graylist";
+            case BLACK_LIST:
+                return "Blacklist";
+        }
+        return "undefined";
+    }
+
+
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

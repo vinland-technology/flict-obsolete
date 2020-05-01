@@ -59,8 +59,7 @@ public class Component {
   }
   
   public void concludedLicense(License license) {
-    // TODO: observer/observerable pattern here
-    System.out.println("\n ======== UPDATING LICENSE on \"" + name +  "\" to \"" +
+    Log.d(LOG_TAG, "\n ======== UPDATING LICENSE on \"" + name +  "\" to \"" +
                        (license!=null?""+license.spdxTag():license) + "\" ==========\n");
     concludedLicense = license;
   }

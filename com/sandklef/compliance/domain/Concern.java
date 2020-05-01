@@ -62,8 +62,8 @@ public class Concern {
             sb.append(concern.component().name());
             sb.append(" (");
             sb.append(concern.license().spdxTag());
-            sb.append(" is ");
-            sb.append(concern.listType());
+            sb.append(") is ");
+            sb.append(LicensePolicy.listType(concern.listType()));
             sb.append("\n");
         }
         return sb.toString();
