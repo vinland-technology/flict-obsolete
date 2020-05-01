@@ -61,10 +61,15 @@ public class License {
   
   @Override
   public String toString() {
+    return spdxTag;
+  }
+
+  public String toStringLong() {
     StringBuilder sb = new StringBuilder();
     sb.append(spdxTag);
     sb.append("\nObligations:\n");
 
+    Log.d(LOG_TAG, "spdxTag: " + spdxTag);
 
     for (LicenseObligation obligation : obligations.values()) {
       sb.append(" * ");

@@ -4,14 +4,20 @@ JAVA_SOURCES=\
   ./com/sandklef/compliance/domain/LicenseObligation.java \
   ./com/sandklef/compliance/domain/LicenseViolationException.java \
   ./com/sandklef/compliance/domain/License.java \
+  ./com/sandklef/compliance/domain/LicenseObligation.java \
+  ./com/sandklef/compliance/domain/Report.java \
   ./com/sandklef/compliance/domain/Obligation.java \
   ./com/sandklef/compliance/domain/ObligationState.java \
   ./com/sandklef/compliance/domain/LicenseType.java \
+  ./com/sandklef/compliance/domain/Conclusion.java \
   ./com/sandklef/compliance/utils/Log.java \
   ./com/sandklef/compliance/utils/ObligationBuilder.java \
   ./com/sandklef/compliance/utils/LicenseStore.java \
   ./com/sandklef/compliance/utils/LicenseArbiter.java \
-  ./com/sandklef/compliance/json/JsonParser.java \
+  ./com/sandklef/compliance/json/JsonComponentParser.java \
+  ./com/sandklef/compliance/json/JsonLicenseParser.java \
+  ./com/sandklef/compliance/json/JsonUtils.java \
+  ./com/sandklef/compliance/cli/LicenseChecker.java \
 
 TEST_SOURCES=\
   com/sandklef/compliance/test/TestSubComponents.java \
@@ -25,7 +31,9 @@ TEST_SOURCES=\
 CLASSES=$(JAVA_SOURCES:.java=.class)
 TEST_CLASSES=$(TEST_SOURCES:.java=.class)
 
-CLASSPATH="lib/org.json.jar:."
+JSON_JAR=lib/org.json.jar
+CLI_JAR=lib/commons-cli-1.4.jar
+CLASSPATH=".:$(JSON_JAR):$(CLI_JAR)"
 
 %.class:%.java
 	javac  -Xdiags:verbose -cp "$(CLASSPATH)" $<
@@ -33,13 +41,27 @@ CLASSPATH="lib/org.json.jar:."
 all: $(CLASSES) $(JSON_JAR) 
 
 
-JSON_JAR=lib/org.json.jar
+
+$(CLI_JAR):
+	mkdir tmp; cd tmp ; wget "https://downloads.apache.org//commons/cli/binaries/commons-cli-1.4-bin.tar.gz"
+	cd tmp; tar zxvf commons-cli-1.4-bin.tar.gz commons-cli-1.4/commons-cli-1.4.jar
+	cd tmp; mv commons-cli-1.4/commons-cli-1.4.jar ../lib
 
 $(JSON_JAR):
 	mkdir -p lib
 	wget 'https://search.maven.org/remotecontent?filepath=org/json/json/20171018/json-20171018.jar' -O lib/org.json.jar
 
-$(CLASSES): $(JSON_JAR)
+$(CLASSES): $(JSON_JAR) $(CLI_JAR)
+
+cli:
+	make cli-licenses
+	echo "Press enter to continue"; read EINAR
+	make cli-violations
+
+cli-licenses: com/sandklef/compliance/cli/LicenseChecker.class
+	java -cp $(CLASSPATH) com/sandklef/compliance/cli/LicenseChecker  -p -dc --license-dir licenses/json 
+cli-violations:
+	java -cp $(CLASSPATH) com/sandklef/compliance/cli/LicenseChecker  -dc -v --license-dir licenses/json  --component ./com/sandklef/compliance/json/test/simple-problem.json
 
 stat:
 	@echo "Java: " ; 

@@ -48,7 +48,28 @@ public class LicenseStore {
     licenses.put(name, l);
     return l;
   }
-  
+
+  public Map<String, License> licenses() {
+    return licenses;
+  }
+
+  public String licenseString() {
+    StringBuilder sb = new StringBuilder();
+    for (Map.Entry<String, License> entry : licenses.entrySet())
+    {
+      sb.append(entry.getKey());
+      sb.append("\n");
+      for (LicenseObligation obligation : entry.getValue().obligations().values()) {
+        sb.append(" * ");
+        sb.append(obligation.name());
+        sb.append(": ");
+        sb.append(obligation.state());
+        sb.append("\n");
+      }
+    }
+    return sb.toString();
+  }
+
   public void addLicenses(Map<String, License> licenses) {
     this.licenses.putAll(licenses);
   }

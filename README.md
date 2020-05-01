@@ -6,6 +6,10 @@ state.
 
 License Checker can also suggest licenses for your component.
 
+# License of the License Checker
+
+License Checker is released under GPLv3(https://www.gnu.org/licenses/gpl-3.0.en.html)
+
 # Word list
 
 * component - a collection of source code as packaged and released by a project (e g gstreamer)
@@ -31,8 +35,6 @@ The list of words below is dervied from Wikipedia's article "Comparison of free 
 ## Adding a license
 
 ## Adding a policy
-
-
 
 # Copyright and License scanner
 

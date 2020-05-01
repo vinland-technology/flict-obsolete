@@ -7,7 +7,7 @@ import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.*;
 import com.sandklef.compliance.json.*;
 
-public class TestJsonParser {
+public class TestJsonComponentParser {
 
   public static void main(String[] args) throws IOException{
     int fileIndex=0;
@@ -29,9 +29,9 @@ public class TestJsonParser {
 
     
     
-    JsonParser jp = new JsonParser();
+    JsonComponentParser jp = new JsonComponentParser();
 
-    Map<String, License> licenses = jp.readLicenseDir("licenses/json");
+    Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
     LicenseStore.getInstance().addLicenses(licenses);
     System.out.println("component file: " + args[fileIndex]);
     Component c = jp.readComponent(args[fileIndex]);

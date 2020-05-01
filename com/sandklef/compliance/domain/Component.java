@@ -22,18 +22,24 @@ public class Component {
     if (dependencies==null) {
       this.dependencies = new ArrayList<>();
     }
-    if (licenses.size()==1) {
+/*    if (licenses.size()==1) {
       concludedLicense = licenses.get(0);
     }
+    */
+    Log.d(LOG_TAG, "new Component: " + name + "    license: " + concludedLicense()+ "    licenses: " + licenses());
   }
 
   public Component(String name, License license, List<Component> dependencies) {
     this.name = name;
     this.dependencies = dependencies;
+    this.concludedLicense = null;
     if (dependencies==null) {
       this.dependencies = new ArrayList<>();
     }
-    concludedLicense = license;
+    licenses = new ArrayList<>();
+    licenses.add(license);
+ //   concludedLicense = license;
+    Log.d(LOG_TAG, "new Component: " + name + "    license: " + concludedLicense()+ "    licenses: " + licenses());
   }
 
   public String name() {
@@ -136,7 +142,22 @@ public class Component {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    sb.append(name + " (" + concludedLicense().spdxTag() +"): [" );
+    sb.append(name);
+    sb.append("(");
+    if (concludedLicense()!=null) {
+      sb.append(name + " (" + concludedLicense().spdxTag() +")");
+    } else {
+      Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses().size());
+      Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses());
+      for (License l : licenses()) {
+        Log.d(LOG_TAG, "   toString c:" + name + "   license: " + l);
+        sb.append(l.spdxTag());
+        sb.append(",");
+      }
+    }
+    sb.append(")");
+
+    sb.append("[" );
     for (Component c : dependencies) {
       sb.append( " " + c.name() );
     }
