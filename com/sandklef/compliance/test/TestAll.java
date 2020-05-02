@@ -28,6 +28,10 @@ public class TestAll {
         System.out.println(" * Test:      " + Utils.counter());
         System.out.println(" * Failures:  " + Utils.erorCounter());
         System.out.println(" * Successes: " + Utils.sucessCounter());
+        if (Utils.erorCounter()>0) {
+            System.out.println("\n");
+            System.out.println(" * Failures:" + Utils.fails());
+        }
         System.out.println("\n");
     }
 }

@@ -22,11 +22,13 @@ public class Utils {
     private static int counter;
     private static int errorCounter;
     private static int successCounter;
+    private static List<String> fails;
     static {
         try {
             counter = 0;
             errorCounter = 0;
             successCounter = 0;
+            fails = new ArrayList<>();
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("licenses/json"));
             lgpl2 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
             gpl2 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
@@ -237,13 +239,18 @@ public class Utils {
 //        println("  ====  value: " + value);
         counter++;
         print("  * Verify " + before +": ");
-        try {
-            assert value;
+        if (value) {
             successCounter++;
-        } catch (Exception e) {
+            println("OK");
+        } else {
             errorCounter++;
+            fails.add(before);
+            println("FAIL");
         }
-        println("OK");
+    }
+
+    public static List<String> fails() {
+        return fails;
     }
 
     public static void printTestStart(String s) {
