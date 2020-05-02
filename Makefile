@@ -67,6 +67,8 @@ $(JSON_JAR):
 	mkdir -p lib
 	wget 'https://search.maven.org/remotecontent?filepath=org/json/json/20171018/json-20171018.jar' -O lib/org.json.jar
 
+dload-libs: $(JSON_JAR) $(CLI_JAR)
+
 $(CLASSES): $(JSON_JAR) $(CLI_JAR)
 
 cli:
@@ -86,6 +88,9 @@ stat:
 	@echo "Json: " ; 
 	@echo -n " * files: " ; find . -name "*.json" | wc -l
 	@echo -n " * loc: " ; find . -name "*.json" | xargs wc -l| tail -1
+	@echo "Bash: " ; 
+	@echo -n " * files: " ; find . -name "*.sh" -o -name configure | wc -l
+	@echo -n " * loc: " ; find . -name "*.sh"  -o -name configure | xargs wc -l| tail -1
 
 clean:
 	rm -f $(CLASSES)
