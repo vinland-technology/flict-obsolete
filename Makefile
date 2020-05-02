@@ -46,6 +46,7 @@ TEST_CLASSES=$(TEST_SOURCES:.java=.class)
 
 JSON_JAR=lib/org.json.jar
 CLI_JAR=lib/commons-cli-1.4.jar
+WINSTONE_JAR=lib/winstone.jar
 CLASSPATH=".:$(JSON_JAR):$(CLI_JAR)"
 
 %.class:%.java
@@ -64,7 +65,11 @@ $(JSON_JAR):
 	mkdir -p lib
 	wget 'https://search.maven.org/remotecontent?filepath=org/json/json/20171018/json-20171018.jar' -O lib/org.json.jar
 
-dload-libs: $(JSON_JAR) $(CLI_JAR)
+$(WINSTONE_JAR):
+	mkdir -p lib
+	wget 'https://sourceforge.net/projects/winstone/files/latest/download?source=typ_redirect' -O lib/winstone.jar
+
+dload-libs: $(JSON_JAR) $(CLI_JAR) $(WINSTONE_JAR)
 
 $(CLASSES): $(JSON_JAR) $(CLI_JAR)
 
