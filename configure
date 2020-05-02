@@ -1,0 +1,37 @@
+#!/bin/bash
+
+P_NAME"License Policy Checker"
+
+check_dependencies()
+{
+    java -h > /dev/null 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "Java seems to be missing."
+        echo "You need install Java JDK"
+        echo
+        exit 1
+    fi
+    
+    jq -h > /dev/null 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "jq seems to be missing."
+        echo "You need install it before using  $P_NAME"
+        exit 1
+    fi
+}
+
+get_java_libs()
+{
+    make dload-libs
+}
+
+
+check_dependencies
+
+get_java_libs
+
+
+
+
