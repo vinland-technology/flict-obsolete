@@ -1,10 +1,11 @@
 #!/bin/bash
 
 P_NAME="License Policy Checker"
+LOG_FILE=configure.log
 
 check_dependencies()
 {
-    java -h > /dev/null 2>&1
+    java -h >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]
     then
         echo "Java seems to be missing."
@@ -13,7 +14,7 @@ check_dependencies()
         exit 1
     fi
     
-    jq -h > /dev/null 2>&1
+    jq -h >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]
     then
         echo "jq seems to be missing."
@@ -28,9 +29,13 @@ get_java_libs()
 }
 
 
+echo -n "Check dependencies: "
 check_dependencies
+echo "OK"
 
-get_java_libs
+echo -n "Download java libs: "
+get_java_libs >> $LOG_FILE 2>&1
+echo "OK"
 
 
 
