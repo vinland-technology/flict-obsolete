@@ -15,6 +15,11 @@ public class LicenseViolation {
         public ObligationViolation(Component user) {
             this.user = user;
         }
+
+        @Override
+        public String toString() {
+            return " " + user.name() + " (" + user.licenses() + ")" ;
+        }
     }
 
     private Component component;

@@ -25,6 +25,11 @@ public class LicenseObligation {
   public ObligationState state() {
     return state;
   }
-  
+
+  @Override
+  public String toString() {
+    return obligation +
+            " =" + state;
+    }
 }
   

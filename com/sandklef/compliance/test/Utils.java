@@ -2,12 +2,14 @@ package com.sandklef.compliance.test;
 
 import com.sandklef.compliance.domain.Component;
 import com.sandklef.compliance.domain.License;
+import com.sandklef.compliance.domain.LicensePolicy;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.sandklef.compliance.domain.License.*;
 import static com.sandklef.compliance.domain.License.LOG_TAG;
@@ -17,8 +19,14 @@ public class Utils {
     public static License lgpl2;
     public static License gpl2;
     public static License apache2;
+    private static int counter;
+    private static int errorCounter;
+    private static int successCounter;
     static {
         try {
+            counter = 0;
+            errorCounter = 0;
+            successCounter = 0;
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("licenses/json"));
             lgpl2 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
             gpl2 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
@@ -27,6 +35,26 @@ public class Utils {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    public static LicensePolicy permissiveAndWeakPolicy() {
+        LicensePolicy policy = new LicensePolicy();
+
+        policy.addWhiteLicense(apache2);
+        policy.addGrayLicense(lgpl2);
+        policy.addBlackLicense(gpl2);
+
+        return policy;
+    }
+
+    public static LicensePolicy copyleftAndWeakPolicy() {
+        LicensePolicy policy = new LicensePolicy();
+
+        policy.addWhiteLicense(gpl2);
+        policy.addGrayLicense(lgpl2);
+        policy.addBlackLicense(apache2);
+
+        return policy;
     }
 
     public static Component validComponent() {
@@ -149,6 +177,42 @@ public class Utils {
         return top;
     }
 
+    public static Component dualLicensedComponent() {
+    /*
+             top (gpl2)
+              |
+           +--+--------------------
+           |
+           a (apache2)
+           |
+        +--+---------+
+        |            |
+      a1 (apache2)  a2 (lgpl2|gpl2)
+     */
+
+        // a1
+        Component a1 = new Component("a1", apache2, null);
+
+        // a2
+        List<License> licenses = new ArrayList<>();
+        licenses.add(lgpl2);
+        licenses.add(gpl2);
+        Component a2 = new Component("a2", licenses, null);
+
+        // a    q
+        ArrayList<Component> aDeps = new ArrayList<>();
+        aDeps.add(a1);
+        aDeps.add(a2);
+        Component a = new Component("a", apache2, aDeps);
+
+        // top
+        ArrayList<Component> deps = new ArrayList<>();
+        deps.add(a);
+        Component top = new Component("Top", gpl2, deps);
+
+        return top;
+    }
+
     public static void println(String string) {
         System.out.println(string);
     }
@@ -157,10 +221,29 @@ public class Utils {
         System.out.print(String.format(beforeFormat, string));
     }
 
-    public static void assertHelper(String before, boolean value, String after){
-        print("  * " + before+": ");
-        assert value;
-        println(after);
+    public static int erorCounter() {
+        return errorCounter;
+    }
+
+    public static int sucessCounter() {
+        return successCounter;
+    }
+
+    public static int counter() {
+        return counter;
+    }
+
+    public static void assertHelper(String before, boolean value){
+//        println("  ====  value: " + value);
+        counter++;
+        print("  * Verify " + before +": ");
+        try {
+            assert value;
+            successCounter++;
+        } catch (Exception e) {
+            errorCounter++;
+        }
+        println("OK");
     }
 
     public static void printTestStart(String s) {

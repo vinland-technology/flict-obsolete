@@ -1,0 +1,29 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "software":"License Policy Checker",
+    "version":"0.1",
+    "license": {
+        "name":"LGPLv2.1 only",
+        "spdx":"LGPL-2.1-only",
+        "obligations": {
+            "linking_copylefted":"false",
+            "modification_allowed":"true",
+            "modification_copylefted":"true",
+            "sublicensing_allowed":"false",
+            "distribution_allowed":"true",
+            "distribution_copylefted":"true",
+            "disclose_source":"true",
+            "include_original":"true",
+            "state_changes":"true",
+            "include_copyright":"true",
+            "include_license":"true",
+            "include_install_instructions":"false",
+            "include_notice_file":"false",
+            "include_notice_about_license":"false"
+        }
+    }
+}
+

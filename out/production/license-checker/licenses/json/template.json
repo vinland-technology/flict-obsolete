@@ -1,0 +1,22 @@
+{
+    "software":"License Policy Checker",
+    "version":"0.1",
+    "license:" {
+        "name":"some license name",
+        "spdx":"corresponding spdx tag for the license",
+        "obligations": {
+            "linking_copylefted":"true|false",
+            "modification_copylefted":"true|false",
+            "sublicensing_allowed":"truefalse",
+            "distribution_copylefted":"true|false",
+            "disclose_source":"true|false",
+            "include_original":"true|false",
+            "state_changes":"true|false",
+            "include_copyright":"true|false",
+            "include_license":"true|false",
+            "include_install_instructions":"true|false",
+            "include_notice_file":"true|false",
+            "include_notice_about_license":"true|false"
+        }
+    }
+}

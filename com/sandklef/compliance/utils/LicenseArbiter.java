@@ -20,8 +20,10 @@ public class LicenseArbiter {
     public static boolean aUsesB(Component c, Report report, License user, License usee) throws LicenseViolationException, NoLicenseException {
         if (usee == null) {
             Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...)  ===>  false");
-            report.violation().addObligationViolation(
-                    new LicenseViolation.ObligationViolation(c));
+/*            Log.d(LOG_TAG, " violated license for " + c.name() + " 3");
+
+           report.violation().addObligationViolation(
+                    new LicenseViolation.ObligationViolation(c));*/
             throw new NoLicenseException("Used licenses unknown ", user, usee);
         }
         Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...)");
@@ -90,17 +92,21 @@ public class LicenseArbiter {
             Log.d(LOG_TAG, " DINKEY " + c.name() + " choice:  " + license);
             if (policy!=null && policy.blackList().contains(license)) {
                 Log.d(LOG_TAG, "Black colored license found: " + license);
+                Log.d(LOG_TAG, " concerned license for " + c.name() + " is " + license);
                 report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.BLACK_LIST));
+                Log.d(LOG_TAG, " violated license for " + c.name() + " 1");
                 report.violation().addObligationViolation(
                         new LicenseViolation.ObligationViolation(c));
                 return;
             } else if (policy!=null && policy.grayList().contains(license)) {
                 Log.d(LOG_TAG, "Gray colored license found: " + license);
+                Log.d(LOG_TAG, " concerned license for " + c.name() + " is " + license);
                 report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.GRAY_LIST));
             }
             c.concludedLicense(license);
             // Add conclusion if we've concluded it from a list (size>1)
             if (c.licenses().size()>1) {
+                Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + license);
                 report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, license));
             }
             return;
@@ -151,6 +157,7 @@ public class LicenseArbiter {
                 } catch (NoLicenseException e) {
                     Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  FAIL: " + e.getMessage());
                     allCleared = false;
+                    Log.d(LOG_TAG, " violated license for " + c.name() + " 2");
                     report.violation().addObligationViolation(
                             new LicenseViolation.ObligationViolation(c));
                     return;
@@ -162,6 +169,7 @@ public class LicenseArbiter {
                 c.concludedLicense(l);
                 // Add conclusion if we've concluded it from a list (size>1)
                 if (c.licenses().size()>1) {
+                    Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + l);
                     report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, l));
                 }
                 break;

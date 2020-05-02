@@ -1,0 +1,18 @@
+{
+    "name": "GnuTLS",
+    "license": "GPL-2.0-only",
+    "dependencies": [
+        {
+            "name": "gmplib",
+            "license":"LGPL-3.0 | GPL-2.0-only",
+            "dependencies": []
+        },
+        {
+            "name": "libnettle",
+            "license": "LGPL-3.0 | GPL-2.0-only | GPL-3.0-only",
+            "dependencies": []
+        }
+        
+
+    ]
+}

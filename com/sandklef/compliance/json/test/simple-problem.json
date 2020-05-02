@@ -1,0 +1,29 @@
+{
+    "name": "Superawesome",
+    "license": "GPL-2.0-only",
+    "dependencies": [
+        {
+            "name": "Something",
+            "license": "LGPL-2.1-only",
+            "dependencies": []
+        },
+        {
+            "name": "IronHorse",
+            "license": "Apache-2.0",
+            "dependencies": [
+                {
+                    "name": "AceOfSpades",
+                    "license": "LGPL-2.1-only",
+                    "dependencies": []
+                },
+                {
+                    "name": "Arnold",
+                    "license": "GPL-2.0-only",
+                    "dependencies": []
+                }
+            ]
+        }
+        
+
+    ]
+}

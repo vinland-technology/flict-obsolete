@@ -1,0 +1,35 @@
+{
+    "component": "programA",
+    "license": "GPLv3",
+    "dependencies" : [
+        {
+            "component": "libX",
+            "license": "GPLv2",
+            "dependencies" : [
+                {
+                    "component": "libXX",
+                    "license": "MPL2",
+                    "dependencies" : []
+                },
+                {
+                    "component": "libXY",
+                    "license": "Apache2",
+                    "dependencies" : []
+                }
+            ]
+        },
+        {
+            "component": "libY",
+            "license": "GPLv2",
+            "dependencies" : [
+                {
+                    "component": "libYX",
+                    "license": "MPL2",
+                    "dependencies" : []
+                }
+            ]
+        }
+        
+    ]
+}
+    
