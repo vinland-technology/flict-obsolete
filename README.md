@@ -45,3 +45,11 @@ The list of words below is dervied from Wikipedia's article "Comparison of free 
 # Copyright and License scanner
 
 If you don't have
+
+# Example
+
+~~~
+bin/license-checker.sh -v -c ./meta/license-policy-checker.json 
+~~~
+
+
