@@ -26,9 +26,9 @@ public class TestLicense {
       System.out.println(" violation");
     }
   }
-
+*/
   public static void main(String[] args) {
-      testAUsesB(apache2, apache2);
+ /*     testAUsesB(apache2, apache2);
       testAUsesB(apache2, gpl2);
       testAUsesB(apache2, lgpl2);
       
@@ -39,6 +39,7 @@ public class TestLicense {
       testAUsesB(lgpl2, apache2);
       testAUsesB(lgpl2, gpl2);
       testAUsesB(lgpl2, lgpl2);
-    }
   */
+  }
 }
+

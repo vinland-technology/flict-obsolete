@@ -17,28 +17,16 @@ public class TestJsonComponentParser {
     int fileIndex=0;
     boolean compliant = true;
 
+
     if (args.length==0) {
       System.out.println("Missing argument");
     }
 
-    if (args[fileIndex].equals("--violation")) {
-      compliant = false;
-      fileIndex++;
-    }
-
-    if (args[fileIndex].equals("--verbose")) {
-      Log.level(Log.VERBOSE);
-      fileIndex++;
-    }
-
-    
-    
     JsonComponentParser jp = new JsonComponentParser();
 
     Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
     LicenseStore.getInstance().addLicenses(licenses);
-    System.out.println("component file: " + args[fileIndex]);
-    Component c = jp.readComponent(args[fileIndex]);
+    Component c = jp.readComponent("com/sandklef/compliance/json/test/simple.json");
 
     
     System.out.println(" --- licenses ...------");

@@ -16,14 +16,15 @@ public class TestLicenseParser {
   public static void main(String[] args) throws IOException{
     int fileIndex=0;
     boolean compliant = true;
+    String dirName = "licenses/json";
 
-    if (args[fileIndex].equals("--verbose")) {
+    if (args.length > 0 && args[fileIndex].equals("--verbose")) {
       Log.level(Log.VERBOSE);
       fileIndex++;
     }
 
     JsonLicenseParser jp = new JsonLicenseParser();
-    Map<String, License> licenses = jp.readLicenseDir(args[fileIndex]);
+    Map<String, License> licenses = jp.readLicenseDir(dirName);
 
     System.out.println("License: " + licenses);
   }

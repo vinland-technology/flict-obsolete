@@ -18,7 +18,7 @@ public class TestCanAUseB {
   private static License apache2 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
 
   private static boolean testCanAUseB(License user, License usee) {
-    boolean ret = LicenseArbiter.canAUseB(user,usee);
+    boolean ret = LicenseArbiter.canAUseB(null, null, user,usee);
     System.out.println(user.spdxTag() + " using " + usee.spdxTag() + " :::  " + ret);
     return ret;
   }

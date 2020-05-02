@@ -35,10 +35,9 @@ JAVA_SOURCES=\
 TEST_SOURCES=\
   ./com/sandklef/compliance/json/test/TestLicenseParser.java \
   ./com/sandklef/compliance/json/test/TestJsonComponentParser.java \
-  ./com/sandklef/compliance/test/TestCanAUseB.java \
-  ./com/sandklef/compliance/test/TestComponents.java \
   ./com/sandklef/compliance/test/TestPrintLicenses.java \
   ./com/sandklef/compliance/test/TestLicense.java \
+    com/sandklef/compliance/json/test/TestLicenseParser.java \
   com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.java
 
 
@@ -100,8 +99,9 @@ test: test-all test-json
 test-all: $(TEST_CLASSES)
 	for i in $(TEST_CLASSES); \
 	do \
-		export CLASS=`echo $$i | sed -e 's,\.class,,g' -e 's,/,\.,g'` ; \
+		export CLASS=`echo $$i | sed -e 's,\.class,,g' -e 's,/,\.,g' -e 's,\.\.,,g'` ; \
 		echo "Test: $$CLASS"; \
+		echo java -ea -cp $(CLASSPATH) $$CLASS ; \
 		java -ea -cp $(CLASSPATH) $$CLASS ; \
 		if [ $$? -ne 0 ] ; then echo "$$CLASS failed"; break; fi ; \
 	done;
@@ -109,10 +109,6 @@ test-all: $(TEST_CLASSES)
 test-comparator:com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.class $(CLASSES) $(JSON_JAR)
 	java -cp $(CLASSPATH) com/sandklef/compliance/test/TestMostPermissiveLicenseComparator
 
-test-json: ./com/sandklef/compliance/json/test/TestJsonParser.class  com/sandklef/compliance/json/test/TestLicenseParser.class $(CLASSES) $(JSON_JAR)
+test-json:  com/sandklef/compliance/json/test/TestLicenseParser.class $(CLASSES) $(JSON_JAR)
 	@echo " --- License parsers ----"
 	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestLicenseParser --verbose ./licenses/json/
-	@echo " --- Json parsers ----"
-	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --verbose ./com/sandklef/compliance/json/test/simple.json
-	@echo " --- Json parsers with violation expected ----"
-	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestJsonParser --violation --verbose ./com/sandklef/compliance/json/test/simple-problem.json
