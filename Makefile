@@ -35,7 +35,6 @@ JAVA_SOURCES=\
 TEST_SOURCES=\
   ./com/sandklef/compliance/json/test/TestLicenseParser.java \
   ./com/sandklef/compliance/json/test/TestJsonComponentParser.java \
-  ./com/sandklef/compliance/test/TestSubComponents.java \
   ./com/sandklef/compliance/test/TestDualLicenses.java \
   ./com/sandklef/compliance/test/TestCanAUseB.java \
   ./com/sandklef/compliance/test/TestComponents.java \
