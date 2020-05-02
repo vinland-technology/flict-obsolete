@@ -1,6 +1,6 @@
 #!/bin/bash
 
-P_NAME"License Policy Checker"
+P_NAME="License Policy Checker"
 
 check_dependencies()
 {
