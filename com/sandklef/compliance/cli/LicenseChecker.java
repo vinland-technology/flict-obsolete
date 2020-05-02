@@ -147,19 +147,24 @@ public class LicenseChecker {
             Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 
             Report report = LicenseArbiter.report(c, policy);
-            if (format==OutputFormat.TEXT) {
-                System.out.println("Report from analysing component: \"" + c.name() + "\"\n");
-                System.out.println("violation report:  " + report.violation());
-                System.out.println("conclusion report: " + report.conclusion());
-                System.out.println("concern report: " + report.concern());
-            } else {
-                ReportExporter exporter = new JsonExporter();
-             //   System.out.println("violation report:  \n\n" + exporter.exportLicenseViolation(report.violation()));
-              //  System.out.println("conclusion report:  \n\n" + exporter.exportConclusion(report.conclusion()));
-               // System.out.println("conclusion report:  \n\n" + exporter.exportConcern(report.concern()));
-                System.out.println(exporter.exportReport(report));
-            }
+            report(report, format);
+        }
+    }
 
+
+
+    public static void report(Report report, OutputFormat format) {
+        if (format==OutputFormat.TEXT) {
+            System.out.println("Report from analysing component: \"" + report.conclusion.component().name() + "\"\n");
+            System.out.println("violation report:  " + report.violation());
+            System.out.println("conclusion report: " + report.conclusion());
+            System.out.println("concern report: " + report.concern());
+        } else {
+            ReportExporter exporter = new JsonExporter();
+            //   System.out.println("violation report:  \n\n" + exporter.exportLicenseViolation(report.violation()));
+            //  System.out.println("conclusion report:  \n\n" + exporter.exportConclusion(report.conclusion()));
+            // System.out.println("conclusion report:  \n\n" + exporter.exportConcern(report.concern()));
+            System.out.println(exporter.exportReport(report));
         }
     }
 
