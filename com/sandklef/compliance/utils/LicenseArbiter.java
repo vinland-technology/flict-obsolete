@@ -99,8 +99,10 @@ public class LicenseArbiter {
                 report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.GRAY_LIST));
             }
             c.concludedLicense(license);
-            report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, license));
-
+            // Add conclusion if we've concluded it from a list (size>1)
+            if (c.licenses().size()>1) {
+                report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, license));
+            }
             return;
         } else {
             Log.d(LOG_TAG, " * checking dependencies for : " + c + "   nr: " + c.dependencies().size());
@@ -158,7 +160,10 @@ public class LicenseArbiter {
             if (allCleared) {
                 Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared + " <----- choose: " + l + " for " + c.name());
                 c.concludedLicense(l);
-                report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, l));
+                // Add conclusion if we've concluded it from a list (size>1)
+                if (c.licenses().size()>1) {
+                    report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, l));
+                }
                 break;
             }
         }
