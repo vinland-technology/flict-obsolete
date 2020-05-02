@@ -21,8 +21,10 @@ public class JsonExporter implements ReportExporter {
     @Override
     public String exportReport(Report report) {
         JSONObject top = new JSONObject();
-        top.put("software", Version.POLICY_CHECKER_NAME);
-        top.put("version", Version.POLICY_CHECKER_VERSION);
+        JSONObject meta = new JSONObject();
+        meta.put("software", Version.POLICY_CHECKER_NAME);
+        meta.put("version", Version.POLICY_CHECKER_VERSION);
+        top.put("meta", meta);
         JSONObject data = new JSONObject();
         data.put("concerns", exportConcernImpl(report.concern()));
         data.put("conclusion", exportConclusionImpl(report.conclusion()));
