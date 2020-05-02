@@ -33,21 +33,22 @@ JAVA_SOURCES=\
 
 
 TEST_SOURCES=\
-  ./com/sandklef/compliance/json/test/TestLicenseParser.java \
-  ./com/sandklef/compliance/json/test/TestJsonComponentParser.java \
-  ./com/sandklef/compliance/test/TestPrintLicenses.java \
-  ./com/sandklef/compliance/test/TestLicense.java \
-    com/sandklef/compliance/json/test/TestLicenseParser.java \
-  com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.java
+  com/sandklef/compliance/test/TestAll.java\
+  com/sandklef/compliance/test/Utils.java\
+  com/sandklef/compliance/test/TestComponents.java
 
 
 CLASSES=$(JAVA_SOURCES:.java=.class)
 TEST_CLASSES=$(TEST_SOURCES:.java=.class)
 
-JSON_JAR=lib/org.json.jar
-CLI_JAR=lib/commons-cli-1.4.jar
-WINSTONE_JAR=lib/winstone.jar
-CLASSPATH=".:$(JSON_JAR):$(CLI_JAR)"
+LIB_DIR=lib
+JSON_JAR=$(LIB_DIR)/org.json.jar
+CLI_JAR=$(LIB_DIR)/commons-cli-1.4.jar
+WINSTONE_JAR=$(LIB_DIR)/winstone.jar
+JUNIT_JAR=$(LIB_DIR)/junit-jupiter-api-5.6.2.jar
+JUNIT_V_JAR=$(LIB_DIR)/junit-vintage-engine-5.6.2.jar
+CLASSPATH=".:$(JSON_JAR):$(CLI_JAR):"
+TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 
 %.class:%.java
 	javac  -Xdiags:verbose -cp "$(CLASSPATH)" $<
@@ -61,15 +62,23 @@ $(CLI_JAR):
 	cd tmp; tar zxvf commons-cli-1.4-bin.tar.gz commons-cli-1.4/commons-cli-1.4.jar
 	cd tmp; mv commons-cli-1.4/commons-cli-1.4.jar ../lib
 
+$(JUNIT_JAR):
+	mkdir -p lib
+	wget "https://search.maven.org/remotecontent?filepath=org/junit/jupiter/junit-jupiter-api/5.6.2/junit-jupiter-api-5.6.2.jar" -O $(JUNIT_JAR)
+
+$(JUNIT_V_JAR):
+	mkdir -p lib
+	wget "https://search.maven.org/remotecontent?filepath=org/junit/vintage/junit-vintage-engine/5.6.2/junit-vintage-engine-5.6.2.jar" -O $(JUNIT_V_JAR)
+
 $(JSON_JAR):
 	mkdir -p lib
-	wget 'https://search.maven.org/remotecontent?filepath=org/json/json/20171018/json-20171018.jar' -O lib/org.json.jar
+	wget 'https://search.maven.org/remotecontent?filepath=org/json/json/20171018/json-20171018.jar' -O $(LIB_DIR)/org.json.jar
 
 $(WINSTONE_JAR):
 	mkdir -p lib
-	wget 'https://sourceforge.net/projects/winstone/files/latest/download?source=typ_redirect' -O lib/winstone.jar
+	wget 'https://sourceforge.net/projects/winstone/files/latest/download?source=typ_redirect' -O $(LIB_DIR)/winstone.jar
 
-dload-libs: $(JSON_JAR) $(CLI_JAR) $(WINSTONE_JAR)
+dload-libs: $(JSON_JAR) $(CLI_JAR) $(WINSTONE_JAR) $(JUNIT_JAR) $(JUNIT_V_JAR)
 
 $(CLASSES): $(JSON_JAR) $(CLI_JAR)
 
@@ -99,21 +108,6 @@ clean:
 	find -name "*~" | xargs rm -f
 	find -name "*.class" | xargs rm -f
 
-test: test-all test-json 
+test: $(JUNIT_JAR) all $(TEST_CLASSES) 
+	java -ea -cp $(CLASSPATH) com/sandklef/compliance/test/TestAll
 
-test-all: $(TEST_CLASSES)
-	for i in $(TEST_CLASSES); \
-	do \
-		export CLASS=`echo $$i | sed -e 's,\.class,,g' -e 's,/,\.,g' -e 's,\.\.,,g'` ; \
-		echo "Test: $$CLASS"; \
-		echo java -ea -cp $(CLASSPATH) $$CLASS ; \
-		java -ea -cp $(CLASSPATH) $$CLASS ; \
-		if [ $$? -ne 0 ] ; then echo "$$CLASS failed"; break; fi ; \
-	done;
-
-test-comparator:com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.class $(CLASSES) $(JSON_JAR)
-	java -cp $(CLASSPATH) com/sandklef/compliance/test/TestMostPermissiveLicenseComparator
-
-test-json:  com/sandklef/compliance/json/test/TestLicenseParser.class $(CLASSES) $(JSON_JAR)
-	@echo " --- License parsers ----"
-	java -cp $(CLASSPATH) com.sandklef.compliance.json.test.TestLicenseParser --verbose ./licenses/json/
