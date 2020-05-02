@@ -3,85 +3,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 package com.sandklef.compliance.test;
-
-import java.util.List;
-import java.util.ArrayList;
-
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.utils.*;
-import static com.sandklef.compliance.domain.License.*;
+import static com.sandklef.compliance.test.Utils.*;
 
 public class TestComponents {
 
-  private static License lgpl2 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
-  private static License gpl2 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
-  private static License apache2 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
-
-  public static void main(String[] args) {
-    /*
-             top
-              |
-           +--+---------------+
-           |                  |
-           a                  b
-           |                  |
-        ---+----       +------+--------+         
-        |      |       |               |
-        a1    a2       b1             b2
-                       |
-                       +-----+
-                       |     |
-                       b11   b12
-
-     */
-    // a1 
-    Component a1 = new Component("a1", apache2, null);
-
-    // a2 
-    Component a2 = new Component("a2", lgpl2, null);
-
-    // a    q
-    ArrayList<Component> aDeps = new ArrayList<>();
-    aDeps.add(a1);
-    aDeps.add(a2);
-    Component a = new Component("a", apache2, aDeps);
-
-    // b11
-    Component b11 = new Component("b11", apache2, null);
-
-    // b12
-    Component b12 = new Component("b12", apache2, null);
-
-    // b1
-    ArrayList<Component> b1Deps = new ArrayList<>();
-    b1Deps.add(b11);
-    b1Deps.add(b12);
-    Component b1 = new Component("b1", apache2, b1Deps);
-
-    // b2
-    Component b2 = new Component("b2", gpl2, null);
-
-    // b
-    ArrayList<Component> bDeps = new ArrayList<>();
-    bDeps.add(b1);
-    bDeps.add(b2);
-    Component b = new Component("b", lgpl2, bDeps);
-
-
-    // top
-    ArrayList<Component> deps = new ArrayList<>();
-    deps.add(a);
-    deps.add(b);
-    Component top = new Component("Top", gpl2, deps);
-
-
-    System.out.println("Short listing: " + top);
-    System.out.println("Long listing:  " + top.toStringLong());
-    System.out.println();
-    System.out.println();
-    System.out.println();
-    Log.level(Log.DEBUG);
-    boolean ret = LicenseArbiter.checkViolationSafely(top);
-    System.out.println("Violation? : " + ret);
+  public static void test() {
+    Component valid = validComponent();
+    Component invalid = invalidComponent();
+    printTestStart("TestComponents");
+    printSubTestStart("Valid component");
+    assertHelper("Verify dependency size of top", valid.dependencies().size()==2, "OK");
+    assertHelper("Verify total number of dependencies", countDependencies(valid)==8, "OK");
+    assertHelper("Verify top level name", valid.name().equals("Top"), "OK");
+    assertHelper("Verify top level license", valid.licenses().get(0).spdxTag().equals("GPL-2.0-only"), "OK");
+    printSubTestStart("Invalid component");
+    assertHelper("Verify dependency size of top", invalid.dependencies().size()==2, "OK");
+    assertHelper("Verify total number of dependencies", countDependencies(invalid)==8, "OK");
+    assertHelper("Verify top level name", invalid.name().equals("InvalidTop"), "OK");
+    assertHelper("Verify top level license", invalid.licenses().get(0).spdxTag().equals("Apache-2.0"), "OK");
   }
+
+
+
+  public static void main(String args[]) {
+    test();
+  }
+
 }
