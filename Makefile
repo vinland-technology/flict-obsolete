@@ -50,8 +50,8 @@ LIB_DIR=lib
 JSON_JAR=$(LIB_DIR)/org.json.jar
 CLI_JAR=$(LIB_DIR)/commons-cli-1.4.jar
 WINSTONE_JAR=$(LIB_DIR)/winstone.jar
-JUNIT_JAR=$(LIB_DIR)/junit-jupiter-api-5.6.2.jar
-JUNIT_V_JAR=$(LIB_DIR)/junit-vintage-engine-5.6.2.jar
+#JUNIT_JAR=$(LIB_DIR)/junit-jupiter-api-5.6.2.jar
+#JUNIT_V_JAR=$(LIB_DIR)/junit-vintage-engine-5.6.2.jar
 CLASSPATH=".:$(JSON_JAR):$(CLI_JAR):"
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 
@@ -67,11 +67,11 @@ $(CLI_JAR):
 	cd tmp; tar zxvf commons-cli-1.4-bin.tar.gz commons-cli-1.4/commons-cli-1.4.jar
 	cd tmp; mv commons-cli-1.4/commons-cli-1.4.jar ../lib
 
-$(JUNIT_JAR):
+#$(JUNIT_JAR):
 	mkdir -p lib
 	wget "https://search.maven.org/remotecontent?filepath=org/junit/jupiter/junit-jupiter-api/5.6.2/junit-jupiter-api-5.6.2.jar" -O $(JUNIT_JAR)
 
-$(JUNIT_V_JAR):
+#$(JUNIT_V_JAR):
 	mkdir -p lib
 	wget "https://search.maven.org/remotecontent?filepath=org/junit/vintage/junit-vintage-engine/5.6.2/junit-vintage-engine-5.6.2.jar" -O $(JUNIT_V_JAR)
 
@@ -83,7 +83,8 @@ $(WINSTONE_JAR):
 	mkdir -p lib
 	wget 'https://sourceforge.net/projects/winstone/files/latest/download?source=typ_redirect' -O $(LIB_DIR)/winstone.jar
 
-dload-libs: $(JSON_JAR) $(CLI_JAR) $(WINSTONE_JAR) $(JUNIT_JAR) $(JUNIT_V_JAR)
+dload-libs: $(JSON_JAR) $(CLI_JAR) $(WINSTONE_JAR)
+#$(JUNIT_JAR) $(JUNIT_V_JAR)
 
 $(CLASSES): $(JSON_JAR) $(CLI_JAR)
 
