@@ -26,6 +26,8 @@ JAVA_SOURCES=\
   com/sandklef/compliance/json/JsonLicenseParser.java \
   com/sandklef/compliance/json/JsonPolicyParser.java \
   com/sandklef/compliance/json/JsonExporter.java \
+  com/sandklef/compliance/exporter/TextExporter.java \
+  com/sandklef/compliance/exporter/TestExporterFactory.java \
   com/sandklef/compliance/json/JsonUtils.java \
   com/sandklef/compliance/json/JsonComponentParser.java \
   com/sandklef/compliance/cli/LicenseChecker.java \
@@ -55,12 +57,13 @@ WINSTONE_JAR=$(LIB_DIR)/winstone.jar
 CLASSPATH=".:$(JSON_JAR):$(CLI_JAR):"
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 
-%.class:%.java
+%.class:%.java 
 	javac  -Xdiags:verbose -cp "$(CLASSPATH)" $<
 
-all: $(CLASSES) $(JSON_JAR) 
+all: $(CLASSES) $(JSON_JAR) Makefile
 	@echo
 
+$(CLASSES): $(SOURCES) Makefile
 
 $(CLI_JAR):
 	mkdir tmp; cd tmp ; wget "https://downloads.apache.org//commons/cli/binaries/commons-cli-1.4-bin.tar.gz"
@@ -114,6 +117,6 @@ clean:
 	find -name "*~" | xargs rm -f
 	find -name "*.class" | xargs rm -f
 
-test: $(JUNIT_JAR) all $(TEST_CLASSES) 
+test: $(JUNIT_JAR) all $(TEST_CLASSES) Makefile
 	java -ea -cp $(CLASSPATH) com/sandklef/compliance/test/TestAll
 

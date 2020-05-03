@@ -6,6 +6,7 @@ package com.sandklef.compliance.cli;
 
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.exporter.ReportExporter;
+import com.sandklef.compliance.exporter.ReportExporterFactory;
 import com.sandklef.compliance.json.JsonComponentParser;
 import com.sandklef.compliance.json.JsonExporter;
 import com.sandklef.compliance.json.JsonLicenseParser;
@@ -34,10 +35,6 @@ public class LicenseChecker {
         formatter.printHelp("license-checker.sh", options );
     }
 
-    private enum OutputFormat {
-        TEXT,
-        JSON;
-    }
 
     public static void main(String[] args) throws IOException {
 
@@ -59,7 +56,7 @@ public class LicenseChecker {
         String licenseDir = "licenses/json";
         String policyFile = null;
         LicensePolicy policy = null;
-        OutputFormat format = OutputFormat.TEXT;
+        ReportExporterFactory.OutputFormat format = ReportExporterFactory.OutputFormat.TEXT;
 
         CommandLineParser parser = new DefaultParser();
 
@@ -101,7 +98,7 @@ public class LicenseChecker {
                 System.exit(0);
             }
             if( line.hasOption( "json" ) ) {
-                format = OutputFormat.JSON;
+                format = ReportExporterFactory.OutputFormat.JSON;
             }
 
         }
@@ -147,24 +144,7 @@ public class LicenseChecker {
             Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 
             Report report = LicenseArbiter.report(c, policy);
-            report(report, format);
-        }
-    }
-
-
-
-    public static void report(Report report, OutputFormat format) {
-        if (format==OutputFormat.TEXT) {
-            System.out.println("Report from analysing component: \"" + report.conclusion.component().name() + "\"\n");
-            System.out.println("violation report:  " + report.violation());
-            System.out.println("conclusion report: " + report.conclusion());
-            System.out.println("concern report: " + report.concern());
-        } else {
-            ReportExporter exporter = new JsonExporter();
-            //   System.out.println("violation report:  \n\n" + exporter.exportLicenseViolation(report.violation()));
-            //  System.out.println("conclusion report:  \n\n" + exporter.exportConclusion(report.conclusion()));
-            // System.out.println("conclusion report:  \n\n" + exporter.exportConcern(report.concern()));
-            System.out.println(exporter.exportReport(report));
+            System.out.print(ReportExporterFactory.getInstance().exporter(format).exportReport(report)+"\n");
         }
     }
 
