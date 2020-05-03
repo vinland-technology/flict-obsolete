@@ -15,6 +15,8 @@ import com.sandklef.compliance.utils.Log;
 
 import java.io.IOException;
 import java.security.Policy;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.sandklef.compliance.test.Utils.*;
 
@@ -32,6 +34,8 @@ public class TestPolicy {
     printTestStart("TestPolicy");
     test1();
     test2();
+    test3();
+    test4();
   }
 
   public static void test2() throws IOException {
@@ -148,7 +152,104 @@ public class TestPolicy {
 
     //Report invalidReport = LicenseArbiter.report(invalidComponent(), policy);
 
-  public static void main(String[] args) throws IOException {
+  public static void test3() {
+
+    printSubTestStart("Valid but concerns and conclusions");
+
+    LicensePolicy policy = new LicensePolicy();
+    policy.addGrayLicense(gpl2);
+    policy.addBlackLicense(gpl3);
+
+    Component a11 = new Component("a11", lgpl2, null);
+    Component a12 = new Component("a12", apache2, null);
+    ArrayList<Component> a1Deps = new ArrayList<>();
+    a1Deps.add(a11);
+    a1Deps.add(a12);
+    Component a1 = new Component("a1", gpl2, a1Deps);
+
+    Component a21 = new Component("a21", apache2, null);
+    List<License> a22Licenses = new ArrayList<>();
+    a22Licenses.add(gpl2);     // no concern since not chosen
+    a22Licenses.add(apache2);  // conclusion
+    Component a22 = new Component("a22", a22Licenses, null);
+    ArrayList<Component> a2Deps = new ArrayList<>();
+    a2Deps.add(a21);
+    a2Deps.add(a22);
+    Component a2 = new Component("a1", gpl2, a2Deps); // concern since gray
+
+    ArrayList<Component> aDeps = new ArrayList<>();
+    aDeps.add(a1);
+    aDeps.add(a2);
+    Component a = new Component("A", gpl2, aDeps); // concern since gray
+
+
+    // 2 concerns
+    // 0 violations
+    // 1 conclusion
+    Report report = LicenseArbiter.report(a, policy);
+
+    Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusion().licenseConclusions().size() +
+            " concerns: " + report.concern().licenseConcerns().size() +
+            " violations: " + report.violation().obligations().size() );
+    Log.d(LOG_TAG, "  result:  \nconclusions: " + report.conclusion().licenseConclusions() +
+            "\n concerns: " + report.concern().licenseConcerns() +
+            "\nviolations: " + report.violation().obligations());
+
+    assertHelper(" concern: ", report.concern().licenseConcerns().size() == 3);
+    assertHelper(" conclusion: ", report.conclusion().licenseConclusions().size() == 1);
+    assertHelper(" concern: ", report.violation().obligations().size() == 0);
+
+
+  }
+
+  public static void test4() {
+
+    printSubTestStart("Valid but concerns, conclusions and violation");
+
+    LicensePolicy policy = new LicensePolicy();
+    policy.addGrayLicense(lgpl2);
+    policy.addBlackLicense(gpl2);
+
+    Component a11 = new Component("a11", gpl2, null); // violations since black
+    Component a12 = new Component("a12", apache2, null);
+    ArrayList<Component> a1Deps = new ArrayList<>();
+    a1Deps.add(a11);
+    a1Deps.add(a12);
+    Component a1 = new Component("a1", apache2, a1Deps); // violations since gpl concluded
+
+    Component a21 = new Component("a21", apache2, null);
+    List<License> a22Licenses = new ArrayList<>();
+    a22Licenses.add(gpl2);     // no concern since not chosen
+    a22Licenses.add(apache2);  // conclusion
+    Component a22 = new Component("a22", a22Licenses, null);
+    ArrayList<Component> a2Deps = new ArrayList<>();
+    a2Deps.add(a21);
+    a2Deps.add(a22);
+    Component a2 = new Component("a1", gpl2, a2Deps); // concern since gray
+
+    ArrayList<Component> aDeps = new ArrayList<>();
+    aDeps.add(a1);
+    aDeps.add(a2);
+    Component a = new Component("A", gpl2, aDeps); // violation since black
+
+
+    // 0 concerns
+    // 3 violations
+    // 1 conclusion
+    Report report = LicenseArbiter.report(a, policy);
+//    Log.level(Log.DEBUG);
+    Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusion().licenseConclusions().size() +
+            " concerns: " + report.concern().licenseConcerns().size() +
+            " violations: " + report.violation().obligations().size() );
+    Log.d(LOG_TAG, "  result:  \nconclusions: " + report.conclusion().licenseConclusions() +
+            "\n concerns: " + report.concern().licenseConcerns() +
+            "\nviolations: " + report.violation().obligations());
+
+    assertHelper(" concern: ", report.concern().licenseConcerns().size() == 0);
+    assertHelper(" conclusion: ", report.conclusion().licenseConclusions().size() == 1);
+    assertHelper(" obligations: ", report.violation().obligations().size() == 3);
+  }
+    public static void main(String[] args) throws IOException {
     test();
   }
 }

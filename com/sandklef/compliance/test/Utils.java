@@ -18,6 +18,7 @@ public class Utils {
     public static String beforeFormat = "%-50s";
     public static License lgpl2;
     public static License gpl2;
+    public static License gpl3;
     public static License apache2;
     public static boolean useAsserts;
     private static int counter;
@@ -33,6 +34,7 @@ public class Utils {
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("licenses/json"));
             lgpl2 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
             gpl2 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
+            gpl3 = LicenseStore.getInstance().license(GPL_3_0_SPDX);
             apache2 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
         } catch (IOException e) {
             e.printStackTrace();

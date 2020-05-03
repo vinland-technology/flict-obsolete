@@ -189,6 +189,10 @@ public class LicenseArbiter {
                     Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared + " <----- choose: " + l + " for " + c.name() + "  # licenses: " + c.licenses().size());
                     c.concludedLicense(l);
 
+                    if (policy!=null && policy.grayList().contains(l)) {
+                        report.concern().addLicenseConcern(new Concern.LicenseConcern(c, l, ListType.GRAY_LIST));
+                    }
+
                     // Add conclusion if we've concluded it from a list (size>1).... otherwise it's just simply using the one and only
                     if (c.licenses().size() > 1) {
                         Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + l + "  # licenses: " + c.licenses().size());
