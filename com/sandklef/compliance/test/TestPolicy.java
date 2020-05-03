@@ -179,12 +179,13 @@ public class TestPolicy {
     aDeps.add(a2);
     Component a = new Component("A", gpl2, aDeps); // concern since gray
 
-
     // 2 concerns
     // 0 violations
     // 1 conclusion
+    Log.level(Log.DEBUG);
     Report report = LicenseArbiter.report(a, policy);
 
+    Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusion().licenseConclusions().size() +
             " concerns: " + report.concern().licenseConcerns().size() +
             " violations: " + report.violation().obligations().size() );
