@@ -85,29 +85,38 @@ public class LicenseArbiter {
 
         // second - return true if no deps
         if (c.dependencies().size() == 0) {
-            License license = c.licenses().get(0);
-            Log.d(LOG_TAG, c.name() + ": has no deps, concluding license: " + license);
-            Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " DINKEY concluded:      " + license);
-            Log.d(LOG_TAG, " DINKEY " + c.name() + " ch licenses:       no deps: " + c.licenses());
-            Log.d(LOG_TAG, " DINKEY " + c.name() + " choice:  " + license);
-            if (policy!=null && policy.blackList().contains(license)) {
-                Log.d(LOG_TAG, "Black colored license found: " + license);
-                Log.d(LOG_TAG, " concerned license for " + c.name() + " is " + license);
-                report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.BLACK_LIST));
-                Log.d(LOG_TAG, " violated license for " + c.name() + " 1");
-                report.violation().addObligationViolation(
-                        new LicenseViolation.ObligationViolation(c));
-                return;
-            } else if (policy!=null && policy.grayList().contains(license)) {
-                Log.d(LOG_TAG, "Gray colored license found: " + license);
-                Log.d(LOG_TAG, " concerned license for " + c.name() + " is " + license);
-                report.concern.addLicenseConcern(new Concern.LicenseConcern(c, license, ListType.GRAY_LIST));
+            for (License l : c.licenses()) {
+                Log.d(LOG_TAG, c.name() + ": has no deps, try concluding license: " + l);
+                Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " DINKEY try concluded:      " + l);
+                Log.d(LOG_TAG, " DINKEY " + c.name() + " ch licenses:       no deps: " + c.licenses());
+                Log.d(LOG_TAG, " DINKEY " + c.name() + " try choice:  " + l);
+                if (policy != null && policy.blackList().contains(l)) {
+                    Log.d(LOG_TAG, "Black colored license found for " + c.name()+ ", can't conlcude it: " + l + " sorry");
+                } else if (policy != null && policy.grayList().contains(l)) {
+                    Log.d(LOG_TAG, "Gray colored license found for " + c.name()+ " : " + l);
+                    Log.d(LOG_TAG, " concerned license for " + c.name() + " is " + l);
+                    report.concern.addLicenseConcern(new Concern.LicenseConcern(c, l, ListType.GRAY_LIST));
+                    // TODO: add in some kind of list of gray yet possible licenses instead of marking as concluded?
+                    c.concludedLicense(l);
+                    // ONly add conclusion report if we have concluded from more than 1 licenses
+                    if (c.licenses().size()>1) {
+                        Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + l + "  # licenses: " + c.licenses().size());
+                        report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, l));
+                    }
+                } else {
+                    Log.d(LOG_TAG, "White colored license found for " + c.name()+ ": " + l);
+                    c.concludedLicense(l);
+                    // ONly add conclusion report if we have concluded from more than 1 licenses
+                    if (c.licenses().size()>1) {
+                        Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + l + "  # licenses: " + c.licenses().size());
+                        report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, l));
+                    }
+                    return;
+                }
             }
-            c.concludedLicense(license);
-            // Add conclusion if we've concluded it from a list (size>1)
-            if (c.licenses().size()>1) {
-                Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + license);
-                report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, license));
+            Log.d(LOG_TAG, " License for " + c.name()+ ": " + c.concludedLicense() + "  ... is this ok");
+            if ( c.concludedLicense() == null ) {
+                report.violation().addObligationViolation(new LicenseViolation.ObligationViolation(c));
             }
             return;
         } else {
@@ -141,6 +150,9 @@ public class LicenseArbiter {
 
         for (License l : c.licenses()) {
             allCleared = true;
+            if (policy!=null && policy.blackList().contains(l)) {
+                continue;
+            }
             Log.d(LOG_TAG, "    can " + c.name() + " with: " + l.spdxTag() + " in components: " + c.dependencies().size());
             for (Component d : c.dependencies()) {
 
@@ -157,26 +169,56 @@ public class LicenseArbiter {
                 } catch (NoLicenseException e) {
                     Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  FAIL: " + e.getMessage());
                     allCleared = false;
-                    Log.d(LOG_TAG, " violated license for " + c.name() + " 2");
+                    Log.d(LOG_TAG, " violated license? for " + c.name() + " 2");
+/*                    Log.d(LOG_TAG, " addObligationViolation " + c.name() + " 2");
                     report.violation().addObligationViolation(
                             new LicenseViolation.ObligationViolation(c));
                     return;
+ */
                 }
             }
             Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared);
+            Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible licenses:        " + myCheckedLicenses);
+            myCheckedLicenses.sort(MostPermissiveLicenseComparator.comparator);
             if (allCleared) {
-                Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared + " <----- choose: " + l + " for " + c.name());
-                c.concludedLicense(l);
-                // Add conclusion if we've concluded it from a list (size>1)
-                if (c.licenses().size()>1) {
-                    Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + l);
-                    report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, l));
+/*                if (policy!=null && policy.blackList().contains(l)) {
+                    Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared + " <----- blacklisted: " + l + " for " + c.name());
+                } else {
+
+ */
+                    Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared + " <----- choose: " + l + " for " + c.name() + "  # licenses: " + c.licenses().size());
+                    c.concludedLicense(l);
+
+                    // Add conclusion if we've concluded it from a list (size>1).... otherwise it's just simply using the one and only
+                    if (c.licenses().size() > 1) {
+                        Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + l + "  # licenses: " + c.licenses().size());
+                        report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, l));
+                    }
+                    break;
+                //}
+            } else {
+                Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible licenses:        " + myCheckedLicenses.size());
+                if (myCheckedLicenses.size()>0) {
+                    Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible license:        " + myCheckedLicenses.get(0));
+                    c.concludedLicense(l);
+
+                    // Add conclusion if we've concluded it from a list (size>1).... otherwise it's just simply using the one and only
+                    if (c.licenses().size() > 1) {
+                        Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + l + "  # licenses: " + c.licenses().size());
+                        report.conclusion().addLicenseConclusion(new Conclusion.LicenseConclusion(c, l));
+                    }
                 }
-                break;
             }
+
         }
 
         License concludedLicense = c.concludedLicense();
-        Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " concluded license: " + concludedLicense);
+        Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " concluded license: " + concludedLicense );
+        if (c.concludedLicense()==null) {
+            Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " violated license: " + concludedLicense );
+            Log.d(LOG_TAG, " addObligationViolation " + c.name() + " 3");
+            report.violation().addObligationViolation(
+                    new LicenseViolation.ObligationViolation(c));
+        }
     }
 }

@@ -46,6 +46,14 @@ The list of words below is dervied from Wikipedia's article "Comparison of free 
 
 If you don't have
 
+# Building
+
+~~~
+./configure
+make
+make test
+~~~
+
 # Example
 
 ~~~

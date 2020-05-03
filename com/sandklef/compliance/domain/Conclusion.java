@@ -31,6 +31,11 @@ public class Conclusion {
         public License license() {
             return license;
         }
+
+        @Override
+        public String toString() {
+            return  component + "  " + license;
+        }
     }
 
     public Conclusion(Component component) {

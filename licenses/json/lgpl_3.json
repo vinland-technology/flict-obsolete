@@ -3,8 +3,6 @@
         "software":"License Policy Checker",
         "version":"0.1"
     },
-    "software":"License Policy Checker",
-    "version":"0.1",
     "license": {
         "name":"LGPLv3.0 only",
         "spdx":"LGPL-3.0",

@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sandklef.compliance.domain.License.*;
-import static com.sandklef.compliance.domain.License.LOG_TAG;
+//import static com.sandklef.compliance.domain.License.LOG_TAG;
 
 public class Utils {
     public static String beforeFormat = "%-50s";
     public static License lgpl2;
     public static License gpl2;
     public static License apache2;
+    public static boolean useAsserts;
     private static int counter;
     private static int errorCounter;
     private static int successCounter;
@@ -37,6 +38,12 @@ public class Utils {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    public static LicensePolicy blackListApachePolicy() {
+        LicensePolicy policy = new LicensePolicy();
+        policy.addBlackLicense(apache2);
+        return policy;
     }
 
     public static LicensePolicy permissiveAndWeakPolicy() {
@@ -239,6 +246,9 @@ public class Utils {
 //        println("  ====  value: " + value);
         counter++;
         print("  * Verify " + before +": ");
+        if (useAsserts ) {
+            assert(value);
+        }
         if (value) {
             successCounter++;
             println("OK");

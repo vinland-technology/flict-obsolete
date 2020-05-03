@@ -13,7 +13,7 @@
         },
         {
             "name": "Another fancy lib",
-            "license": "Apache-2.0",
+            "license": "Apache-2.0 | LGPL-2.1-only",
             "dependencies": [
                 {
                     "name": "Awseomly fancy library",

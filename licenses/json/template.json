@@ -3,8 +3,6 @@
         "software":"License Policy Checker",
         "version":"0.1"
     },
-    "software":"License Policy Checker",
-    "version":"0.1",
     "license:" {
         "name":"some license name",
         "spdx":"corresponding spdx tag for the license",
