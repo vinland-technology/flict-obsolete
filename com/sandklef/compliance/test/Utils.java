@@ -1,8 +1,6 @@
 package com.sandklef.compliance.test;
 
-import com.sandklef.compliance.domain.Component;
-import com.sandklef.compliance.domain.License;
-import com.sandklef.compliance.domain.LicensePolicy;
+import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
@@ -286,6 +284,27 @@ public class Utils {
 //      deps += c.dependencies().size();
         }
         return deps;
+    }
+
+    public static boolean checkViolation(Report report, Component c) {
+        for (LicenseViolation.ObligationViolation ov : report.violation().obligations()) {
+            if (ov.user.name().equals(c.name())) { return true; }
+        }
+        return false;
+    }
+
+    public static boolean checkConclusion(Report report, Component c) {
+        for (Conclusion.LicenseConclusion lc : report.conclusion().licenseConclusions()) {
+            if (lc.component().name().equals(c.name())) { return true; }
+        }
+        return false;
+    }
+
+    public static boolean checkConcern(Report report, Component c) {
+        for (Concern.LicenseConcern lc : report.concern().licenseConcerns()) {
+            if (lc.component().name().equals(lc.component().name())) { return true; }
+        }
+        return false;
     }
 
 }
