@@ -4,10 +4,7 @@
 
 package com.sandklef.compliance.test;
 
-import com.sandklef.compliance.domain.Component;
-import com.sandklef.compliance.domain.License;
-import com.sandklef.compliance.domain.LicensePolicy;
-import com.sandklef.compliance.domain.Report;
+import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonComponentParser;
 import com.sandklef.compliance.json.JsonPolicyParser;
 import com.sandklef.compliance.utils.LicenseArbiter;
@@ -210,6 +207,7 @@ public class TestPolicy {
     policy.addGrayLicense(lgpl2);
     policy.addBlackLicense(gpl2);
 
+    // a1
     Component a11 = new Component("a11", gpl2, null); // violations since black
     Component a12 = new Component("a12", apache2, null);
     ArrayList<Component> a1Deps = new ArrayList<>();
@@ -225,7 +223,7 @@ public class TestPolicy {
     ArrayList<Component> a2Deps = new ArrayList<>();
     a2Deps.add(a21);
     a2Deps.add(a22);
-    Component a2 = new Component("a1", gpl2, a2Deps); // concern since gray
+    Component a2 = new Component("a1", gpl2, a2Deps);
 
     ArrayList<Component> aDeps = new ArrayList<>();
     aDeps.add(a1);
@@ -238,6 +236,7 @@ public class TestPolicy {
     // 1 conclusion
     Report report = LicenseArbiter.report(a, policy);
 //    Log.level(Log.DEBUG);
+//    Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusion().licenseConclusions().size() +
             " concerns: " + report.concern().licenseConcerns().size() +
             " violations: " + report.violation().obligations().size() );
@@ -248,8 +247,18 @@ public class TestPolicy {
     assertHelper(" concern: ", report.concern().licenseConcerns().size() == 0);
     assertHelper(" conclusion: ", report.conclusion().licenseConclusions().size() == 1);
     assertHelper(" obligations: ", report.violation().obligations().size() == 3);
+
+    // a should be in the violation list
+    assertHelper(" a in the list of violations", checkViolation(report, a));
+    // a21 should have a license concluded
+    assertHelper(" a22 in the list of conclusions", checkConclusion(report, a22));
+    // a11 and a1 should be in the violation test
+    assertHelper(" a11 in the list of violations", checkViolation(report, a11));
+    assertHelper(" a1 in the list of violations", checkViolation(report, a1));
   }
-    public static void main(String[] args) throws IOException {
+
+
+  public static void main(String[] args) throws IOException {
     test();
   }
 }
