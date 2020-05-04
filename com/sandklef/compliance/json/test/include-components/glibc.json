@@ -1,0 +1,12 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "glibc",
+        "license": "LGPL-2.1-only",
+        "dependencies": [],
+        "include_dependencies": []
+    }
+}

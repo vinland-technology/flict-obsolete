@@ -1,0 +1,26 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "license": {
+        "name":"Freetype",
+        "spdx":"FTL",
+        "obligations": {
+            "linking_copylefted":"false",
+            "modification_allowed":"true",
+            "modification_copylefted":"false",
+            "sublicensing_allowed":"true",
+            "distribution_allowed":"true",
+            "distribution_copylefted":"false",
+            "disclose_source":"false",
+            "include_original":"false",
+            "state_changes":"true",
+            "include_copyright":"true",
+            "include_license":"true",
+            "include_install_instructions":"false",
+            "include_notice_file":"false",
+            "include_notice_about_license":"false"
+        }
+    }
+}

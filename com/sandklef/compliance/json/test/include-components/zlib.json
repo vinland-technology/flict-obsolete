@@ -1,0 +1,12 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "zlib",
+        "license": "Zlib",
+        "dependencies": [],
+        "include_dependencies": []
+    }
+}

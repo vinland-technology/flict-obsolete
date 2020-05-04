@@ -1,0 +1,15 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "freetype",
+        "license": "FTL | GPL-2.0-or-later",
+        "dependencies": [],
+        "include_dependencies": [
+            "zlib",
+            "glibc"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "expat",
+        "license": "MIT",
+        "dependencies": [],
+        "include_dependencies": [
+            "glibc"
+        ]
+    }
+}

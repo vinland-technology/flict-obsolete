@@ -3,32 +3,32 @@
         "software":"License Policy Checker",
         "version":"0.1"
     },
-    "name": "Maine",
-    "license": "GPL-2.0-only",
-    "dependencies": [
-        {
-            "name": "Some Fancy library",
-            "license": "LGPL-2.1-only",
-            "dependencies": []
-        },
-        {
-            "name": "Another fancy lib",
-            "license": "Apache-2.0 | LGPL-2.1-only",
-            "dependencies": [
-                {
-                    "name": "Awseomly fancy library",
-                    "license": "LGPL-2.1-only | GPL-2.0-only | Apache-2.0",
-                    "dependencies": [
-                    ]
-                },
-                {
-                    "name": "Crappy library",
-                    "license": "LGPL-2.1-only | Apache-2.0",
-                    "dependencies": []
-                }
-            ]
-        }
-        
-
-    ]
+    "component": {
+        "name": "Maine",
+        "license": "GPL-2.0-only",
+        "dependencies": [
+            {
+                "name": "Some Fancy library",
+                "license": "LGPL-2.1-only",
+                "dependencies": []
+            },
+            {
+                "name": "Another fancy lib",
+                "license": "Apache-2.0 | LGPL-2.1-only",
+                "dependencies": [
+                    {
+                        "name": "Awseomly fancy library",
+                        "license": "LGPL-2.1-only | GPL-2.0-only | Apache-2.0",
+                        "dependencies": [
+                        ]
+                    },
+                    {
+                        "name": "Crappy library",
+                        "license": "LGPL-2.1-only | Apache-2.0",
+                        "dependencies": []
+                    }
+                ]
+            }
+        ]
+    }
 }
