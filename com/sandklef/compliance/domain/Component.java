@@ -71,7 +71,13 @@ public class Component {
 
   public String toStringLong() {
     StringBuffer sb = new StringBuffer();
-    sb.append("{ " + name + " (" + concludedLicense().spdxTag() +") [" );
+    sb.append("{ ");
+    sb.append(name);
+    sb.append("(");
+    if (concludedLicense()!=null) {
+      sb.append("{ " + name + " (" + concludedLicense().spdxTag() + ") [");
+    }
+    sb.append(") [");
     for (Component c : dependencies) {
       sb.append( "  " + c.toStringLong()  );
     }
@@ -83,7 +89,7 @@ public class Component {
   public String toString() {
     StringBuffer sb = new StringBuffer();
     sb.append(name);
-    sb.append("(");
+    sb.append(" (");
     if (concludedLicense()!=null) {
       sb.append(name + " (" + concludedLicense().spdxTag() +")");
     } else {
@@ -95,13 +101,13 @@ public class Component {
         sb.append(",");
       }
     }
-    sb.append(")");
 
     sb.append("[" );
     for (Component c : dependencies) {
       sb.append( " " + c.name() );
     }
     sb.append("]" );
+    sb.append(" )");
     return sb.toString();
   }
   

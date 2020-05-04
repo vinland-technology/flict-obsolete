@@ -11,14 +11,16 @@ public class LicenseViolation {
 
     public static class ObligationViolation {
         public Component user;
+        public List<Component> violatedComponents;
 
-        public ObligationViolation(Component user) {
+        public ObligationViolation(Component user, List<Component> violations) {
             this.user = user;
+            this.violatedComponents = violations;
         }
 
         @Override
         public String toString() {
-            return " " + user.name() + " (" + user.licenses() + ")" ;
+            return " " + user.name() + " (" + user.licenses() + ") + [" + violatedComponents + "]";
         }
     }
 
@@ -56,24 +58,43 @@ public class LicenseViolation {
         for (ObligationViolation o : violatedObligations) {
             sb.append(" * ");
             sb.append(o.user.name());
-            if (o.user.concludedLicense()==null) {
-                sb.append(" has no concluded license");
-                sb.append(")\n");
+
+
+            if (o.user.concludedLicense() == null) {
+            //    sb.append(" has no concluded license or a violation detected\n");
             } else {
-                sb.append(" cant use any of the licenses in ");
-                sb.append("\n");
-                for (Component c : o.user.dependencies()) {
-                    sb.append("  * ");
-                    sb.append(c.name());
-                    sb.append(" (");
-                    for (License l : c.licenses()) {
-                        sb.append(l.spdxTag());
-                        sb.append("  | ");
+                throw new IllegalArgumentException("Damn it .... we should not be here. Can't be a violation and still have a concluded license");
+
+            }
+
+/*
+            if (o.violatedComponents==null) {
+                    sb.append(" cant use any of the licenses in ");
+                    sb.append("\n");
+                    for (Component c : o.user.dependencies()) {
+                        sb.append("  * ");
+                        sb.append(c.name());
+                        sb.append(" (");
+                        for (License l : c.licenses()) {
+                            sb.append(l.spdxTag());
+                            sb.append("  | ");
+                        }
+                        sb.append(")\n");
                     }
-                    sb.append(")\n");
+                } else {
+                */
+            if (o.violatedComponents.size() > 0) {
+                sb.append(" cant use any of the licenses in:\n");
+                for (Component ov : o.violatedComponents) {
+                    sb.append("   * ");
+                    sb.append(ov);
+                    sb.append("\n");
                 }
+            } else {
+                throw new IllegalArgumentException("Damn it .... we should not be here. Can't be a violation with no violations?");
             }
         }
+
         return sb.toString();
     }
 

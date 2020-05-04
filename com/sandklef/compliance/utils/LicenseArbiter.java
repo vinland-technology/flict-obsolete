@@ -19,6 +19,8 @@ public class LicenseArbiter {
     }
 
     public static boolean aUsesB(Component c, Report report, License user, License usee) throws LicenseViolationException, NoLicenseException {
+        System.out.println("****: " + c.name() + " " + usee);
+
         if (usee == null) {
             Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...)  ===>  false");
 /*            Log.d(LOG_TAG, " violated license for " + c.name() + " 3");
@@ -35,7 +37,23 @@ public class LicenseArbiter {
             return true;
         }
 
+        // TODO: the below is just a try
+        //    apache can use gplv2 - if we license the software under gplv2
+    /*    if (user.spdxTag().equals(License.APACHE_2_0_SPDX) &&
+                usee.spdxTag().equals(License.GPL_2_0_SPDX)) {
+           // System.out.println("Apache is allowed to use GPL for the moment");
+         //   return false;
+        }
+*/
         // Below it will be assumed that the licenses differ
+
+        System.out.println(" **************************** : " + c.name() + " " + usee.spdxTag() + "  => " + user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() + "????");
+        // If we can sublicense (e.g A(MIT) using B(GPLv2) turns A into GPLv2)
+        if (user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() ==
+                ObligationState.TRUE) {
+                System.out.println("Liverpool: " + c.name() + " " + usee.spdxTag() + "  => " + user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() + " DOING IT");
+            return true;
+        }
 
         // if not copylefted - ok to use
         if (!usee.isCopyleft()) {
@@ -45,8 +63,9 @@ public class LicenseArbiter {
 
         // If usee is copylefted AND user NOT copylefted  => violation
         if (usee.isCopyleft() && (!user.isCopyleft())) {
+            System.out.println(" UH UH UH UH: " + c.name() + "  " + user + " using " + usee);
             Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : possible violation detected");
-            throw new LicenseViolationException(user.spdxTag() + " can not sublicense " + usee.spdxTag(), user, usee);
+            throw new LicenseViolationException(user.spdxTag() + " can not link/use " + usee.spdxTag(), user, usee);
         }
 
         // TODO: If usee is copylefted AND user copylefted  => check gpl etc
@@ -58,6 +77,7 @@ public class LicenseArbiter {
 
     public static boolean canAUseB(Component c, Report report, License user, License usee) {
         try {
+            System.out.println("*** 1" + c + " " + user + " " + usee);
             return aUsesB(c, report, user, usee);
         } catch (LicenseViolationException | NoLicenseException e) {
             Log.d(LOG_TAG, "Exception");
@@ -111,7 +131,7 @@ public class LicenseArbiter {
             }
             Log.d(LOG_TAG, " License for " + c.name() + ": " + c.concludedLicense() + "  ... is this ok");
             if (c.concludedLicense() == null) {
-                report.violation().addObligationViolation(new LicenseViolation.ObligationViolation(c));
+                report.violation().addObligationViolation(new LicenseViolation.ObligationViolation(c, null));
             }
             return;
         } else {
@@ -123,42 +143,58 @@ public class LicenseArbiter {
         }
 
         // For each of the current component's licenses
-        // -- for each of the depdendency component's concluded license
+        // -- for each of the dependency component's concluded license
         // ------ check if ok
-        boolean allCleared = true;
+     //   boolean allCleared = true;
 
-        // List for all licenses that can be used - we will choose which later on
+        // List for all licenses that can be used - we will choose which one later on
         List<License> myCheckedLicenses = new ArrayList<>();
-
+        List<Component> violatedComponents = new ArrayList<>();
         for (License l : c.licenses()) {
-            allCleared = true;
+
+            boolean violationFound = false;
+//            allCleared = false;
             if (policy != null && policy.blackList().contains(l)) {
                 continue;
             }
             Log.d(LOG_TAG, "    can " + c.name() + " with: " + l.spdxTag() + " in components: " + c.dependencies().size());
             for (Component d : c.dependencies()) {
+                Log.d(LOG_TAG, c.name() + " myCheckedLicenses: " + myCheckedLicenses + " HESA");
 
                 Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")");
                 try {
+                    System.out.println("*** 1" + c + " " + l + " " + d + "   concluded: " + d.concludedLicense());
                     aUsesB(d, report, l, d.concludedLicense());
                     // So, the license l can be used when using d
-                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  OK choice");
+                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  OK choice  HESA");
                     myCheckedLicenses.add(l);
+                    violatedComponents.remove(d);
                     Log.d(LOG_TAG, "    myCheckedLicenses for " + c.name() + "  added " + l.spdxTag() + "  to " + myCheckedLicenses);
                 } catch (LicenseViolationException e) {
-                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  FAIL: " + e.getMessage());
-                    allCleared = false;
+                    violationFound = true;
+                    violatedComponents.add(d);
+                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?  :  FAIL: " + e.getMessage() + "  HESA");
+                 //   allCleared = false;
                 } catch (NoLicenseException e) {
-                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  FAIL: " + e.getMessage());
-                    allCleared = false;
+                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?? :  FAIL: " + e.getMessage());
+                  //  allCleared = false;
                     Log.d(LOG_TAG, " violated license? for " + c.name() + " 2");
+                    violatedComponents.add(d);
+                    violationFound = true;
                 }
+                Log.d(LOG_TAG, c.name() + " myCheckedLicenses: " + myCheckedLicenses + " HESA");
             }
-            Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared);
-            Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible licenses:        " + myCheckedLicenses);
+//            Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared);
+            Log.d(LOG_TAG, " DINKEY 3 " + c.name() + "  possible licenses:        " + myCheckedLicenses + " HESA");
+            if (violationFound) {
+                Log.d(LOG_TAG, " DINKEY 3 violation found, removing: " + l + " from list");
+                myCheckedLicenses.remove(l);
+            }
+
             myCheckedLicenses.sort(MostPermissiveLicenseComparator.comparator);
-            if (allCleared) {
-                Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared + " <----- choose: " + l + " for " + c.name() + "  # licenses: " + c.licenses().size());
+            if (myCheckedLicenses.size()>0) {
+//                Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared + " <----- choose: " + l + " for " + c.name() + "  # licenses: " + c.licenses().size());
+                Log.d(LOG_TAG, " DINKEY 2 " + c.name() + "l: " + l + " for " + c.name() + "    # licenses: " + myCheckedLicenses);
                 addConcluded(report, l, c);
 
                 if (policy != null && policy.grayList().contains(l)) {
@@ -168,14 +204,18 @@ public class LicenseArbiter {
                 break;
                 //}
             } else {
-                Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible licenses:        " + myCheckedLicenses.size());
-                if (myCheckedLicenses.size() > 0) {
-                    Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible license:        " + myCheckedLicenses.get(0));
-                    addConcluded(report, l, c);
-                }
+//                Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible licenses:        " + myCheckedLicenses.size() + " HESA " + myCheckedLicenses.size() + " " + myCheckedLicenses);
+                Log.d(LOG_TAG, " DINKEY 3 " + c.name() + "  possible licenses:  " + myCheckedLicenses.size() + " HESA " + myCheckedLicenses.size() + " " + myCheckedLicenses);
+              //  if (myCheckedLicenses.size() > 0) {
+//                    Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible license:        " + myCheckedLicenses.get(0));
+                //    Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " possible license:        " + myCheckedLicenses.get(0));
+                  //  addConcluded(report, l, c);
+                //}
             }
 
         }
+        Log.d(LOG_TAG, c.name() + " myCheckedLicenses:  " + myCheckedLicenses + " HESA END");
+        Log.d(LOG_TAG, c.name() + " violatedComponents: " + violatedComponents + " HESA END");
 
         License concludedLicense = c.concludedLicense();
         Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " concluded license: " + concludedLicense);
@@ -183,7 +223,7 @@ public class LicenseArbiter {
             Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " violated license: " + concludedLicense);
             Log.d(LOG_TAG, " addObligationViolation " + c.name() + " 3");
             report.violation().addObligationViolation(
-                    new LicenseViolation.ObligationViolation(c));
+                    new LicenseViolation.ObligationViolation(c, violatedComponents));
         }
     }
 }

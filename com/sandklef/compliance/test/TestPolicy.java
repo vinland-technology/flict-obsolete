@@ -49,6 +49,7 @@ public class TestPolicy {
 
 //    Log.level(Log.DEBUG);
   //  Log.filterTag(null);
+    Log.d(LOG_TAG, " component: " + c.toStringLong());
     Log.d(LOG_TAG, " top " + validReport.concern().component().name());
     Log.d(LOG_TAG, " concerns " + validReport.concern().licenseConcerns().size());
     Log.d(LOG_TAG, " concerns " + validReport.concern().licenseConcerns());
@@ -58,7 +59,6 @@ public class TestPolicy {
     Log.d(LOG_TAG, " violations " + validReport.violation().obligations());
 
     //Log.level(Log.ERROR);
-
     assertHelper("4 conclusions made", validReport.conclusion().licenseConclusions().size()==3);
     assertHelper("0 violations made", validReport.violation.obligations().size()==0);
     assertHelper("0 concerns made", validReport.concern().licenseConcerns().size()==0);
@@ -130,7 +130,7 @@ public class TestPolicy {
         policy.addBlackLicense(apache2);
 */
     policy = Utils.copyleftAndWeakPolicy();
-  //  Log.level(Log.DEBUG);
+  // Log.level(Log.DEBUG);
     validReport = LicenseArbiter.report(validComponent(), policy);
     Log.d(LOG_TAG, "  result sizes: " + validReport.conclusion().licenseConclusions().size() +
             " " + validReport.concern().licenseConcerns().size() +
@@ -141,7 +141,7 @@ public class TestPolicy {
 
     assertHelper(" concern: ", validReport.concern().licenseConcerns().size() == 1);
     assertHelper("conclusion", validReport.conclusion().licenseConclusions().size() == 0);
-    assertHelper("violations: ", validReport.violation().obligations().size() == 5);
+    assertHelper("violations: ", validReport.violation().obligations().size() == 7);
 
 
 //    System.out.println("violations: " + validReport.violation().obligations());
@@ -182,10 +182,10 @@ public class TestPolicy {
     // 2 concerns
     // 0 violations
     // 1 conclusion
-    Log.level(Log.DEBUG);
+ //   Log.level(Log.DEBUG);
     Report report = LicenseArbiter.report(a, policy);
 
-    Log.level(Log.DEBUG);
+   // Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusion().licenseConclusions().size() +
             " concerns: " + report.concern().licenseConcerns().size() +
             " violations: " + report.violation().obligations().size() );
@@ -209,12 +209,12 @@ public class TestPolicy {
     policy.addBlackLicense(gpl2);
 
     // a1
-    Component a11 = new Component("a11", gpl2, null); // violations since black
+    Component a11 = new Component("a11", gpl2, null); // violations since black +1
     Component a12 = new Component("a12", apache2, null);
     ArrayList<Component> a1Deps = new ArrayList<>();
     a1Deps.add(a11);
     a1Deps.add(a12);
-    Component a1 = new Component("a1", apache2, a1Deps); // violations since gpl concluded
+    Component a1 = new Component("a1", apache2, a1Deps); // violations since gpl not used +1
 
     Component a21 = new Component("a21", apache2, null);
     List<License> a22Licenses = new ArrayList<>();
@@ -224,12 +224,12 @@ public class TestPolicy {
     ArrayList<Component> a2Deps = new ArrayList<>();
     a2Deps.add(a21);
     a2Deps.add(a22);
-    Component a2 = new Component("a1", gpl2, a2Deps);
+    Component a2 = new Component("a2", gpl2, a2Deps); // violation since black +1
 
     ArrayList<Component> aDeps = new ArrayList<>();
     aDeps.add(a1);
     aDeps.add(a2);
-    Component a = new Component("A", gpl2, aDeps); // violation since black
+    Component a = new Component("A", gpl2, aDeps); // violation since black +1
 
 
     // 0 concerns
@@ -247,7 +247,7 @@ public class TestPolicy {
 
     assertHelper(" concern: ", report.concern().licenseConcerns().size() == 0);
     assertHelper(" conclusion: ", report.conclusion().licenseConclusions().size() == 1);
-    assertHelper(" obligations: ", report.violation().obligations().size() == 3);
+    assertHelper(" obligations: ", report.violation().obligations().size() == 4);
 
     // a should be in the violation list
     assertHelper(" a in the list of violations", checkViolation(report, a));
