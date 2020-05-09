@@ -10,8 +10,6 @@ CLASSPATH="$INSTALL_DIR:$INSTALL_DIR/lib/org.json.jar:$INSTALL_DIR/lib/commons-c
 DEFAULT_ARGS=" --license-dir licenses/json "
 CLASS="com.sandklef.compliance.cli.LicenseChecker"
 
-
-
 # basic verification of json files
 JSON_FILES=$(echo $* | tr ' ' '\n' | grep json )
 for FILE in $JSON_FILES
@@ -27,4 +25,38 @@ do
     fi
 done
 
-java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $*
+ARGS=
+while [ "$1" != "" ]
+do
+    if [ "$1" = "--pdf" ]
+    then
+        PDF_FILE=$2
+        ARGS="$ARGS --markdown"
+        TMP_MD=tmp.md
+        rm $TMP_MD
+        shift
+    else
+        ARGS="$ARGS $1"
+    fi
+    shift
+done #<<<"$HENRIK"
+
+
+run()
+{
+    java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS
+}
+
+
+
+#echo THESE: $ARGS
+if [ "$TMP_MD" != "" ]
+then
+    run > $TMP_MD
+    pandoc $TMP_MD -o tmp.pdf
+    compliance-tool.sh libcairo2
+    pdfunite tmp.pdf libcairo2.pdf report.pdf
+    evince report.pdf
+else
+    run
+fi
