@@ -23,6 +23,9 @@ public class Report {
         policyViolations = new ArrayList<>();
     }
 
+    //
+    // add
+    //
     public void addLicenseObligationViolation(LicenseObligationViolation violation) {
         violations.add(violation);
     }
@@ -39,10 +42,9 @@ public class Report {
         policyViolations.add(violations);
     }
 
-    public Component component() {
-        return component;
-    }
-
+    //
+    // get
+    //
     public List<PolicyConcern> concerns() {
         return concerns;
     }
@@ -59,6 +61,12 @@ public class Report {
         return violations;
     }
 
+    public Component component() {
+        return component;
+    }
+
+
+    // has
     public boolean licenseViolation() {
         return violations.size()>0;
     }
