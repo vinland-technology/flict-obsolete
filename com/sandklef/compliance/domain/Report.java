@@ -4,32 +4,71 @@
 
 package com.sandklef.compliance.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Report {
 
-    public LicenseViolation violation;
-    public Conclusion conclusion;
-    public Concern concern;
+    private Component component;
+    public List<LicenseObligationViolation> violations;
+    public List<LicenseConclusion> conclusions;
+    private List<PolicyConcern> concerns;
+    private List<PolicyViolation> policyViolations;
 
-    public Report(Component c) {
-        violation = new LicenseViolation(c);
-        conclusion = new Conclusion(c);
-        this.concern = new Concern(c);
+    public Report(Component component) {
+        this.component = component;
+        violations = new ArrayList<>();
+        conclusions = new ArrayList<>();
+        concerns = new ArrayList<>();
+        policyViolations = new ArrayList<>();
     }
 
-    public Concern concern() {
-        return concern;
+    public void addLicenseObligationViolation(LicenseObligationViolation violation) {
+        violations.add(violation);
     }
 
-    public Conclusion conclusion() {
-        return conclusion;
+    public void addLicenseConcern(PolicyConcern concern) {
+        concerns.add(concern);
     }
 
-    public LicenseViolation violation() {
-        return violation;
+    public void addLicenseConclusion(LicenseConclusion conclusion) {
+        conclusions.add(conclusion);
     }
 
-    public boolean hasViolation() {
-        return violation.obligations().size()>0;
+    public void addPolicyViolation(PolicyViolation violations) {
+        policyViolations.add(violations);
+    }
+
+    public Component component() {
+        return component;
+    }
+
+    public List<PolicyConcern> concerns() {
+        return concerns;
+    }
+
+    public List<PolicyViolation> policyViolations() {
+        return policyViolations;
+    }
+
+    public List<LicenseConclusion> conclusions() {
+        return conclusions;
+    }
+
+    public List<LicenseObligationViolation> violations() {
+        return violations;
+    }
+
+    public boolean licenseViolation() {
+        return violations.size()>0;
+    }
+
+    public boolean policyViolation() {
+        return policyViolations.size()>0;
+    }
+
+    public boolean hasViolations() {
+         return policyViolation() || licenseViolation();
     }
 
 
