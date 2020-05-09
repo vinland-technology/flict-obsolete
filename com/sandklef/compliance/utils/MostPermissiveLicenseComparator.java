@@ -11,7 +11,9 @@ import com.sandklef.compliance.domain.*;
 public class MostPermissiveLicenseComparator implements Comparator<License> {
 
   public int compare(License first, License second) {
-   /* System.err.println("WARNING: Dummy implementation of most permissive compare(" +
+//    System.err.println("WARNING: Dummy implementation of most permissive compare(" +
+  //          first + ", " + second);
+  /* System.err.println("WARNING: Dummy implementation of most permissive compare(" +
             first.spdxTag() +", " + second.spdxTag() +")  [" +
             first.isCopyleft() +", " + second.isCopyleft() +"] [" +
             first.spdxTag().compareTo(second.spdxTag()) + " == 1]");

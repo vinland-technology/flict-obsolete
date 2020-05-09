@@ -1,10 +1,11 @@
 package com.sandklef.compliance.utils;
 
-import com.sandklef.compliance.domain.Concern;
-import com.sandklef.compliance.domain.Conclusion;
-import com.sandklef.compliance.domain.LicenseViolation;
-import com.sandklef.compliance.domain.Report;
+import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.exporter.ReportExporter;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.List;
 
 public class TextComponentExporter implements ReportExporter {
 
@@ -17,24 +18,52 @@ public class TextComponentExporter implements ReportExporter {
 
     @Override
     public String exportReport(Report report) {
-        return "Report from analysing component: \"" + report.conclusion.component().name() + "\"\n" +
-                exportLicenseViolation(report.violation()) +
-                exportConcern(report.concern()) +
-                exportConclusion(report.conclusion());
+        return "Report from analysing component: \"" + report.component().name() + "\"\n" +
+                exportLicenseViolations(report.violations()) + "\n" +
+                exportPolicyViolations(report.policyViolations()) + "\n" +
+                exportConcerns(report.concerns()) + "\n" +
+                exportConclusions(report.conclusions()) + "\n";
     }
 
     @Override
-    public String exportLicenseViolation(LicenseViolation violation) {
-        return "violation report:  " + violation;
+    public String exportLicenseViolations(List<LicenseObligationViolation> violations) {
+        if (violations.size()==0) {
+            return "Violations:  none" ;
+        } else {
+            return "Violations:  " + violations;
+        }
+    }
+
+
+    @Override
+    public String exportConclusions(List<LicenseConclusion> conclusions) {
+        if (conclusions.size()==0) {
+            return "Conclusions:  none" ;
+        } else {
+            return "Conclusions:  " + conclusions;
+        }
     }
 
     @Override
-    public String exportConclusion(Conclusion conclusion) {
-        return "conclusion report: " + conclusion;
+    public String exportConcerns(List<PolicyConcern> concerns) {
+        if (concerns.size()==0) {
+            return "Concerns:  none";
+        } else {
+            return "Concerns: " + concerns;
+        }
     }
 
     @Override
-    public String exportConcern(Concern concern) {
-        return "concern report: " + concern;
+    public String exportPolicyViolations(List<PolicyViolation> violations) {
+        if (violations.size()==0) {
+            return "Policy violations:  none";
+        } else {
+            return "Policy violations:  " + violations;
+        }
+    }
+
+    @Override
+    public String exportComponent(Component c) {
+        return null;
     }
 }
