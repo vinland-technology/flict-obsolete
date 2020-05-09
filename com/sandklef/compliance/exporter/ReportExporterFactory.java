@@ -4,11 +4,6 @@
 
 package com.sandklef.compliance.exporter;
 
-import com.sandklef.compliance.domain.Concern;
-import com.sandklef.compliance.domain.Conclusion;
-import com.sandklef.compliance.domain.LicenseViolation;
-import com.sandklef.compliance.domain.Report;
-import com.sandklef.compliance.json.JsonExporter;
 import com.sandklef.compliance.utils.TextComponentExporter;
 
 public class ReportExporterFactory {
@@ -16,7 +11,8 @@ public class ReportExporterFactory {
 
     public static enum OutputFormat {
         TEXT,
-        JSON;
+        JSON,
+        MARKDOWN;
     }
 
 
@@ -32,6 +28,8 @@ public class ReportExporterFactory {
     public ReportExporter exporter(OutputFormat format) {
         if (format==OutputFormat.JSON) {
             return new JsonExporter();
+        } else if (format==OutputFormat.MARKDOWN) {
+            return new MDExporter();
         }
         // default to TEXT (for now)
         return new TextComponentExporter();
