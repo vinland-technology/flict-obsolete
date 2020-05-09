@@ -13,12 +13,33 @@ public class Component {
 
   public static String LOG_TAG = Component.class.getSimpleName();
 
-  // name, enough for now
   private String name;
   private License concludedLicense;
   private List<License> licenses;
+
+  private boolean dualLicensed = true;
   private List<Component> dependencies;
-  
+
+
+
+  public boolean dualLicensed() {
+    if (singleLicensed()) {
+      return false;
+    }
+    return dualLicensed;
+  }
+
+  public boolean manyLicensed() {
+    if (singleLicensed()) {
+      return false;
+    }
+    return !dualLicensed;
+  }
+
+  public boolean singleLicensed() {
+    return licenses.size()<2;
+  }
+
   public Component(String name, List<License> licenses, List<Component> dependencies) {
     this.name = name;
     this.licenses = licenses;
@@ -31,6 +52,11 @@ public class Component {
     }
     */
     Log.d(LOG_TAG, "new Component: " + name + "    license: " + concludedLicense()+ "    licenses: " + licenses());
+  }
+
+  public Component(String name, List<License> licenses, List<Component> dependencies, boolean dualLicensed) {
+    this(name, licenses, dependencies);
+    this.dualLicensed = dualLicensed;
   }
 
   public Component(String name, License license, List<Component> dependencies) {
@@ -77,6 +103,7 @@ public class Component {
     if (concludedLicense()!=null) {
       sb.append("{ " + name + " (" + concludedLicense().spdxTag() + ") [");
     }
+    sb.append(dualLicensed?" Dual licensed ":" Many licenses ");
     sb.append(") [");
     for (Component c : dependencies) {
       sb.append( "  " + c.toStringLong()  );
@@ -91,18 +118,21 @@ public class Component {
     sb.append(name);
     sb.append(" (");
     if (concludedLicense()!=null) {
-      sb.append(name + " (" + concludedLicense().spdxTag() +")");
-    } else {
-      Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses().size());
-      Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses());
+      sb.append(concludedLicense().spdxTag());
+    }
+    Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses().size());
+    Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses());
+    if (licenses().size()>1 && concludedLicense()==null) {
+      sb.append(" (");
       for (License l : licenses()) {
         Log.d(LOG_TAG, "   toString c:" + name + "   license: " + l);
         sb.append(l.spdxTag());
         sb.append(",");
       }
+      sb.append(") ");
     }
 
-    sb.append("[" );
+    sb.append("   [" );
     for (Component c : dependencies) {
       sb.append( " " + c.name() );
     }
