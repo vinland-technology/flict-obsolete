@@ -7,7 +7,7 @@ JAVA_SOURCES=\
   com/sandklef/compliance/domain/ListType.java \
   com/sandklef/compliance/domain/Component.java \
   com/sandklef/compliance/domain/NoLicenseException.java \
-  com/sandklef/compliance/domain/Conclusion.java \
+  com/sandklef/compliance/domain/LicenseConclusion.java \
   com/sandklef/compliance/domain/LicenseObligation.java \
   com/sandklef/compliance/domain/Report.java \
   com/sandklef/compliance/domain/LicenseViolationException.java \
@@ -17,6 +17,8 @@ JAVA_SOURCES=\
   com/sandklef/compliance/domain/LicenseViolation.java \
   com/sandklef/compliance/domain/ObligationState.java \
   com/sandklef/compliance/domain/LicenseType.java \
+  com/sandklef/compliance/domain/PolicyConcern.java \
+  com/sandklef/compliance/domain/PolicyViolation.java \
   com/sandklef/compliance/utils/LeastPermissiveLicenseComparator.java \
   com/sandklef/compliance/utils/MostPermissiveLicenseComparator.java \
   com/sandklef/compliance/utils/Log.java \
@@ -25,14 +27,18 @@ JAVA_SOURCES=\
   com/sandklef/compliance/utils/LicenseArbiter.java \
   com/sandklef/compliance/json/JsonLicenseParser.java \
   com/sandklef/compliance/json/JsonPolicyParser.java \
-  com/sandklef/compliance/json/JsonExporter.java \
   com/sandklef/compliance/exporter/TextExporter.java \
   com/sandklef/compliance/exporter/TestExporterFactory.java \
   com/sandklef/compliance/json/JsonUtils.java \
   com/sandklef/compliance/json/JsonComponentParser.java \
   com/sandklef/compliance/cli/LicenseChecker.java \
   com/sandklef/compliance/exporter/ReportExporter.java \
+  com/sandklef/compliance/exporter/ReportExporterFactory.java \
   com/sandklef/compliance/exporter/TestJsonComponentParser.java \
+  com/sandklef/compliance/exporter/JsonExporter.java \
+  com/sandklef/compliance/exporter/MDExporter.java \
+  com/sandklef/compliance/exporter/TextComponentExporter.java \
+
 
 TEST_SOURCES=\
   com/sandklef/compliance/test/TestAll.java\
@@ -54,7 +60,7 @@ CLI_JAR=$(LIB_DIR)/commons-cli-1.4.jar
 WINSTONE_JAR=$(LIB_DIR)/winstone.jar
 #JUNIT_JAR=$(LIB_DIR)/junit-jupiter-api-5.6.2.jar
 #JUNIT_V_JAR=$(LIB_DIR)/junit-vintage-engine-5.6.2.jar
-CLASSPATH=".:$(JSON_JAR):$(CLI_JAR):"
+CLASSPATH=.:$(JSON_JAR):$(CLI_JAR):
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 
 %.class:%.java 
