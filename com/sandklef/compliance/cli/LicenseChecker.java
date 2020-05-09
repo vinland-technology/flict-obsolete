@@ -5,18 +5,14 @@
 package com.sandklef.compliance.cli;
 
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.exporter.ReportExporter;
 import com.sandklef.compliance.exporter.ReportExporterFactory;
 import com.sandklef.compliance.json.JsonComponentParser;
-import com.sandklef.compliance.json.JsonExporter;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.json.JsonPolicyParser;
 import com.sandklef.compliance.utils.LicenseArbiter;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
-import com.sandklef.compliance.utils.Version;
 import org.apache.commons.cli.*;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -52,6 +48,8 @@ public class LicenseChecker {
         if (values.get("policyFile")!=null) {
             JsonPolicyParser jp = new JsonPolicyParser();
             values.put("policy", jp.readLicensePolicy((String) values.get("policyFile")));
+            System.out.println("   policy file: " + values.get("policyFile"));
+
         }
 
         // Take action
@@ -76,12 +74,13 @@ public class LicenseChecker {
         options.addOption(new Option("dc", "debug-class", true, "Turn on debug for class only."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
         options.addOption(new Option("l", "license-dir", true, "Directory with license files."));
-        options.addOption(new Option("p", "policy", true, "Path to policy file."));
+        options.addOption(new Option("p", "policy-file", true, "Path to policy file."));
         options.addOption(new Option("pl", "print-licenses", false, "Output list of licenses as found in the files in the provided license directory"));
         options.addOption(new Option("c", "component", true, "Component file to check"));
         options.addOption(new Option("pc", "print-component", false, "Print component"));
         options.addOption(new Option("h", "help", false, "Print help text"));
         options.addOption(new Option("j", "json", false, "Output result in JSON format"));
+        options.addOption(new Option("md", "markdown", false, "Output result in Markdown format"));
         return options;
     }
 
@@ -131,6 +130,7 @@ public class LicenseChecker {
             }
             if( line.hasOption( "policy-file" ) ) {
                 values.put("policyFile", line.getOptionValue("policy-file"));
+                System.out.println("  POLICY: " + line.getOptionValue("policyFile"));
                 Log.d(LOG_TAG, " Policy file: " + values.get("policyFile"));
             }
             if( line.hasOption( "print-license" ) ) {
@@ -145,6 +145,12 @@ public class LicenseChecker {
             }
             if( line.hasOption( "json" ) ) {
                 values.put("format", ReportExporterFactory.OutputFormat.JSON);
+            }
+            if( line.hasOption( "markdown" ) ) {
+                values.put("format", ReportExporterFactory.OutputFormat.MARKDOWN);
+            }
+            if( line.hasOption( "pdf" ) ) {
+                System.out.println("Ignoring pdf argument");
             }
 
         }
@@ -178,7 +184,7 @@ public class LicenseChecker {
             System.exit(1);
         }
 
-        System.out.println("json: " + values.get("format"));
+     //   System.out.println("json: " + values.get("format"));
 
         // Read component
         Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
