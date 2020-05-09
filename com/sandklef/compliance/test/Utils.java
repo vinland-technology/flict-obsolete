@@ -287,22 +287,22 @@ public class Utils {
     }
 
     public static boolean checkViolation(Report report, Component c) {
-        for (LicenseViolation.ObligationViolation ov : report.violation().obligations()) {
-            if (ov.user.name().equals(c.name())) { return true; }
+        for (LicenseObligationViolation ov : report.violations()) {
+            if (ov.user().name().equals(c.name())) { return true; }
         }
         return false;
     }
 
     public static boolean checkConclusion(Report report, Component c) {
-        for (Conclusion.LicenseConclusion lc : report.conclusion().licenseConclusions()) {
+        for (LicenseConclusion lc : report.conclusions()) {
             if (lc.component().name().equals(c.name())) { return true; }
         }
         return false;
     }
 
     public static boolean checkConcern(Report report, Component c) {
-        for (Concern.LicenseConcern lc : report.concern().licenseConcerns()) {
-            if (lc.component().name().equals(lc.component().name())) { return true; }
+        for (PolicyConcern pc : report.concerns()) {
+            if (pc.component().name().equals(pc.component().name())) { return true; }
         }
         return false;
     }

@@ -20,10 +20,10 @@ public class TestDualLicenses {
     Log.filterTag(LOG_TAG);
   */
     Report validReport = LicenseArbiter.report(dualLicensedComponent(), null);
-    Log.d(LOG_TAG,"   nr: "+ validReport.conclusion().licenseConclusions().size());
-    Log.d(LOG_TAG,"   nr: "+ validReport.conclusion().licenseConclusions());
+    Log.d(LOG_TAG,"   nr: "+ validReport.conclusions().size());
+    Log.d(LOG_TAG,"   nr: "+ validReport.conclusions());
     assertHelper("concluded license on dual licensed component",
-            validReport.conclusion().licenseConclusions().size()==1);
+            validReport.conclusions().size()==1);
     //Log.level(Log.ERROR);
   }
 
