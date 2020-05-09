@@ -13,7 +13,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -33,6 +36,25 @@ public class JsonComponentParser {
   public static final String LOG_TAG = JsonComponentParser.class.getSimpleName();
 
   public Component readComponent(String fileName) throws IOException{
+    if (fileName.equals("-")) {
+      BufferedReader reader =
+              new BufferedReader(new InputStreamReader(System.in));
+      StringBuilder sb = new StringBuilder();
+      try {
+        while(true) {
+          String line = reader.readLine();
+          if (line==null) {
+            break;
+          }
+          sb.append(line);
+//          System.out.println(" sb: " + sb.toString());
+        }
+      } catch (IOException e) {
+        System.out.println(e);
+        System.exit(1);
+      }
+      return readComponent(new JSONObject(sb.toString()));
+    }
     return readComponent(new JSONObject(new String(Files.readAllBytes(Paths.get(fileName)))));
   }
 
@@ -62,9 +84,9 @@ public class JsonComponentParser {
       for (int i = 0; i < includeJson.length(); i++) {
         String componentName = includeJson.getString(i);
         Component component = readComponent("com/sandklef/compliance/json/test/include-components/" + componentName + ".json");
-        System.out.println("Reading component from: " + "com/sandklef/compliance/json/test/include-components/" + componentName + ".json" +  "   " + component);
-        dependencies.add(component);
-      }
+      //    System.out.println("Reading component from: " + "com/sandklef/compliance/json/test/include-components/" + componentName + ".json" +  "   " + component);
+          dependencies.add(component);
+        }
     } catch (JSONException e) {
       Log.d(LOG_TAG,"Uh oh.... " + e);
     }
@@ -73,25 +95,12 @@ public class JsonComponentParser {
     String licenseName = readJsonString(jo, LICENSE_TAG, "");
 
     Log.d(LOG_TAG,"LicenseName: " + licenseName);
+    boolean dualLicensed = licenseName.contains("|");
+    if (licenseName.contains("|") ||
+            licenseName.contains("&")) {
 
-    String delimiter = "|";
-
-    if (licenseName.contains(delimiter)) {
-      List<License> licenses = new ArrayList<>();
-      Log.d(LOG_TAG,name + " LicenseName: " + licenseName + " contains PIPE");
-
-      List<String> licenseList = Arrays.asList(Pattern.compile("\\|").split(licenseName));
-
-      //String[] licenseList = licenseName.split(Pattern.quote("|"));
-      //      String[] licenseList = licenseName.split(Pattern.quote("|"));
-      Log.d(LOG_TAG," list: " + licenseList);
-      for(String l : licenseList){
-        Log.d(LOG_TAG," * \"" + l.trim() + "\"");
-        licenses.add(LicenseStore.getInstance().license(l.trim()));
-      }
-      Log.d(LOG_TAG,name + " will get licenses: " + licenses);
-  //    System.out.println("Licenses: " + licenses);
-      return new Component(name, licenses, dependencies);
+      List<License> licenses = licensesToList(licenseName);
+      return new Component(name, licenses, dependencies, dualLicensed);
     } else {
       Log.d(LOG_TAG,name + " LicenseName: " + licenseName + " DOES NOT contains PIPE");
       License license = LicenseStore.getInstance().license(licenseName.trim());
@@ -100,6 +109,24 @@ public class JsonComponentParser {
       return new Component(name, license, dependencies);
     }
   }
+
+  private List<License> licensesToList(String licensefield) {
+    List<String> licenseList ;
+    List<License> licenses = new ArrayList<>();
+
+    if (licensefield.contains("|")) {
+      licenseList = Arrays.asList(Pattern.compile("\\|").split(licensefield));
+    } else {
+      licenseList = Arrays.asList(Pattern.compile("&").split(licensefield));
+    }
+
+    for(String l : licenseList){
+      Log.d(LOG_TAG," * \"" + l.trim() + "\"");
+      licenses.add(LicenseStore.getInstance().license(l.trim()));
+    }
+    return licenses;
+  }
+
 
   public MetaData readMetaDate(String fileName) throws IOException {
     return readMetaData(new JSONObject(new String(Files.readAllBytes(Paths.get(fileName)))));
