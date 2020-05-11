@@ -35,9 +35,10 @@ public class LicenseArbiter {
         Log.d(LOG_TAG, "aUsesB(" + user.spdxTag() + ", " + usee.spdxTag() + ", ...)");
 
         if (user.spdxTag().equals(usee.spdxTag())) {
-            Log.d(LOG_TAG, "Same license: true");
-            return true;
+          Log.d(LOG_TAG, "Same license: true");
+          return true;
         }
+        Log.d(LOG_TAG, "Licenses differ");
 
         // TODO: the below is just a try
         //    apache can use gplv2 - if we license the software under gplv2
@@ -53,8 +54,10 @@ public class LicenseArbiter {
         // If we can sublicense (e.g A(MIT) using B(GPLv2) turns A into GPLv2)
         if (user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() ==
                 ObligationState.TRUE) {
-             //   System.out.println("Liverpool: " + c.name() + " " + usee.spdxTag() + "  => " + user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() + " DOING IT");
-            return true;
+          //   System.out.println("Liverpool: " + c.name() + " " + usee.spdxTag() + "  => " + user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() + " DOING IT");
+          Log.d(LOG_TAG, "SUBLICENSING ");
+
+          //          return true;
         }
 
         // if not copylefted - ok to use
@@ -71,7 +74,7 @@ public class LicenseArbiter {
         }
 
         // TODO: If usee is copylefted AND user copylefted  => check gpl etc
-
+        
 
         Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : no possible violation detected");
         return true;
@@ -134,16 +137,16 @@ public class LicenseArbiter {
         // The first one is hopefully something we can conclude
         c.licenses().sort(LeastPermissiveLicenseComparator.comparator);
         List<License> blackListed = new ArrayList<>();
-        System.out.println("handleManyLicensesNoDeps   black " + policy + "    licenses: " + c.licenses());
+        //        System.out.println("handleManyLicensesNoDeps   black " + policy + "    licenses: " + c.licenses());
         for (License l : c.licenses()) {
-            System.out.println("handleManyLicensesNoDeps   black " + policy + "    license: " + l);
-            System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + "  " + policy.blackList() + "--------------------------------");
+          //            System.out.println("handleManyLicensesNoDeps   black " + policy + "    license: " + l);
+          //System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + "  " + policy.blackList() + "--------------------------------");
             Log.d(LOG_TAG, c.name() + ": has no deps, try concluding license: " + l);
             if (policy != null && policy.blackList().contains(l)) {
-                System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + " BLACK FOUND +++++++++++++++++");
+              //    System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + " BLACK FOUND +++++++++++++++++");
                 Log.d(LOG_TAG, "Black colored license found for " + c.name() + ", can't exclude it: " + l + " sorry");
                 blackListed.add(l);
-                System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + " BLACK FOUND +++++++++++++++++ " + blackListed.size());
+                //                System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + " BLACK FOUND +++++++++++++++++ " + blackListed.size());
             } else if (policy != null && policy.grayList().contains(l)) {
                 Log.d(LOG_TAG, "Gray colored license found for " + c.name() + " : " + l);
                 Log.d(LOG_TAG, " concerned license for " + c.name() + " is " + l);
@@ -155,14 +158,12 @@ public class LicenseArbiter {
             }
         }
 
-        System.out.println("handleManyLicensesNoDeps any BLACK FOUND +++++++++++++++++ " + blackListed.size());
+        //        System.out.println("handleManyLicensesNoDeps any BLACK FOUND +++++++++++++++++ " + blackListed.size());
         if (blackListed.size()>0) {
-
-            System.out.println("handleManyLicensesNoDeps   black " + policy + "    licenses: " + c.licenses() + "REPORING VIOLATION ++++++++++++++++++++++++++++");
+          //  System.out.println("handleManyLicensesNoDeps   black " + policy + "    licenses: " + c.licenses() + "REPORING VIOLATION ++++++++++++++++++++++++++++");
             for (License l : blackListed) {
-                System.out.println(" ADDING POLICY VIOLATION FOR " + c + "   AND LICENSE: " + l.spdxTag());
-
-                report.addPolicyViolation(new PolicyViolation(c, l));
+              //    System.out.println(" ADDING POLICY VIOLATION FOR " + c + "   AND LICENSE: " + l.spdxTag());
+              report.addPolicyViolation(new PolicyViolation(c, l));
             }
         }
     }
@@ -172,22 +173,22 @@ public class LicenseArbiter {
 
         // second - return true if no deps
         if (c.dependencies().size() == 0) {
-            System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name());
+          //            System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name());
             if (c.dualLicensed()) {
-                System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " dual");
+              //    System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " dual");
                 handleDualLicensesNoDeps(c, policy, report);
             } else if (c.manyLicensed()) {
-                System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " many");
+              //System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " many");
                 handleManyLicensesNoDeps(c,policy, report);
-                System.out.println("Hurrrweopwqe   --------===| " + c.concludedLicense());
+                //System.out.println("Hurrrweopwqe   --------===| " + c.concludedLicense());
             } else if (c.singleLicensed()){
-                System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " single");
+              //System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " single");
                 License l = c.licenses().get(0);
                 if (policy != null && policy.blackList().contains(l)) {
-                    System.out.println("single license and no deps BLACK FOUND +++++++++++++++++");
+                  //    System.out.println("single license and no deps BLACK FOUND +++++++++++++++++");
                     report.addPolicyViolation(new PolicyViolation(c, l));
                 } else if (policy != null && policy.grayList().contains(l)) {
-                    System.out.println("single license and no deps GRAY FOUND +++++++++++++++++");
+                  //System.out.println("single license and no deps GRAY FOUND +++++++++++++++++");
                     report.addLicenseConcern(new PolicyConcern(c, l, ListType.GRAY_LIST));
                     addConcluded(report, l, c);
                 } else {
@@ -291,4 +292,17 @@ public class LicenseArbiter {
             report.addLicenseObligationViolation(new LicenseObligationViolation(c));
         }
     }
+
+  
+  public static String multipeLicensesInformation(Component c) {
+        if (c.singleLicensed()) {
+            return "single";
+        } else if (c.dualLicensed()) {
+            return "dual";
+        } else if (c.manyLicensed()) {
+            return "many";
+        }
+        return "unknown";
+    }
+
 }
