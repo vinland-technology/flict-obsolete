@@ -84,8 +84,16 @@ public class License {
     return sb.toString();
   }
 
+  public LicenseObligation obligation(String obligationName) {
+    return obligations.get(obligationName);
+  }
+
+  public ObligationState obligationState(String obligationName) {
+    return obligations.get(obligationName).state();
+  }
+
   public boolean isCopyleft() {
-    return obligations.get(Obligation.LINKING_COPYLEFTED_NAME).state() ==
+    return obligation(Obligation.LINKING_COPYLEFTED_NAME).state() ==
             ObligationState.TRUE;
   }
 

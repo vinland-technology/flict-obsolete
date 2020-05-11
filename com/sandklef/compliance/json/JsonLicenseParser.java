@@ -71,6 +71,9 @@ public class JsonLicenseParser {
     String spdx = lic.getString("spdx");
     JSONObject obl = lic.getJSONObject("obligations");
     Log.d(LOG_TAG,"name: " + name + "   spdx" + spdx);
+
+    System.out.println("  jsonP: " + spdx + "  " + INCLUDE_INSTALL_INSTRUCTIONS + "  " + toObligationState(obl, INCLUDE_INSTALL_INSTRUCTIONS_TAG));
+
     return new License(spdx,
                        new ObligationBuilder().
                        add(LINKING_COPYLEFTED, toObligationState(obl,LINKING_COPYLEFTED_TAG )).

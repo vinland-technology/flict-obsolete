@@ -11,7 +11,7 @@ public class TestAll {
         System.out.println("\n");
         TestComponents.test();
         System.out.println("\n");
-        TestCanAUseB.test();
+   //     TestCanAUseB.test();
         System.out.println("\n");
         TestPolicy.test();
         System.out.println("\n");
@@ -23,7 +23,7 @@ public class TestAll {
         System.out.println("\n");
         TestLicenseParser.test();
         System.out.println("\n");
-
+        VirtualLicenseBuilderTest.test();
         System.out.println("\nTests finished\n-------------------------");
         System.out.println(" * Test:      " + Utils.counter());
         System.out.println(" * Failures:  " + Utils.erorCounter());

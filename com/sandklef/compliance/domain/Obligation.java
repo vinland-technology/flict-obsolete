@@ -4,6 +4,9 @@
 
 package com.sandklef.compliance.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Obligation{
 
   private String name;
@@ -68,8 +71,9 @@ public class Obligation{
   public static final Obligation INCLUDE_LICENSE = new Obligation(INCLUDE_LICENSE_NAME, "");
 
   public static final String INCLUDE_INSTALL_INSTRUCTIONS_TAG = "include_install_instructions";
-  public static final String INCLUDE_INSTALL_INSTRUCTIONS_NAME = "Include install_instructions";
-  public static final Obligation INCLUDE_INSTALL_INSTRUCTIONS = new Obligation(INCLUDE_LICENSE_NAME, "");
+  public static final String INCLUDE_INSTALL_INSTRUCTIONS_NAME = "Include install instructions";
+  public static final Obligation INCLUDE_INSTALL_INSTRUCTIONS = new Obligation(INCLUDE_INSTALL_INSTRUCTIONS_NAME, "");
+
 
   public static final String INCLUDE_NOTICE_FILE_TAG = "include_notice_file";
   public static final String INCLUDE_NOTICE_FILE_NAME = "Include notice_file";
@@ -79,5 +83,13 @@ public class Obligation{
   public static final String INCLUDE_NOTICE_ABOUT_LICENSE_NAME = "Include notice_about_license";
   public static final Obligation INCLUDE_NOTICE_ABOUT_LICENSE = new Obligation(INCLUDE_NOTICE_ABOUT_LICENSE_NAME, "");
 
-
+  public static List<String> obligationNames =
+          Arrays.asList(MODIFICATION_ALLOWED_NAME,
+                  MODIFICATION_COPYLEFTED_NAME,
+                  SUBLICENSING_ALLOWED_NAME,
+                  DISTRIBUTION_ALLOWED_NAME,
+                  DISTRIBUTION_COPYLEFTED_NAME,
+                  DISCLOSE_SOURCE_NAME,
+                  STATE_CHANGES_NAME,
+                  INCLUDE_COPYRIGHT_NAME);
 }

@@ -9,6 +9,9 @@ import java.util.List;
 
 import com.sandklef.compliance.domain.*;
 
+import static com.sandklef.compliance.test.Utils.apache2;
+import static com.sandklef.compliance.test.Utils.gpl2;
+
 public class LicenseArbiter {
 
     public static String LOG_TAG = LicenseArbiter.class.getSimpleName();
@@ -28,7 +31,7 @@ public class LicenseArbiter {
                     new LicenseViolation.ObligationViolation(c));*/
             throw new NoLicenseException("Used licenses unknown ", user, usee);
         }
-        Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...)");
+        Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...) ");
         Log.d(LOG_TAG, "aUsesB(" + user.spdxTag() + ", " + usee.spdxTag() + ", ...)");
 
         if (user.spdxTag().equals(usee.spdxTag())) {
