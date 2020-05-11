@@ -19,7 +19,7 @@ public class TextComponentExporter implements ReportExporter {
     @Override
     public String exportReport(Report report) {
         return "Report from analysing component: \"" + report.component().name() + "\"\n" +
-                exportLicenseViolations(report.violations()) + "\n" +
+                exportLicenseViolations(report.violations()) +
                 exportPolicyViolations(report.policyViolations()) + "\n" +
                 exportConcerns(report.concerns()) + "\n" +
                 exportConclusions(report.conclusions()) + "\n";
@@ -28,9 +28,21 @@ public class TextComponentExporter implements ReportExporter {
     @Override
     public String exportLicenseViolations(List<LicenseObligationViolation> violations) {
         if (violations.size()==0) {
-            return "Violations:  none" ;
+            return "Violations:  none\n" ;
         } else {
-            return "Violations:  " + violations;
+          StringBuilder sb = new StringBuilder();
+          sb.append("Violations: \n");
+          for (LicenseObligationViolation lov : violations) {
+            sb.append(" * ");
+            sb.append(lov.user().name());
+            sb.append(" (");
+            sb.append(LicenseArbiter.multipeLicensesInformation(lov.user()));
+            sb.append(" | ");
+            sb.append(lov.user().licenses());
+            sb.append(" )\n");
+            //            lovJson.put("obligation", lov.());
+          }
+          return sb.toString() ;
         }
     }
 
@@ -58,7 +70,17 @@ public class TextComponentExporter implements ReportExporter {
         if (violations.size()==0) {
             return "Policy violations:  none";
         } else {
-            return "Policy violations:  " + violations;
+          StringBuilder sb = new StringBuilder();
+          sb.append("Violations: \n");
+          for (PolicyViolation pv : violations) {
+            sb.append(" * ");
+            sb.append(pv.component().name());
+            sb.append(" (");
+            sb.append(pv.license());
+            sb.append(" )\n");
+            //            lovJson.put("obligation", lov.());
+          }
+          return sb.toString() ;
         }
     }
 
