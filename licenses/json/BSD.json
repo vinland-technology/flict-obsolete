@@ -4,8 +4,8 @@
         "version":"0.1"
     },
     "license": {
-        "name":"MIT License",
-        "spdx":"MIT",
+        "name":"BSD 3-Clause \"New\" or \"Revised\" License",
+        "spdx":"BSD-3-Clause",
         "obligations": {
             "linking_copylefted":"false",
             "modification_allowed":"true",
