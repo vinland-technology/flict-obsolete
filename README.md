@@ -48,6 +48,18 @@ If you don't have
 
 # Building
 
+## Dependencies
+
+* jq
+
+* GNU Make
+
+* JDK (Jav Development Kit) (7 or higher)
+
+* bash
+
+* wget
+
 ~~~
 ./configure
 make
