@@ -50,6 +50,7 @@ TEST_SOURCES=\
   com/sandklef/compliance/test/TestDualLicenses.java \
   com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.java \
   com/sandklef/compliance/json/test/TestLicenseParser.java \
+  com/sandklef/compliance/test/TestLicenseConnector.java \
   com/sandklef/compliance/test/VirtualLicenseBuilderTest.java \
 
 
