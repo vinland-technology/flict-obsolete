@@ -37,8 +37,8 @@ JAVA_SOURCES=\
   com/sandklef/compliance/exporter/TestJsonComponentParser.java \
   com/sandklef/compliance/exporter/JsonExporter.java \
   com/sandklef/compliance/exporter/MDExporter.java \
-  com/sandklef/compliance/exporter/TextComponentExporter.java \
-  com/sandklef/compliance/utils/VirtualLicenseBuilder.java \
+  com/sandklef/compliance/utils/TextComponentExporter.java \
+ com/sandklef/compliance/utils/VirtualLicenseBuilder.java \
 
 
 TEST_SOURCES=\
@@ -125,6 +125,6 @@ clean:
 	find -name "*~" | xargs rm -f
 	find -name "*.class" | xargs rm -f
 
-test: $(JUNIT_JAR) all $(TEST_CLASSES) Makefile
+test: all $(TEST_CLASSES) Makefile
 	java -ea -cp $(CLASSPATH) com/sandklef/compliance/test/TestAll
 
