@@ -9,7 +9,11 @@ public class TestLicenseConnector {
 
 
     private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) {
-        return a.canUse().contains(b);
+/*        System.out.println(" a : " + a.license().spdxTag() + " " + a.canBeUsedBy() + " " + a.canUse());
+        System.out.println(" b : " + b.license().spdxTag() + " " + b.canBeUsedBy() + " " + b.canUse());
+        System.out.println(" a : " + a.license().spdxTag() + " " + a.canUse() + " contains " + b.license());
+  */
+        return a.canUse().contains(b.license());
     }
 
     public static void test() {
