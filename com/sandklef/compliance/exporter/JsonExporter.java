@@ -6,6 +6,7 @@ package com.sandklef.compliance.exporter;
 
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.Version;
+import com.sandklef.compliance.utils.LicenseArbiter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -81,24 +82,14 @@ public class JsonExporter implements ReportExporter {
         return exportLicenseViolationsJson(violations).toString();
     }
 
-    private String multipeLicensesInformation(Component c) {
-        if (c.singleLicensed()) {
-            return "single";
-        } else if (c.dualLicensed()) {
-            return "dual";
-        } else if (c.manyLicensed()) {
-            return "many";
-        }
-        return "unknown";
-    }
-
     public JSONArray exportLicenseViolationsJson(List<LicenseObligationViolation> violations) {
         JSONArray violationsArray = new JSONArray();
         for (LicenseObligationViolation lov : violations) {
             JSONObject lovJson = new JSONObject();
             lovJson.put("component", lov.user().name());
-            lovJson.put("licenses_type", multipeLicensesInformation(lov.user()));
+            lovJson.put("licenses_type", LicenseArbiter.multipeLicensesInformation(lov.user()));
 //            lovJson.put("obligation", lov.());
+            violationsArray.put(lovJson);
         }
         return violationsArray;
     }
@@ -137,7 +128,7 @@ public class JsonExporter implements ReportExporter {
             JSONObject lcJson = new JSONObject();
             lcJson.put("component", lc.component().name());
             lcJson.put("license", lc.license().spdxTag());
-            lcJson.put("licenses_type", multipeLicensesInformation(lc.component()));
+            lcJson.put("licenses_type", LicenseArbiter.multipeLicensesInformation(lc.component()));
             JSONArray licArr = new JSONArray();
             for (License lic : lc.component().licenses()) {
                 licArr.put(lic.spdxTag());
@@ -156,7 +147,7 @@ public class JsonExporter implements ReportExporter {
             JSONObject concJson = new JSONObject();
             concJson.put("component", licConcern.component().name());
             concJson.put("license", licConcern.license().spdxTag());
-            concJson.put("licenses_type", multipeLicensesInformation(licConcern.component()));
+            concJson.put("licenses_type", LicenseArbiter.multipeLicensesInformation(licConcern.component()));
             concernsArrary.put(concJson);
         }
         return concernsArrary;
@@ -173,7 +164,7 @@ public class JsonExporter implements ReportExporter {
             JSONObject concJson = new JSONObject();
             concJson.put("component", pv.component().name());
             concJson.put("license", pv.license().spdxTag());
-            concJson.put("licenses_type", multipeLicensesInformation(pv.component()));
+            concJson.put("licenses_type", LicenseArbiter.multipeLicensesInformation(pv.component()));
             violationArrary.put(concJson);
         }
         return violationArrary;
