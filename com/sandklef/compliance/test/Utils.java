@@ -37,6 +37,7 @@ public class Utils {
             lgpl20 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_1_SPDX);
             gpl20 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
+            gpl20_later = LicenseStore.getInstance().license(GPL_2_0_LATER_SPDX);
             lgpl21_later = LicenseStore.getInstance().license(LGPL_2_1_LATER_SPDX);
             gpl30 = LicenseStore.getInstance().license(GPL_3_0_SPDX);
             apache20 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
