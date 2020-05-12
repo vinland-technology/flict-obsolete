@@ -125,7 +125,8 @@ public class Component {
     if (licenses().size()>1 && concludedLicense()==null) {
       sb.append(" (");
       for (License l : licenses()) {
-        Log.d(LOG_TAG, "   toString c:" + name + "   license: " + l);
+        Log.level(Log.DEBUG);
+        Log.d(LOG_TAG, "   toString c: " + name + "   license: " + l);
         sb.append(l.spdxTag());
         sb.append(",");
       }

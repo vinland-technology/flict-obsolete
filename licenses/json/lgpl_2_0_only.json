@@ -4,17 +4,17 @@
         "version":"0.1"
     },
     "license": {
-        "name":"BSD 3-Clause \"New\" or \"Revised\" License",
-        "spdx":"BSD-3-Clause",
+        "name":"LGPLv2.0 only",
+        "spdx":"LGPL-2.0-only",
         "obligations": {
             "linking_copylefted":"false",
             "modification_allowed":"true",
-            "modification_copylefted":"false",
-            "sublicensing_allowed":"true",
+            "modification_copylefted":"true",
+            "sublicensing_allowed":"false",
             "distribution_allowed":"true",
-            "distribution_copylefted":"false",
-            "disclose_source":"false",
-            "include_original":"false",
+            "distribution_copylefted":"true",
+            "disclose_source":"true",
+            "include_original":"true",
             "state_changes":"true",
             "include_copyright":"true",
             "include_license":"true",
@@ -24,3 +24,4 @@
         }
     }
 }
+

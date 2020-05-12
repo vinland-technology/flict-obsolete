@@ -96,6 +96,7 @@ public class TestPolicy {
 //    Log.filterTag(LicenseArbiter.LOG_TAG);
     Report validReport = LicenseArbiter.report(validComponent(), policy);
 
+    Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result: " +
             " " + validReport.concerns().size() +
             " " + validReport.conclusions().size() +
@@ -153,30 +154,30 @@ public class TestPolicy {
     printSubTestStart("Valid but concerns and conclusions");
 
     LicensePolicy policy = new LicensePolicy();
-    policy.addGrayLicense(gpl2);
-    policy.addBlackLicense(gpl3);
+    policy.addGrayLicense(gpl20);
+    policy.addBlackLicense(gpl30);
 
-    Component a11 = new Component("a11", lgpl2, null);
-    Component a12 = new Component("a12", apache2, null);
+    Component a11 = new Component("a11", lgpl20, null);
+    Component a12 = new Component("a12", apache20, null);
     ArrayList<Component> a1Deps = new ArrayList<>();
     a1Deps.add(a11);
     a1Deps.add(a12);
-    Component a1 = new Component("a1", gpl2, a1Deps);
+    Component a1 = new Component("a1", gpl20, a1Deps);
 
-    Component a21 = new Component("a21", apache2, null);
+    Component a21 = new Component("a21", apache20, null);
     List<License> a22Licenses = new ArrayList<>();
-    a22Licenses.add(gpl2);     // no concern since not chosen
-    a22Licenses.add(apache2);  // conclusion
+    a22Licenses.add(gpl20);     // no concern since not chosen
+    a22Licenses.add(apache20);  // conclusion
     Component a22 = new Component("a22", a22Licenses, null);
     ArrayList<Component> a2Deps = new ArrayList<>();
     a2Deps.add(a21);
     a2Deps.add(a22);
-    Component a2 = new Component("a1", gpl2, a2Deps); // concern since gray
+    Component a2 = new Component("a1", gpl20, a2Deps); // concern since gray
 
     ArrayList<Component> aDeps = new ArrayList<>();
     aDeps.add(a1);
     aDeps.add(a2);
-    Component a = new Component("A", gpl2, aDeps); // concern since gray
+    Component a = new Component("A", gpl20, aDeps); // concern since gray
 
     // 2 concerns
     // 0 violations
@@ -184,7 +185,7 @@ public class TestPolicy {
  //   Log.level(Log.DEBUG);
     Report report = LicenseArbiter.report(a, policy);
 
-   // Log.level(Log.DEBUG);
+    Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusions().size() +
             " concerns: " + report.concerns().size() +
             " violations: " + report.violations().size() );
@@ -204,46 +205,47 @@ public class TestPolicy {
     printSubTestStart("Valid but concerns, conclusions and violation");
 
     LicensePolicy policy = new LicensePolicy();
-    policy.addGrayLicense(lgpl2);
-    policy.addBlackLicense(gpl2);
+    policy.addGrayLicense(lgpl20);
+    policy.addBlackLicense(gpl20);
 
     // a1
-    Component a11 = new Component("a11", gpl2, null); // violations since black +1
-    Component a12 = new Component("a12", apache2, null);
+    Component a11 = new Component("a11", gpl20, null); // violations since black +1
+    Component a12 = new Component("a12", apache20, null);
     ArrayList<Component> a1Deps = new ArrayList<>();
     a1Deps.add(a11);
     a1Deps.add(a12);
-    Component a1 = new Component("a1", apache2, a1Deps); // violations since gpl not used +1
+    Component a1 = new Component("a1", apache20, a1Deps); // violations since gpl not used +1
 
-    Component a21 = new Component("a21", apache2, null);
+    Component a21 = new Component("a21", apache20, null);
     List<License> a22Licenses = new ArrayList<>();
-    a22Licenses.add(gpl2);     // no concern since not chosen
-    a22Licenses.add(apache2);  // conclusion
+    a22Licenses.add(gpl20);     // no concern since not chosen
+    a22Licenses.add(apache20);  // conclusion
     Component a22 = new Component("a22", a22Licenses, null);
     ArrayList<Component> a2Deps = new ArrayList<>();
     a2Deps.add(a21);
     a2Deps.add(a22);
-    Component a2 = new Component("a2", gpl2, a2Deps); // violation since black +1
+    Component a2 = new Component("a2", gpl20, a2Deps); // violation since black +1
 
     ArrayList<Component> aDeps = new ArrayList<>();
     aDeps.add(a1);
     aDeps.add(a2);
-    Component a = new Component("A", gpl2, aDeps); // violation since black +1
+    Component a = new Component("A", gpl20, aDeps); // violation since black +1
 
 
     // 0 concerns
     // 3 violations
     // 1 conclusion
     Report report = LicenseArbiter.report(a, policy);
-//    Log.level(Log.DEBUG);
-//    Log.level(Log.DEBUG);
+
+/*    Log.level(Log.DEBUG);
+
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusions().size() +
             " concerns: " + report.concerns().size() +
             " violations: " + report.violations().size() );
     Log.d(LOG_TAG, "  result:  \nconclusions: " + report.conclusions() +
             "\n concerns: " + report.concerns() +
             "\nviolations: " + report.violations());
-
+*/
     assertHelper(" concern: ", report.concerns().size() == 0);
     assertHelper(" conclusion: ", report.conclusions().size() == 1);
     assertHelper(" obligations: ", report.violations().size() == 4);

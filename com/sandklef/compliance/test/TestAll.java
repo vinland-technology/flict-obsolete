@@ -1,5 +1,6 @@
 package com.sandklef.compliance.test;
 
+import com.sandklef.compliance.domain.LicenseConnector;
 import com.sandklef.compliance.json.test.TestJsonComponentParser;
 import com.sandklef.compliance.json.test.TestLicenseParser;
 
@@ -24,6 +25,9 @@ public class TestAll {
         TestLicenseParser.test();
         System.out.println("\n");
         VirtualLicenseBuilderTest.test();
+
+        TestLicenseConnector.test();
+
         System.out.println("\nTests finished\n-------------------------");
         System.out.println(" * Test:      " + Utils.counter());
         System.out.println(" * Failures:  " + Utils.erorCounter());

@@ -8,8 +8,6 @@ import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.LicenseArbiter;
 import com.sandklef.compliance.utils.Log;
 
-import java.awt.*;
-
 import static com.sandklef.compliance.test.Utils.*;
 
 public class TestCanAUseB {
@@ -23,10 +21,10 @@ public class TestCanAUseB {
   public static void test() {
     printTestStart("TestCanAUseB");
     Log.level(Log.DEBUG);
-    assertHelper("gpl2 can use apache2", testCanAUseB(gpl2, apache2));
-    System.out.println("   **** gpl use apache2: " + testCanAUseB(gpl2, apache2));
-    System.out.println("   **** apache2 use gpl: " + testCanAUseB(apache2, gpl2));
-    assertHelper("apache2 can NOT use gpl2", !testCanAUseB(apache2, gpl2));
+    assertHelper("gpl2 can use apache2", testCanAUseB(gpl20, apache20));
+    System.out.println("   **** gpl use apache2: " + testCanAUseB(gpl20, apache20));
+    System.out.println("   **** apache2 use gpl: " + testCanAUseB(apache20, gpl20));
+    assertHelper("apache2 can NOT use gpl2", !testCanAUseB(apache20, gpl20));
     System.exit(1);
   }
 
