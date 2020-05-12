@@ -1,35 +1,40 @@
 {
-    "component": "programA",
-    "license": "GPLv3",
-    "dependencies" : [
-        {
-            "component": "libX",
-            "license": "GPLv2",
-            "dependencies" : [
-                {
-                    "component": "libXX",
-                    "license": "MPL2",
-                    "dependencies" : []
-                },
-                {
-                    "component": "libXY",
-                    "license": "Apache2",
-                    "dependencies" : []
-                }
-            ]
-        },
-        {
-            "component": "libY",
-            "license": "GPLv2",
-            "dependencies" : [
-                {
-                    "component": "libYX",
-                    "license": "MPL2",
-                    "dependencies" : []
-                }
-            ]
-        }
-        
-    ]
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "component": "programA",
+        "license": "GPLv3",
+        "dependencies" : [
+            {
+                "component": "libX",
+                "license": "GPLv2",
+                "dependencies" : [
+                    {
+                        "component": "libXX",
+                        "license": "MPL2",
+                        "dependencies" : []
+                    },
+                    {
+                        "component": "libXY",
+                        "license": "Apache2",
+                        "dependencies" : []
+                    }
+                ]
+            },
+            {
+                "component": "libY",
+                "license": "GPLv2",
+                "dependencies" : [
+                    {
+                        "component": "libYX",
+                        "license": "MPL2",
+                        "dependencies" : []
+                    }
+                ]
+            }
+        ]
+    }
 }
-    
+

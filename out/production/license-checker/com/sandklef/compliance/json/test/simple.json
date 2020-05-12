@@ -1,29 +1,33 @@
 {
-    "name": "Main program",
-    "license": "GPL-2.0-only",
-    "dependencies": [
-        {
-            "name": "LGPL-lib",
-            "license": "LGPL-2.1-only",
-            "dependencies": []
-        },
-        {
-            "name": "A-lib",
-            "license": "Apache-2.0",
-            "dependencies": [
-                {
-                    "name": "LGPL-lib2",
-                    "license": "LGPL-2.1-only | GPL-2.0-only",
-                    "dependencies": []
-                },
-                {
-                    "name": "LGPL-lib2",
-                    "license": "LGPL-2.1-only",
-                    "dependencies": []
-                }
-            ]
-        }
-        
-
-    ]
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "Main program",
+        "license": "GPL-2.0-only",
+        "dependencies": [
+            {
+                "name": "LGPL-lib",
+                "license": "LGPL-2.1-only",
+                "dependencies": []
+            },
+            {
+                "name": "A-lib",
+                "license": "Apache-2.0",
+                "dependencies": [
+                    {
+                        "name": "LGPL-lib2",
+                        "license": "LGPL-2.1-only | GPL-2.0-only",
+                        "dependencies": []
+                    },
+                    {
+                        "name": "LGPL-lib2",
+                        "license": "LGPL-2.1-only",
+                        "dependencies": []
+                    }
+                ]
+            }
+        ]
+    }
 }

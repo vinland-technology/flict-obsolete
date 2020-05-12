@@ -61,8 +61,8 @@ public class JsonLicenseParser {
 
   public License readLicense(JSONObject jo) {
     // Meta information
-    String swName = readJsonString(jo, SW_TAG, "");
-    int version = readJsonInt(jo, SW_VERSION_TAG, 0);
+    String swName = JsonUtils.readJsonString(jo, SW_TAG, "");
+    int version = JsonUtils.readJsonInt(jo, SW_VERSION_TAG, 0);
 
     Log.d(LOG_TAG,"meta: " + swName + "   " + version);
 
@@ -72,7 +72,7 @@ public class JsonLicenseParser {
     JSONObject obl = lic.getJSONObject("obligations");
     Log.d(LOG_TAG,"name: " + name + "   spdx" + spdx);
 
-    System.out.println("  jsonP: " + spdx + "  " + INCLUDE_INSTALL_INSTRUCTIONS + "  " + toObligationState(obl, INCLUDE_INSTALL_INSTRUCTIONS_TAG));
+    //    System.out.println("  jsonP: " + spdx + "  " + INCLUDE_INSTALL_INSTRUCTIONS + "  " + toObligationState(obl, INCLUDE_INSTALL_INSTRUCTIONS_TAG));
 
     return new License(spdx,
                        new ObligationBuilder().
@@ -106,21 +106,7 @@ public class JsonLicenseParser {
     return ObligationState.UNDEFINED;
   }
 
-  private String readJsonString(JSONObject json, String key, String defaultValue) {
-    try {
-      return json.getString(key);
-    } catch (JSONException e) {
-      return defaultValue;
-    }
-  }
 
-  private int readJsonInt(JSONObject json, String key, int defaultValue) {
-    try {
-      return json.getInt(key);
-    } catch (JSONException e) {
-      return defaultValue;
-    }
-  }
 
 }
 

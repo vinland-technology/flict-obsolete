@@ -1,11 +1,13 @@
 {
-    "software":"License Policy Checker",
-    "version":"0.1",
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
     "license": {
-        "name":"GPLv3.0 only",
-        "spdx":"GPL-3.0-only",
+        "name":"GNU Lesser General Public License v3.0 only",
+        "spdx":"LGPL-3.0-only",
         "obligations": {
-            "linking_copylefted":"true",
+            "linking_copylefted":"false",
             "modification_allowed":"true",
             "modification_copylefted":"true",
             "sublicensing_allowed":"false",
@@ -22,4 +24,3 @@
         }
     }
 }
-

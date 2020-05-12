@@ -1,102 +1,108 @@
 {
-    "name": "ZZ Top",
-    "license": "Apache-2.0",
-    "dependencies": [
-        {
-            "name": "AAA",
-            "license": "Apache-2.0",
-            "dependencies": [
-                {
-                    "name": "BBB",
-                    "license":"Apache-2.0",
-                    "dependencies": [
-                        {
-                            "name": "CCC0",
-                            "license": "GPL-2.0-only | LGPL-3.0 ",
-                            "dependencies": [
-                                {
-                                    "name": "CCC0-1",
-                                    "license": "LGPL-3.0 | GPL-2.0-only | Apache-2.0",
-                                    "dependencies": [
-                                        {
-                                            "name": "CCC0-1-1",
-                                            "license": "GPL-2.0-only ",
-                                            "dependencies": []
-                                        },
-                                        {
-                                            "name": "CCC0-1-2",
-                                            "license": "LGPL-3.0   ",
-                                            "dependencies": []
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "name": "CCC1",
-                            "license": "GPL-3.0-only | GPL-2.0-only | Apache-2.0 | LGPL-3.0 ",
-                            "dependencies": []
-                        },
-                        {
-                            "name": "CCC2",
-                            "license": "GPL-3.0-only | GPL-2.0-only | Apache-2.0 | LGPL-3.0 ",
-                            "dependencies": [
-                                {
-                                    "name": "DDD",
-                                    "license": "GPL-2.0-only | LGPL-3.0  | Apache-2.0",
-                                    "dependencies": [
-                                        {
-                                            "name": "EEE",
-                                            "license": "LGPL-3.0 | GPL-2.0-only  ",
-                                            "dependencies": [
-                                                {
-                                                    "name": "FFF",
-                                                    "license": "GPL-2.0-only | LGPL-3.0 | Apache-2.0",
-                                                    "dependencies": [
-                                                        {
-                                                            "name": "GGG1",
-                                                            "license": "LGPL-3.0 | GPL-2.0-only | Apache-2.0",
-                                                            "dependencies": [
-                                                                {
-                                                                    "name": "HHH1-1",
-                                                                    "license": "GPL-2.0-only | Apache-2.0",
-                                                                    "dependencies": []
-                                                                },
-                                                                {
-                                                                    "name": "HHH1-2",
-                                                                    "license": "LGPL-3.0 | GPL-2.0-only | GPL-3.0-only | Apache-2.0",
-                                                                    "dependencies": []
-                                                                }                                                        
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "GGG2",
-                                                            "license": "LGPL-3.0 | GPL-2.0-only | Apache-2.0",
-                                                            "dependencies": [
-                                                                {
-                                                                    "name": "HHH2-1",
-                                                                    "license": "LGPL-3.0 | GPL-2.0-only | GPL-3.0-only | Apache-2.0",
-                                                                    "dependencies": []
-                                                                },
-                                                                {
-                                                                    "name": "HHH2-2",
-                                                                    "license": "LGPL-3.0   ",
-                                                                    "dependencies": []
-                                                                }
-                                                            ]
-                                                        }
-                                                        
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "ZZ Top",
+        "license": "Apache-2.0",
+        "dependencies": [
+            {
+                "name": "AAA",
+                "license": "Apache-2.0",
+                "dependencies": [
+                    {
+                        "name": "BBB",
+                        "license":"Apache-2.0",
+                        "dependencies": [
+                            {
+                                "name": "CCC0",
+                                "license": "GPL-2.0-only | LGPL-3.0 ",
+                                "dependencies": [
+                                    {
+                                        "name": "CCC0-1",
+                                        "license": "LGPL-3.0 | GPL-2.0-only | Apache-2.0",
+                                        "dependencies": [
+                                            {
+                                                "name": "CCC0-1-1",
+                                                "license": "GPL-2.0-only ",
+                                                "dependencies": []
+                                            },
+                                            {
+                                                "name": "CCC0-1-2",
+                                                "license": "LGPL-3.0   ",
+                                                "dependencies": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "CCC1",
+                                "license": "GPL-3.0-only | GPL-2.0-only | Apache-2.0 | LGPL-3.0 ",
+                                "dependencies": []
+                            },
+                            {
+                                "name": "CCC2",
+                                "license": "GPL-3.0-only | GPL-2.0-only | Apache-2.0 | LGPL-3.0 ",
+                                "dependencies": [
+                                    {
+                                        "name": "DDD",
+                                        "license": "GPL-2.0-only | LGPL-3.0  | Apache-2.0",
+                                        "dependencies": [
+                                            {
+                                                "name": "EEE",
+                                                "license": "LGPL-3.0 | GPL-2.0-only  ",
+                                                "dependencies": [
+                                                    {
+                                                        "name": "FFF",
+                                                        "license": "GPL-2.0-only | LGPL-3.0 | Apache-2.0",
+                                                        "dependencies": [
+                                                            {
+                                                                "name": "GGG1",
+                                                                "license": "LGPL-3.0 | GPL-2.0-only | Apache-2.0",
+                                                                "dependencies": [
+                                                                    {
+                                                                        "name": "HHH1-1",
+                                                                        "license": "GPL-2.0-only | Apache-2.0",
+                                                                        "dependencies": []
+                                                                    },
+                                                                    {
+                                                                        "name": "HHH1-2",
+                                                                        "license": "LGPL-3.0 | GPL-2.0-only | GPL-3.0-only | Apache-2.0",
+                                                                        "dependencies": []
+                                                                    }                                                        
+                                                                ]
+                                                            },
+                                                            {
+                                                                "name": "GGG2",
+                                                                "license": "LGPL-3.0 | GPL-2.0-only | Apache-2.0",
+                                                                "dependencies": [
+                                                                    {
+                                                                        "name": "HHH2-1",
+                                                                        "license": "LGPL-3.0 | GPL-2.0-only | GPL-3.0-only | Apache-2.0",
+                                                                        "dependencies": []
+                                                                    },
+                                                                    {
+                                                                        "name": "HHH2-2",
+                                                                        "license": "LGPL-3.0   ",
+                                                                        "dependencies": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                            
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 }

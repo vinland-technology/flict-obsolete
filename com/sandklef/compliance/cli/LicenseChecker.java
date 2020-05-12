@@ -7,10 +7,12 @@ package com.sandklef.compliance.cli;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.exporter.ReportExporterFactory;
 import com.sandklef.compliance.json.JsonComponentParser;
+import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.json.JsonPolicyParser;
 import com.sandklef.compliance.utils.LicenseArbiter;
 import com.sandklef.compliance.utils.LicenseStore;
+import com.sandklef.compliance.utils.LicenseUtils;
 import com.sandklef.compliance.utils.Log;
 import org.apache.commons.cli.*;
 
@@ -49,7 +51,6 @@ public class LicenseChecker {
             JsonPolicyParser jp = new JsonPolicyParser();
             values.put("policy", jp.readLicensePolicy((String) values.get("policyFile")));
             System.out.println("   policy file: " + values.get("policyFile"));
-
         }
 
         // Take action
@@ -194,6 +195,7 @@ public class LicenseChecker {
         Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 
         Report report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
+
         System.out.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report)+"\n");
     }
 

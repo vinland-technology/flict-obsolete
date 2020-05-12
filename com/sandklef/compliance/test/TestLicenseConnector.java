@@ -1,56 +1,68 @@
 package com.sandklef.compliance.test;
 
-
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
 import com.sandklef.compliance.utils.LicenseUtils;
+import com.sandklef.compliance.utils.Log;
+
+import java.io.IOException;
+import java.util.Map;
 
 import static com.sandklef.compliance.test.Utils.*;
 
 public class TestLicenseConnector {
 
 
+    private static final String LOG_TAG = TestLicenseConnector.class.getSimpleName();
+
     private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) {
 /*        System.out.println(" a0 : " + a.license() );
         System.out.println(" a1 : " + a.license().spdxTag() );
         System.out.println(" a2 : " + a.license().spdxTag() + " " + a.canBeUsedBy() );
   */
+        /*
         System.out.println("--> aCanUseB : " + a.license().spdxTag() + " " + b.license().spdxTag());
 
         System.out.println(" a : " + a.license().spdxTag() + " " + a.canBeUsedBy() + " " + a.canUse());
         System.out.println(" b : " + b.license().spdxTag() + " " + b.canBeUsedBy() + " " + b.canUse());
 
         System.out.println(" Try 1 ---> : " + a.license().spdxTag() + " " + a.canUse() + " contains " + b.license());
+*/
         if (a.canUse().contains(b)) {
             return true;
         }
-        System.out.println(" Try 1 <--- : " + a.license().spdxTag() + " " + a.canUse() + " contains " + b.license());
+  //      System.out.println(" Try 1 <--- : " + a.license().spdxTag() + " " + a.canUse() + " contains " + b.license());
 
         // Loop through all b's canBeUsed licenses
         for (LicenseConnector l : b.canBeUsedBy()) {
-            System.out.println(" Try 2 ---> : " + a.license().spdxTag() + "   can use: " + l.license().spdxTag());
+    //        System.out.println(" Try 2 ---> : " + a.license().spdxTag() + "   can use: " + l.license().spdxTag());
             if (l.license().spdxTag().equals(a.license().spdxTag())) {
-                System.out.println("  FOUND: " + a.license().spdxTag() + " can use: " + l.license().spdxTag());
-                System.out.println(" Try 2 <--- : " + a.license().spdxTag() + "   can use: " + l.license().spdxTag());
+      //          System.out.println("  FOUND: " + a.license().spdxTag() + " can use: " + l.license().spdxTag());
+        //        System.out.println(" Try 2 <--- : " + a.license().spdxTag() + "   can use: " + l.license().spdxTag());
                 return true;
             }
-            System.out.println(" Try 2 <--- : " + a.license().spdxTag() + "   can use: " + l.license().spdxTag());
+          //  System.out.println(" Try 2 <--- : " + a.license().spdxTag() + "   can use: " + l.license().spdxTag());
 
-            System.out.println(" Try 3 ---> : " + a.license().spdxTag() + "   CHECK: " + l.license().spdxTag());
+            //System.out.println(" Try 3 ---> : " + a.license().spdxTag() + "   CHECK: " + l.license().spdxTag());
             if (aCanUseB(a, l)) {
-                System.out.println(" Try 3 <--- : " + a.license().spdxTag() + "   CHECK: " + l.license().spdxTag());
+              //  System.out.println(" Try 3 <--- : " + a.license().spdxTag() + "   CHECK: " + l.license().spdxTag());
                 return true;
             }
-            System.out.println(" Try 3 <--- : " + a.license().spdxTag() + "   CHECK: " + l.license().spdxTag());
+//            System.out.println(" Try 3 <--- : " + a.license().spdxTag() + "   CHECK: " + l.license().spdxTag());
         }
 
         // non recursive:
 //        return a.canUse().contains(b) ;
         //
-        System.out.println("<-- aCanUseB : " + a.license().spdxTag() + " CAN NOT " + b.license().spdxTag());
+  //      System.out.println("<-- aCanUseB : " + a.license().spdxTag() + " CAN NOT " + b.license().spdxTag());
         return false;
     }
+    public static void test() throws IOException {
+        test_simple();;
+        test_read_json();
+    }
 
-    public static void test() {
+    public static void test_simple() {
         printTestStart("TestLicenseConnector");
 
         LicenseConnector bsd3Conn = new LicenseConnector(bsd3);
@@ -93,10 +105,48 @@ public class TestLicenseConnector {
 
         System.out.println(LicenseUtils.listCanUse(gpl30Conn));
         System.out.println(LicenseUtils.listCanBeUsedBy(bsd3Conn));
+    }
+
+    public static void test_read_json() throws IOException {
+        JsonLicenseConnectionsParser jcp = new JsonLicenseConnectionsParser();
+        Map<String, LicenseConnector> licenseConnectors = jcp.readLicenseConnection("licenses/connections/dwheeler.json");
+
+        for (Map.Entry<String, LicenseConnector> entry : licenseConnectors.entrySet()) {
+            String key = entry.getKey();
+            LicenseConnector value = entry.getValue();
+    //        System.out.println(key);
+    //            System.out.println(LicenseUtils.listCanBeUsedBy(value));
+        }
+        System.out.println(LicenseUtils.listCanBeUsedBy(licenseConnectors.get("PD")));
+
+        assertHelper("lgpl3 can use pd",
+                aCanUseB(licenseConnectors.get("LGPL-3.0-or-later"),
+                        licenseConnectors.get("BSD-3-Clause")));
+
+        assertHelper("pd can NOT use lgpl3",
+                !aCanUseB(licenseConnectors.get("BSD-3-Clause"),
+                        licenseConnectors.get("LGPL-3.0-or-later")));
+
+        assertHelper("apache can use bsd3",
+                aCanUseB(licenseConnectors.get("Apache-2.0"),
+                        licenseConnectors.get("BSD-3-Clause")));
+
+        assertHelper("bsd3 can NOT use apache",
+                !aCanUseB(licenseConnectors.get("BSD-3-Clause"),
+                        licenseConnectors.get("Apache-2.0")));
+
+        assertHelper("gpl3 can use pd",
+                aCanUseB(licenseConnectors.get("GPL-3.0-or-later"),
+                        licenseConnectors.get("BSD-3-Clause")));
+
+        assertHelper("pd can NOT use gpl3",
+                !aCanUseB(licenseConnectors.get("BSD-3-Clause"),
+                        licenseConnectors.get("GPL-3.0-or-later")));
+
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         test();
     }
 

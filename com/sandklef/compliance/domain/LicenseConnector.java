@@ -47,7 +47,6 @@ public class LicenseConnector {
     public String toString() {
         return "LicenseConnector{" +
                 "license=" + license.spdxTag() +
-                ", canUse=" + canUse +
-                '}';
+                "}";
     }
 }

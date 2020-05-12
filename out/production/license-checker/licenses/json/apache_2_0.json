@@ -1,6 +1,8 @@
 {
-    "software":"License Policy Checker",
-    "version":"0.1",
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
     "license": {
         "name":"Apache License 2.0",
         "spdx":"Apache-2.0",
