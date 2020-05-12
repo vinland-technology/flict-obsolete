@@ -37,8 +37,9 @@ JAVA_SOURCES=\
   com/sandklef/compliance/exporter/TestJsonComponentParser.java \
   com/sandklef/compliance/exporter/JsonExporter.java \
   com/sandklef/compliance/exporter/MDExporter.java \
-  com/sandklef/compliance/utils/TextComponentExporter.java \
- com/sandklef/compliance/utils/VirtualLicenseBuilder.java \
+  com/sandklef/compliance/exporter/TextComponentExporter.java \
+  com/sandklef/compliance/utils/VirtualLicenseBuilder.java \
+  com/sandklef/compliance/domain/LicenseConnector.java \
 
 
 TEST_SOURCES=\
