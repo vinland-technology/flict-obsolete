@@ -55,7 +55,7 @@ public class LicenseConclusion {
     @Override
     public String toString() {
 
-        return component.name()  + " (" + license.spdxTag() + "  from: " + component.licenses() + ")";
+        return component.name()  + " (" + license.spdx() + "  from: " + component.licenses() + ")";
     }
 
     /*    public LicenseConclusion(Component component, List<LicenseConclusion> conclusions) {
@@ -64,7 +64,7 @@ public class LicenseConclusion {
     }
 */
     /*public void addLicenseConclusion(LicenseConclusion licenseConclusion) {
-        Log.d(LOG_TAG, " adding conclusion: " + licenseConclusion.component.name() + "  " + licenseConclusion.license.spdxTag());
+        Log.d(LOG_TAG, " adding conclusion: " + licenseConclusion.component.name() + "  " + licenseConclusion.license.spdx());
         licenseConclusions.add(licenseConclusion);
     }
 
@@ -81,7 +81,7 @@ public class LicenseConclusion {
             sb.append(" * concluded license for \"");
             sb.append(lc.component.name() );
             sb.append("\": ");
-            sb.append(lc.component().concludedLicense().spdxTag());
+            sb.append(lc.component().concludedLicense().spdx());
             sb.append("         from the following " + (lc.component().dualLicensed()?"dual ":"many ") + "licenses: ");
             sb.append(lc.component().licenses());
             sb.append("\n");
