@@ -60,18 +60,18 @@ CLASSES=$(JAVA_SOURCES:.java=.class)
 TEST_CLASSES=$(TEST_SOURCES:.java=.class)
 
 LIB_DIR=lib
-JSON_JAR=$(LIB_DIR)/org.json.jar
 CLI_JAR=$(LIB_DIR)/commons-cli-1.4.jar
+GSON_JAR=lib/gson-2.2.2.jar
 WINSTONE_JAR=$(LIB_DIR)/winstone.jar
 #JUNIT_JAR=$(LIB_DIR)/junit-jupiter-api-5.6.2.jar
 #JUNIT_V_JAR=$(LIB_DIR)/junit-vintage-engine-5.6.2.jar
-CLASSPATH=.:$(JSON_JAR):$(CLI_JAR):
+CLASSPATH=.:$(CLI_JAR):$(GSON_JAR)
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 
 %.class:%.java 
 	javac  -Xdiags:verbose -cp "$(CLASSPATH)" $<
 
-all: $(CLASSES) $(JSON_JAR) Makefile
+all: $(CLASSES) $(GSON_JAR) Makefile
 	@echo
 
 $(CLASSES): $(SOURCES) Makefile
@@ -89,18 +89,14 @@ $(CLI_JAR):
 	mkdir -p lib
 	wget "https://search.maven.org/remotecontent?filepath=org/junit/vintage/junit-vintage-engine/5.6.2/junit-vintage-engine-5.6.2.jar" -O $(JUNIT_V_JAR)
 
-$(JSON_JAR):
-	mkdir -p lib
-	wget 'https://search.maven.org/remotecontent?filepath=org/json/json/20171018/json-20171018.jar' -O $(LIB_DIR)/org.json.jar
-
 $(WINSTONE_JAR):
 	mkdir -p lib
 	wget 'https://sourceforge.net/projects/winstone/files/latest/download?source=typ_redirect' -O $(LIB_DIR)/winstone.jar
 
-dload-libs: $(JSON_JAR) $(CLI_JAR) $(WINSTONE_JAR)
+dload-libs: $(CLI_JAR) $(WINSTONE_JAR)
 #$(JUNIT_JAR) $(JUNIT_V_JAR)
 
-$(CLASSES): $(JSON_JAR) $(CLI_JAR)
+$(CLASSES): $(GSON_JAR) $(CLI_JAR)
 
 cli:
 	make cli-licenses
