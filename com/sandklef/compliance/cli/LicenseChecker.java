@@ -76,7 +76,7 @@ public class LicenseChecker {
             writer = System.out;
         }
 
-        System.out.println(("  mode: " + values.get("mode")));
+        //        System.out.println(("  mode: " + values.get("mode")));
         // Take action
         if (execMode.PRINT_LICENSES == values.get("mode")) {
             licensePrint(writer);
