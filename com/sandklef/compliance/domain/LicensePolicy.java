@@ -9,11 +9,13 @@ import java.util.List;
 
 public class LicensePolicy {
 
+    private String name;
     private List<License> whiteList;
     private List<License> grayList;
     private List<License> blackList;
 
-    public LicensePolicy(List<License> whiteList, List<License> grayList, List<License> blackList) {
+    public LicensePolicy(String name, List<License> whiteList, List<License> grayList, List<License> blackList) {
+        this.name = name;
         this.whiteList = whiteList;
         this.grayList = grayList;
         this.blackList = blackList;
@@ -75,6 +77,9 @@ public class LicensePolicy {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append("name: ");
+        sb.append(name);
+        sb.append("\n");
         sb.append("whitelist: ");
         sb.append(whiteList);
         sb.append("\n");
