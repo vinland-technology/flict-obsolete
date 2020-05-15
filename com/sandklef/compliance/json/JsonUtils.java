@@ -4,11 +4,9 @@
 
 package com.sandklef.compliance.json;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class JsonUtils {
 
+    /*
     public static String readJsonString(JSONObject json, String key, String defaultValue) {
         try {
             return json.getString(key);
@@ -24,5 +22,5 @@ public class JsonUtils {
             return defaultValue;
         }
     }
-
+*/
 }
