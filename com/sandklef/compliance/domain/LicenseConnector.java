@@ -46,7 +46,7 @@ public class LicenseConnector {
     @Override
     public String toString() {
         return "LicenseConnector{" +
-                "license=" + license.spdxTag() +
+                "license=" + license.spdx() +
                 "}";
     }
 }
