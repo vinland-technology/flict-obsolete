@@ -3,14 +3,16 @@
         "software":"License Policy Checker",
         "version":"0.1"
     },
-    "whitelist": [
-        "GPL-3.0-only",
-        "GPL-2.0-only",
-        "LGPL-2.1-only"
-    ],
-    "graylist": [
-    ],
-    "blacklist": [
-        "Apache-2.0"
-    ]
+    "policy":{
+        "whitelist": [
+            "GPL-3.0-only",
+            "GPL-2.0-only",
+            "LGPL-2.1-only"
+        ],
+        "graylist": [
+        ],
+        "blacklist": [
+            "Apache-2.0"
+        ]
+    }
 }
