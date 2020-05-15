@@ -16,19 +16,27 @@ import com.sandklef.compliance.utils.LicenseUtils;
 import com.sandklef.compliance.utils.Log;
 import org.apache.commons.cli.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import static com.sandklef.compliance.utils.LicenseStore.*;
 
 public class LicenseChecker {
 
     private enum execMode {
         PRINT_LICENSES,
+        PRINT_CONNECTIONS,
         PRINT_COMPONENT,
         CHECK_VIOLATION;
-    } ;
+    }
 
-    private static final String LOG_TAG = LicenseChecker.class.getSimpleName() ;
+    ;
+
+    private static final String LOG_TAG = LicenseChecker.class.getSimpleName();
+    private static PrintStream writer;
 
     public static void main(String[] args) throws IOException {
 
@@ -43,36 +51,56 @@ public class LicenseChecker {
 
         // Read all licenses
         Log.d(LOG_TAG, "license dir: " + values.get("licenseDir"));
-        LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir((String) values.get("licenseDir")));
-        Log.d(LOG_TAG, "licenses read: " + LicenseStore.getInstance().licenses().size());
+        getInstance().addLicenses(new JsonLicenseParser().readLicenseDir((String) values.get("licenseDir")));
+        // TODO: use file from command line
+        getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection("licenses/connections/dwheeler.json"));
+        Log.d(LOG_TAG, "licenses read: " + getInstance().licenses().size());
 
         // If policy file provided - read it
-        if (values.get("policyFile")!=null) {
+        if (values.get("policyFile") != null) {
             JsonPolicyParser jp = new JsonPolicyParser();
             values.put("policy", jp.readLicensePolicy((String) values.get("policyFile")));
             System.out.println("   policy file: " + values.get("policyFile"));
         }
 
+        String outFileName = (String) values.get("output");
+        if (outFileName != null) {
+            try {
+                writer = new PrintStream(
+                        new FileOutputStream(outFileName, true));
+                //TODO: handle properly
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            writer = System.out;
+        }
+
+        System.out.println(("  mode: " + values.get("mode")));
         // Take action
         if (execMode.PRINT_LICENSES == values.get("mode")) {
-            licensePrint();
+            licensePrint(writer);
+        } else if (execMode.PRINT_CONNECTIONS == values.get("mode")) {
+            LicenseUtils.connectionsPrintDot(writer);
         } else if (execMode.PRINT_COMPONENT == values.get("mode")) {
-            componentPrint(values, options);
+            componentPrint(writer, values, options);
         } else if (execMode.CHECK_VIOLATION == values.get("mode")) {
-            reportPrint(values, options);
+            reportPrint(writer, values, options);
         }
     }
 
 
     public static void help(Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("license-checker.sh", options );
+        formatter.printHelp("license-checker.sh", options);
     }
 
     private static Options setupOptions() {
         final Options options = new Options();
         options.addOption(new Option("d", "debug", false, "Turn on debug."));
         options.addOption(new Option("dc", "debug-class", true, "Turn on debug for class only."));
+        options.addOption(new Option("o", "output", true, "Output to file."));
+        options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
         options.addOption(new Option("l", "license-dir", true, "Directory with license files."));
         options.addOption(new Option("p", "policy-file", true, "Path to policy file."));
@@ -90,6 +118,7 @@ public class LicenseChecker {
         // Prepare map wth default values
         Map<String, Object> values = new HashMap<>();
         values.put("componentFile", null);
+        values.put("output", null);
         values.put("licenseDir", "licenses/json");
         values.put("policyFile", null);
         values.put("policy", null);
@@ -102,90 +131,92 @@ public class LicenseChecker {
 
         try {
             // parse the command line arguments
-            CommandLine line = parser.parse( options, args );
+            CommandLine line = parser.parse(options, args);
 
-            if( line.hasOption( "debug" ) ) {
-                System.out.println(" DEBUG found");
+            if (line.hasOption("debug")) {
                 Log.level(Log.VERBOSE);
             }
-            if( line.hasOption( "debug-class" ) ) {
-                System.out.println(" DEBUG cli found, setting filter to: " + LOG_TAG);
+            if (line.hasOption("output")) {
+                values.put("output", line.getOptionValue("output"));
+            }
+            if (line.hasOption("debug-class")) {
                 Log.level(Log.VERBOSE);
                 Log.filterTag(line.getOptionValue("debug-class"));
             }
-            if( line.hasOption( "violation" ) ) {
-                Log.d(LOG_TAG, " Checking violations");
-                values.put("mode",execMode.CHECK_VIOLATION);
+            if (line.hasOption("connection-graph")) {
+                values.put("mode", execMode.PRINT_CONNECTIONS);
             }
-            if( line.hasOption( "component" ) ) {
+            if (line.hasOption("violation")) {
+                Log.d(LOG_TAG, " Checking violations");
+                values.put("mode", execMode.CHECK_VIOLATION);
+            }
+            if (line.hasOption("component")) {
                 values.put("componentFile", line.getOptionValue("component"));
                 Log.d(LOG_TAG, " Component file: " + values.get("componentFile"));
             }
-            if( line.hasOption( "licenses" ) ) {
+            if (line.hasOption("licenses")) {
                 values.put("mode", execMode.PRINT_LICENSES);
                 Log.d(LOG_TAG, " licenses mode choosend");
             }
-            if( line.hasOption( "license-dir" ) ) {
+            if (line.hasOption("license-dir")) {
                 values.put("licenseDir", line.getOptionValue("license-dir"));
                 Log.d(LOG_TAG, " License dir: " + values.get("licenseDir"));
             }
-            if( line.hasOption( "policy-file" ) ) {
+            if (line.hasOption("policy-file")) {
                 values.put("policyFile", line.getOptionValue("policy-file"));
-                System.out.println("  POLICY: " + line.getOptionValue("policyFile"));
                 Log.d(LOG_TAG, " Policy file: " + values.get("policyFile"));
             }
-            if( line.hasOption( "print-license" ) ) {
+            if (line.hasOption("print-license")) {
                 values.put("mode", execMode.PRINT_LICENSES);
             }
-            if( line.hasOption( "print-component" ) ) {
+            if (line.hasOption("print-component")) {
                 values.put("mode", execMode.PRINT_COMPONENT);
             }
-            if( line.hasOption( "help" ) ) {
+            if (line.hasOption("help")) {
                 help(options);
                 System.exit(0);
             }
-            if( line.hasOption( "json" ) ) {
+            if (line.hasOption("json")) {
                 values.put("format", ReportExporterFactory.OutputFormat.JSON);
             }
-            if( line.hasOption( "markdown" ) ) {
+            if (line.hasOption("markdown")) {
                 values.put("format", ReportExporterFactory.OutputFormat.MARKDOWN);
             }
-            if( line.hasOption( "pdf" ) ) {
-                System.out.println("Ignoring pdf argument");
+            if (line.hasOption("pdf")) {
             }
 
-        }
-        catch( ParseException exp ) {
-            System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
+        } catch (ParseException exp) {
+            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
             System.exit(1);
         }
 
         return parser;
     }
 
-    private static void licensePrint(){
+
+    private static void licensePrint(PrintStream writer) {
         Log.d(LOG_TAG, "printing licenses...");
-        System.out.println(LicenseStore.getInstance().licenseString());
+        writer.println(getInstance().licenseString());
     }
 
-    private static void componentPrint(Map<String, Object> values, Options options) throws IOException {
+    private static void componentPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException {
         Log.d(LOG_TAG, "printing component...");
         Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
         JsonComponentParser jp = new JsonComponentParser();
         Component c = jp.readComponent((String) values.get("componentFile"));
-        System.out.println(c.toStringLong());
+        writer.println(c.toStringLong());
     }
 
 
-    private static void reportPrint(Map<String, Object> values, Options options) throws IOException {
-        if (values.get("componentFile")==null) {
+    private static void reportPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException {
+        if (values.get("componentFile") == null) {
             System.err.println("\n*** Error: missing component file! ***\n\n");
             help(options);
             System.err.println("\n\n.... cowardly bailing out.\n");
             System.exit(1);
         }
 
-     //   System.out.println("json: " + values.get("format"));
+        //   System.out.println("json: " + values.get("format"));
 
         // Read component
         Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
@@ -196,7 +227,7 @@ public class LicenseChecker {
 
         Report report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
 
-        System.out.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report)+"\n");
+        writer.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report) + "\n");
     }
 
 }
