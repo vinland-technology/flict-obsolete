@@ -18,6 +18,7 @@ public class LicenseStore {
   
   //TODO: add support for Private use, Patent claims, Trademark, Notice
   private Map<String, License> licenses;
+  private  Map<String, LicenseConnector> connectors;
 
   private static LicenseStore store;
   public static LicenseStore getInstance() {
@@ -31,15 +32,17 @@ public class LicenseStore {
     licenses = new HashMap<>();
   }
 
+  /*
   private License addLicense(String name, Map<String, LicenseObligation> obligations) {
     License l = new License(name, obligations);
     licenses.put(name, l);
     return l;
   }
-
+*/
   public Map<String, License> licenses() {
     return licenses;
   }
+
 
   public String licenseString() {
     StringBuilder sb = new StringBuilder();
@@ -47,16 +50,17 @@ public class LicenseStore {
     {
       sb.append(entry.getKey());
       sb.append("\n");
-      for (LicenseObligation obligation : entry.getValue().obligations().values()) {
+  /*    for (LicenseObligation obligation : entry.getValue().obligations().values()) {
         sb.append(" * ");
         sb.append(obligation.name());
         sb.append(": ");
         sb.append(obligation.state());
         sb.append("\n");
-      }
+      }*/
     }
     return sb.toString();
   }
+
 
   public void addLicenses(Map<String, License> licenses) {
     this.licenses.putAll(licenses);
@@ -66,5 +70,11 @@ public class LicenseStore {
     return licenses.get(name);
   }
 
- 
+  public Map<String, LicenseConnector> connectors() {
+    return connectors;
+  }
+
+  public void connector(Map<String, LicenseConnector> connector) {
+        this.connectors = connector;
+  }
 }
