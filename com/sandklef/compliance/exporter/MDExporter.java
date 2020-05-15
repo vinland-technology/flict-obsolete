@@ -38,7 +38,7 @@ public class MDExporter implements ReportExporter {
         sb.append(": ");
         License concludedLicense = c.concludedLicense();
         if (concludedLicense!=null) {
-            sb.append(concludedLicense.spdxTag());
+            sb.append(concludedLicense.spdx());
         } else {
             sb.append("not conluded");
         }
@@ -84,7 +84,7 @@ public class MDExporter implements ReportExporter {
         sb.append(": ");
         License concludedLicense = report.component().concludedLicense();
         if (concludedLicense!=null) {
-            sb.append(concludedLicense.spdxTag());
+            sb.append(concludedLicense.spdx());
         } else {
             sb.append("not conluded");
         }
