@@ -6,7 +6,7 @@
 
 INSTALL_DIR=$(dirname $(realpath $(which $0)) | sed 's,\/bin,,g')
 
-CLASSPATH="$INSTALL_DIR:$INSTALL_DIR/lib/org.json.jar:$INSTALL_DIR/lib/commons-cli-1.4.jar"
+CLASSPATH="$INSTALL_DIR:$INSTALL_DIR/lib/org.json.jar:$INSTALL_DIR/lib/commons-cli-1.4.jar:lib/gson-2.2.2.jar"
 DEFAULT_ARGS=" --license-dir licenses/json "
 CLASS="com.sandklef.compliance.cli.LicenseChecker"
 
@@ -35,6 +35,9 @@ do
         TMP_MD=tmp.md
         rm $TMP_MD
         shift
+    elif [ "$1" = "--connection-graph" ]
+    then
+        CONNECTION_GRAPH=true
     else
         ARGS="$ARGS $1"
     fi
@@ -44,13 +47,20 @@ done #<<<"$HENRIK"
 
 run()
 {
-    java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS
+    java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $*
 }
 
 
 
 #echo THESE: $ARGS
-if [ "$TMP_MD" != "" ]
+if [ "$CONNECTION_GRAPH" = "true" ]
+then
+    TMP_DOT=tmp.dot
+    rm -f $TMP_DOT
+    FILE_NAME=license-connections
+    run -cg -o ${FILE_NAME}.dot &&  dot -Tpdf ${FILE_NAME}.dot  > ${FILE_NAME}.pdf
+    echo created ${FILE_NAME}.pdf
+elif [ "$TMP_MD" != "" ]
 then
     run > $TMP_MD
     pandoc $TMP_MD -o tmp.pdf
