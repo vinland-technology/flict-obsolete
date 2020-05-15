@@ -4,14 +4,11 @@
 
 package com.sandklef.compliance.json;
 
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.*;
 
-import static com.sandklef.compliance.json.JsonUtils.readJsonString;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,17 +50,103 @@ public class JsonComponentParser {
         System.out.println(e);
         System.exit(1);
       }
-      return readComponent(new JSONObject(sb.toString()));
+      return readComponentString(sb.toString());
     }
-    return readComponent(new JSONObject(new String(Files.readAllBytes(Paths.get(fileName)))));
+    return readComponentString(new String(Files.readAllBytes(Paths.get(fileName))));
+  }
+  public Component readComponentString(String json) {
+    JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
+    //    Log.level(Log.DEBUG);
+    Log.d(LOG_TAG, " n *** read co:   " + jo + " ****\n\n");
+//    Log.d(LOG_TAG, " \n\n\n *** read meta: " + jo.get("meta").getAsJsonObject() + " ****\n\n");
+//    Log.d(LOG_TAG, "  *** read comp: " + jo.get("component").getAsJsonObject() + " ****\n\n");
+    JsonObject componentJson = jo.get("component").getAsJsonObject();
+
+    Component c = readComponentStringHelper(componentJson);
+
+/*    Log.d(LOG_TAG, " c: " + c);
+
+    for (Component d : c.dependencies()) {
+      Log.d(LOG_TAG, "   d: " + d);
+
+      for (Component e : d.dependencies()) {
+        Log.d(LOG_TAG, "      e: " + e);
+      }
+
+    }
+*/
+    return c;
   }
 
-  public Component readComponent(JSONObject jo) throws IOException {
-    //MetaData meta = readMetaData(jo);
-    return readComponentHelper(jo.getJSONObject("component"));
+  public Component readComponentStringHelper(JsonObject componentJson) {
+    Gson gson = new Gson();
+    ComponentIntermediate componentIntermediate = gson.fromJson(componentJson, ComponentIntermediate.class);
+    Log.d(LOG_TAG, "  *** read comp: " + componentIntermediate + " ****\n\n");
+
+    Component current = componentIntermediate.export();
+
+    JsonElement depElem = componentJson.get("dependencies");
+    if ( depElem == null ) {
+      return current;
+    }
+
+    JsonArray depArray = depElem.getAsJsonArray();
+    if ( depArray == null || depArray.size() == 0) {
+      return current;
+    }
+
+    // We have deps, add them
+    List<ComponentIntermediate> deps  =
+            gson.fromJson(componentJson.get("dependencies").getAsJsonArray(),
+              new TypeToken<List<ComponentIntermediate>>() {}.getType());
+
+    for (JsonElement je : depArray) {
+      Log.d(LOG_TAG, "   ===================  SUB READ: " + je.toString());
+      Component dep = readComponentStringHelper(je.getAsJsonObject());
+      current.addDependenciey(dep);
+    }
+
+
+    return current;
+  }
+  private static class LicenseIntermediate {
+      private String spdx;
   }
 
-  private Component readComponentHelper(JSONObject jo) throws IOException {
+  private static class ComponentIntermediate {
+    private String name;
+    private String license;
+    private List<License> dependencies;
+
+    @Override
+    public String toString() {
+      return "ComponentIntermediate{" +
+              "name='" + name + '\'' +
+              ", license='" + license + '\'' +
+              ", dependencies=" + dependencies +
+              '}';
+    }
+
+    public Component export() {
+      if (license.contains("|") ||
+              license.contains("&")) {
+        boolean dualLicensed = license.contains("|");
+
+        List<License> licenses = licensesToList(license);
+        return new Component(name, licenses, null);
+      } else {
+        Log.d(LOG_TAG,name + " LicenseName: " + license + " DOES NOT contains PIPE");
+        License licenseReturn = LicenseStore.getInstance().license(license.trim());
+//      System.out.println("License: " + license);
+        Log.d(LOG_TAG,name + " will get license: " + license + "   no PIPE");
+        return new Component(name, licenseReturn, null);
+      }
+    }
+
+  }
+
+
+/*  private Component readComponentHelper(JSONObject jo) throws IOException {
     Log.d(LOG_TAG,"readComponent");
     String name = readJsonString(jo, NAME_TAG, "");
     Log.d(LOG_TAG,"readComponent  name: " + name);
@@ -109,8 +192,9 @@ public class JsonComponentParser {
       return new Component(name, license, dependencies);
     }
   }
+*/
 
-  private List<License> licensesToList(String licensefield) {
+  private static List<License> licensesToList(String licensefield) {
     List<String> licenseList ;
     List<License> licenses = new ArrayList<>();
 
@@ -127,7 +211,7 @@ public class JsonComponentParser {
     return licenses;
   }
 
-
+/*
   public MetaData readMetaDate(String fileName) throws IOException {
     return readMetaData(new JSONObject(new String(Files.readAllBytes(Paths.get(fileName)))));
   }
@@ -135,6 +219,7 @@ public class JsonComponentParser {
     return new MetaData(jo.getString("software"),
             jo.getString("version"));
   }
+*/
 
 }
 
