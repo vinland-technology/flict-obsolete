@@ -12,6 +12,7 @@ import static com.sandklef.compliance.domain.Obligation.*;
 
 public class VirtualLicenseBuilder {
 
+    /*
     public static int useCounter;
 
 
@@ -88,5 +89,5 @@ public class VirtualLicenseBuilder {
                 calculateStates(first, second));
     }
 
-
+*/
 }

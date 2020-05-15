@@ -8,7 +8,7 @@ import static com.sandklef.compliance.domain.Obligation.SUBLICENSING_ALLOWED_NAM
 import static com.sandklef.compliance.test.Utils.*;
 
 public class VirtualLicenseBuilderTest {
-
+/*
     public static void test() {
         License derived = VirtualLicenseBuilder.derive(gpl20, apache20);
 
@@ -24,10 +24,10 @@ public class VirtualLicenseBuilderTest {
         System.out.println(apache20.toStringLong());
         System.out.println(derived.toStringLong()    );
     }
-
+*/
     public static void main(String[] args) {
 
-        test();
+  //      test();
 
     }
 
