@@ -62,7 +62,7 @@ public class JsonComponentParser {
 //    Log.d(LOG_TAG, "  *** read comp: " + jo.get("component").getAsJsonObject() + " ****\n\n");
     JsonObject componentJson = jo.get("component").getAsJsonObject();
 
-    Component c = readComponentStringHelper(componentJson);
+    return readComponentStringHelper(componentJson);
 
 /*    Log.d(LOG_TAG, " c: " + c);
 
@@ -75,7 +75,6 @@ public class JsonComponentParser {
 
     }
 */
-    return c;
   }
 
   public Component readComponentStringHelper(JsonObject componentJson) {
