@@ -1,15 +1,19 @@
 {
-    "software":"License Policy Checker",
-    "version":"0.1",
-    "whitelist": [
-        "Apache-2.0",
-        "LGPL-2.1-only"
-    ],
-    "graylist": [
-        "GPL-2.0-only"
-    ],
-    "blacklist": [
-        "GPL-3.0-only",
-        "GPL-3.0-or-later"
-    ]
+    "meta" : {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    } ,
+    "policy": {
+        "whitelist": [
+            "Apache-2.0",
+            "LGPL-2.1-only"
+        ],
+        "graylist": [
+            "GPL-2.0-only"
+        ],
+        "blacklist": [
+            "GPL-3.0-only",
+            "GPL-3.0-or-later"
+        ]
+    }
 }

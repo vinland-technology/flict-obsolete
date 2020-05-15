@@ -17,12 +17,12 @@
                 "license": "Apache-2.0",
                 "dependencies": [
                     {
-                        "name": "LGPL-lib2",
+                        "name": "LGPL-lib2_1",
                         "license": "LGPL-2.1-only | GPL-2.0-only",
                         "dependencies": []
                     },
                     {
-                        "name": "LGPL-lib2",
+                        "name": "LGPL-lib2_2",
                         "license": "LGPL-2.1-only",
                         "dependencies": []
                     }
