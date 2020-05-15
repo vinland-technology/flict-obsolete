@@ -17,27 +17,34 @@ public class Component {
   private License concludedLicense;
   private List<License> licenses;
 
-  private boolean dualLicensed = true;
+  private LicenseMeta licenseMeta = LicenseMeta.UNKNOWN_LICENSED ;
   private List<Component> dependencies;
 
 
-
+  public static enum LicenseMeta {
+    UNKNOWN_LICENSED,
+    DUAL_LICENSED,
+    MANY_LICENSED,
+    SINGLE_LICENSED;
+  }
+  
   public boolean dualLicensed() {
     if (singleLicensed()) {
       return false;
     }
-    return dualLicensed;
+    return LicenseMeta.DUAL_LICENSED == licenseMeta;
   }
 
   public boolean manyLicensed() {
     if (singleLicensed()) {
       return false;
     }
-    return !dualLicensed;
+    return LicenseMeta.MANY_LICENSED == licenseMeta;
   }
 
   public boolean singleLicensed() {
-    return licenses.size()<2;
+    // TODO: what id licenses.size()<2???
+    return LicenseMeta.SINGLE_LICENSED == licenseMeta;
   }
 
   public Component(String name, List<License> licenses, List<Component> dependencies) {
@@ -54,9 +61,9 @@ public class Component {
     Log.d(LOG_TAG, "new Component: " + name + "    license: " + concludedLicense()+ "    licenses: " + licenses());
   }
 
-  public Component(String name, List<License> licenses, List<Component> dependencies, boolean dualLicensed) {
+  public Component(String name, List<License> licenses, List<Component> dependencies, LicenseMeta meta) {
     this(name, licenses, dependencies);
-    this.dualLicensed = dualLicensed;
+    this.licenseMeta = meta;
   }
 
   public Component(String name, License license, List<Component> dependencies) {
@@ -107,7 +114,21 @@ public class Component {
     if (concludedLicense()!=null) {
       sb.append("{ " + name + " (" + concludedLicense().spdx() + ") [");
     }
-    sb.append(dualLicensed?" Dual licensed ":" Many licenses ");
+    switch(licenseMeta) {
+    case UNKNOWN_LICENSED:
+      sb.append("Unknown license");
+      break;
+    case DUAL_LICENSED:
+      sb.append("Dual licensed");
+      break;
+    case MANY_LICENSED:
+      sb.append("Many licensed");
+      break;
+    case SINGLE_LICENSED:
+      sb.append("Single licensed");
+      break;
+    }
+      
     sb.append(") [");
     for (Component c : dependencies) {
       sb.append( "  " + c.toStringLong()  );
