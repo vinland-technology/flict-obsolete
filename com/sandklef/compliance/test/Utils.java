@@ -1,6 +1,7 @@
 package com.sandklef.compliance.test;
 
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
@@ -14,7 +15,6 @@ import static com.sandklef.compliance.domain.License.*;
 
 public class Utils {
     public static String beforeFormat = "%-50s";
-    public static License lgpl20;
     public static License lgpl21;
     public static License gpl20;
     public static License gpl20_later;
@@ -34,7 +34,8 @@ public class Utils {
             successCounter = 0;
             fails = new ArrayList<>();
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("licenses/json"));
-            lgpl20 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
+            LicenseStore.getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection("licenses/connections/dwheeler.json"));
+            lgpl21 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_1_SPDX);
             gpl20 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
             gpl20_later = LicenseStore.getInstance().license(GPL_2_0_LATER_SPDX);
@@ -58,7 +59,7 @@ public class Utils {
         LicensePolicy policy = new LicensePolicy();
 
         policy.addWhiteLicense(apache20);
-        policy.addGrayLicense(lgpl20);
+        policy.addGrayLicense(lgpl21);
         policy.addBlackLicense(gpl20);
 
         return policy;
@@ -68,7 +69,7 @@ public class Utils {
         LicensePolicy policy = new LicensePolicy();
 
         policy.addWhiteLicense(gpl20);
-        policy.addGrayLicense(lgpl20);
+        policy.addGrayLicense(lgpl21);
         policy.addBlackLicense(apache20);
 
         return policy;
@@ -95,7 +96,7 @@ public class Utils {
         Component a1 = new Component("a1", apache20, null);
 
         // a2
-        Component a2 = new Component("a2", lgpl20, null);
+        Component a2 = new Component("a2", lgpl21, null);
 
         // a    q
         ArrayList<Component> aDeps = new ArrayList<>();
@@ -155,7 +156,7 @@ public class Utils {
         Component a1 = new Component("a1", apache20, null);
 
         // a2
-        Component a2 = new Component("a2", lgpl20, null);
+        Component a2 = new Component("a2", lgpl21, null);
 
         // a    q
         ArrayList<Component> aDeps = new ArrayList<>();
@@ -182,7 +183,7 @@ public class Utils {
         ArrayList<Component> bDeps = new ArrayList<>();
         bDeps.add(b1);
         bDeps.add(b2);
-        Component b = new Component("b", lgpl20, bDeps);
+        Component b = new Component("b", lgpl21, bDeps);
 
 
         // top
@@ -196,7 +197,7 @@ public class Utils {
 
     public static Component dualLicensedComponent() {
     /*
-             top (gpl2)
+             top (gpl3)
               |
            +--+--------------------
            |
@@ -212,7 +213,7 @@ public class Utils {
 
         // a2
         List<License> licenses = new ArrayList<>();
-        licenses.add(lgpl20);
+        licenses.add(lgpl21);
         licenses.add(gpl20);
         Component a2 = new Component("a2", licenses, null);
 
@@ -225,7 +226,7 @@ public class Utils {
         // top
         ArrayList<Component> deps = new ArrayList<>();
         deps.add(a);
-        Component top = new Component("Top", gpl20, deps);
+        Component top = new Component("Top", gpl30, deps);
 
         return top;
     }
