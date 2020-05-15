@@ -1,18 +1,18 @@
 {
-    "name": "License Policy Checker",
-    "license": "GPL-3.0-only",
-    "dependencies": [
-        {
-            "name": "org.json",
-            "license":"JSON",
-            "dependencies": []
-        },
-        {
-            "name": "Apache Commons CLI",
-            "license": "Apache-2",
-            "dependencies": []
-        }
-        
-
-    ]
+    "component": {
+        "name": "License Policy Checker",
+        "license": "GPL-3.0-only",
+        "dependencies": [
+            {
+                "name": "gson-2.2.2",
+                "license":"Apache-2.0",
+                "dependencies": []
+            },
+            {
+                "name": "Apache Commons CLI",
+                "license": "Apache-2.0",
+                "dependencies": []
+            }
+        ]
+    }
 }
