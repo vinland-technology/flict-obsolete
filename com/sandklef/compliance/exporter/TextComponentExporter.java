@@ -1,10 +1,7 @@
 package com.sandklef.compliance.exporter;
 
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.exporter.ReportExporter;
 import com.sandklef.compliance.utils.LicenseArbiter;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.List;
 
