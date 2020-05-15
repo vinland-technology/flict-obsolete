@@ -16,12 +16,12 @@ public class TestComponents {
     assertHelper("dependency size of top", valid.dependencies().size()==2);
     assertHelper("total number of dependencies", countDependencies(valid)==8);
     assertHelper("top level name", valid.name().equals("Top"));
-    assertHelper("top level license", valid.licenses().get(0).spdxTag().equals("GPL-2.0-only"));
+    assertHelper("top level license", valid.licenses().get(0).spdx().equals("GPL-2.0-only"));
     printSubTestStart("Invalid component");
     assertHelper("dependency size of top", invalid.dependencies().size()==2);
     assertHelper("total number of dependencies", countDependencies(invalid)==8);
     assertHelper("top level name", invalid.name().equals("InvalidTop"));
-    assertHelper("top level license", invalid.licenses().get(0).spdxTag().equals("Apache-2.0"));
+    assertHelper("top level license", invalid.licenses().get(0).spdx().equals("Apache-2.0"));
   }
 
 

@@ -36,7 +36,7 @@ public class TestLicenseConnector {
         // Loop through all b's canBeUsed licenses
         for (LicenseConnector l : b.canBeUsedBy()) {
     //        System.out.println(" Try 2 ---> : " + a.license().spdxTag() + "   can use: " + l.license().spdxTag());
-            if (l.license().spdxTag().equals(a.license().spdxTag())) {
+            if (l.license().spdx().equals(a.license().spdx())) {
       //          System.out.println("  FOUND: " + a.license().spdxTag() + " can use: " + l.license().spdxTag());
         //        System.out.println(" Try 2 <--- : " + a.license().spdxTag() + "   can use: " + l.license().spdxTag());
                 return true;
@@ -58,7 +58,7 @@ public class TestLicenseConnector {
         return false;
     }
     public static void test() throws IOException {
-        test_simple();;
+        test_simple();
         test_read_json();
     }
 
@@ -102,10 +102,12 @@ public class TestLicenseConnector {
         // bsd3 ---> lgpl21 ---> gpl20 --> gpl20_later ---> gpl30
         assertHelper("gpl30 can use bsd3", aCanUseB(gpl30Conn, bsd3Conn));
         assertHelper("bsd3 can NOT use gpl30", !aCanUseB(bsd3Conn, gpl30Conn));
-
+/*
         System.out.println(LicenseUtils.listCanUse(gpl30Conn));
         System.out.println(LicenseUtils.listCanBeUsedBy(bsd3Conn));
+ */
     }
+
 
     public static void test_read_json() throws IOException {
         JsonLicenseConnectionsParser jcp = new JsonLicenseConnectionsParser();
@@ -117,7 +119,7 @@ public class TestLicenseConnector {
     //        System.out.println(key);
     //            System.out.println(LicenseUtils.listCanBeUsedBy(value));
         }
-        System.out.println(LicenseUtils.listCanBeUsedBy(licenseConnectors.get("PD")));
+//        System.out.println(LicenseUtils.listCanBeUsedBy(licenseConnectors.get("PD")));
 
         assertHelper("lgpl3 can use pd",
                 aCanUseB(licenseConnectors.get("LGPL-3.0-or-later"),

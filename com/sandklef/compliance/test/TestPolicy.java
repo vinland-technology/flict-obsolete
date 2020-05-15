@@ -21,7 +21,7 @@ public class TestPolicy {
   private static final String LOG_TAG = TestPolicy.class.getSimpleName();
 
   private static boolean testCanAUseB(License user, License usee) {
-    boolean ret = LicenseArbiter.canAUseB(null, null, user,usee);
+    boolean ret = LicenseArbiter.aCanUseB(user,usee);
     return ret;
   }
 
@@ -62,8 +62,8 @@ public class TestPolicy {
     assertHelper("0 violations made", validReport.violations().size()==0);
     assertHelper("0 concerns made", validReport.concerns().size()==0);
     assertHelper("Both deps are lgpl",
-            c.dependencies().get(0).concludedLicense().spdxTag().equals("LGPL-2.1-only") &&
-                    c.dependencies().get(1).concludedLicense().spdxTag().equals("LGPL-2.1-only"));
+            c.dependencies().get(0).concludedLicense().spdx().equals("LGPL-2.1-only") &&
+                    c.dependencies().get(1).concludedLicense().spdx().equals("LGPL-2.1-only"));
 
 //    System.exit(0);
   }
@@ -96,7 +96,7 @@ public class TestPolicy {
 //    Log.filterTag(LicenseArbiter.LOG_TAG);
     Report validReport = LicenseArbiter.report(validComponent(), policy);
 
-    Log.level(Log.DEBUG);
+    //    Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result: " +
             " " + validReport.concerns().size() +
             " " + validReport.conclusions().size() +
@@ -107,7 +107,7 @@ public class TestPolicy {
 
     assertHelper("concerns: ", validReport.concerns().size() == 1);
     assertHelper("conclusions", validReport.conclusions().size() == 0);
-    assertHelper("violations: ", validReport.violations().size() == 3);
+    assertHelper("violations: ", validReport.violations().size() == 4);
 
     printSubTestStart("Valid component and Copyleft/weak policy");
 /*
@@ -157,12 +157,12 @@ public class TestPolicy {
     policy.addGrayLicense(gpl20);
     policy.addBlackLicense(gpl30);
 
-    Component a11 = new Component("a11", lgpl20, null);
+    Component a11 = new Component("a11", Utils.lgpl21, null);
     Component a12 = new Component("a12", apache20, null);
     ArrayList<Component> a1Deps = new ArrayList<>();
     a1Deps.add(a11);
     a1Deps.add(a12);
-    Component a1 = new Component("a1", gpl20, a1Deps);
+    Component a1 = new Component("a1", gpl20, a1Deps); // concern since gray
 
     Component a21 = new Component("a21", apache20, null);
     List<License> a22Licenses = new ArrayList<>();
@@ -179,13 +179,13 @@ public class TestPolicy {
     aDeps.add(a2);
     Component a = new Component("A", gpl20, aDeps); // concern since gray
 
-    // 2 concerns
+    // 3 concerns
     // 0 violations
     // 1 conclusion
  //   Log.level(Log.DEBUG);
     Report report = LicenseArbiter.report(a, policy);
 
-    Log.level(Log.DEBUG);
+    //    Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusions().size() +
             " concerns: " + report.concerns().size() +
             " violations: " + report.violations().size() );
@@ -193,9 +193,9 @@ public class TestPolicy {
             "\n concerns: " + report.concerns() +
             "\nviolations: " + report.violations());
 
-    assertHelper(" concern: ", report.concerns().size() == 3);
+    assertHelper(" concern: ", report.concerns().size() == 0);
     assertHelper(" conclusion: ", report.conclusions().size() == 1);
-    assertHelper(" concern: ", report.violations().size() == 0);
+    assertHelper(" concern: ", report.violations().size() == 3);
 
 
   }
@@ -205,7 +205,7 @@ public class TestPolicy {
     printSubTestStart("Valid but concerns, conclusions and violation");
 
     LicensePolicy policy = new LicensePolicy();
-    policy.addGrayLicense(lgpl20);
+    policy.addGrayLicense(Utils.lgpl21);
     policy.addBlackLicense(gpl20);
 
     // a1

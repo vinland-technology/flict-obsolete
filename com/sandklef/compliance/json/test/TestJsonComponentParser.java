@@ -29,7 +29,7 @@ public class TestJsonComponentParser {
     printTestStart("TestJsonComponentParser");
     assertHelper("Component name", c.name().equals("Main program"));
     assertHelper("Component has two dependencies", c.dependencies().size()==2);
-    assertHelper("Component is licensed under lgpl", c.licenses().get(0).spdxTag().equals(gpl20.spdxTag()));
+    assertHelper("Component is licensed under lgpl", c.licenses().get(0).spdx().equals(gpl20.spdx()));
     Component sub0 = c.dependencies().get(0);
     Component sub1 = c.dependencies().get(1);
     assertHelper("Component's sub components name",
