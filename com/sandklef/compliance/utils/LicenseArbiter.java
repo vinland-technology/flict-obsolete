@@ -4,28 +4,101 @@
 
 package com.sandklef.compliance.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
 
 public class LicenseArbiter {
 
     public static String LOG_TAG = LicenseArbiter.class.getSimpleName();
 
+    static {
+        JsonLicenseConnectionsParser jcp = new JsonLicenseConnectionsParser();
+        try {
+            // TODO: the connector file to use should be given as an arg somehow
+            Map<String, LicenseConnector> licenseConnectors = jcp.readLicenseConnection("licenses/connections/dwheeler.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
     public static ObligationState state(License license, String obligationName) {
         return license.obligations().get(obligationName).state();
     }
+*/
 
+    public static boolean aCanUseB(License a, License b) {
+        //Log.level(Log.DEBUG);
+        Log.d(LOG_TAG, "aCanUseB " + a + " " +b);
+        if (b==null) {
+            // violation in "lower" components
+            return false;
+        }
+        Log.d(LOG_TAG, "aCanUseB " + a.spdx() + " " +b.spdx());
+        Log.d(LOG_TAG, "aCanUseB " + LicenseStore.getInstance().connectors());
+        Log.d(LOG_TAG, "aCanUseB c " + LicenseStore.getInstance().connectors().get(a.spdx()));
+        Log.d(LOG_TAG, "aCanUseB c " + LicenseStore.getInstance().connectors().get(b.spdx()));
+        return aCanUseB(LicenseStore.getInstance().connectors().get(a.spdx()),
+                LicenseStore.getInstance().connectors().get((b.spdx())));
+    }
+
+    private static boolean aCanUseBImpl(LicenseConnector a, LicenseConnector b, List<LicenseConnector> visited) {
+        Log.d(LOG_TAG, "   ---> check lic: " + a + " and " + b + "    { " + visited + " }");
+
+        // Check if we've visited this connector already. If so, false
+        if (visited.contains(b)) {
+            // already checked b
+            Log.d(LOG_TAG, "\n\n ***************** ALREADY BEEN IN " + b.license().spdx() + " ********\n\n\n");
+            return false;
+        } else if (b==null) {
+            // probably a violation in "lower" components
+            return false;
+        } else {
+            // not visited, mark it as visited
+            visited.add(b);
+        }
+
+        if (a.license().spdx().equals(b.license().spdx())) {
+            return true;
+        }
+        if (a.canUse().contains(b)) {
+            return true;
+        }
+        //      System.out.println(" Try 1 <--- : " + a.license().spdxTag() + " " + a.canUse() + " contains " + b.license());
+
+        // Loop through all b's canBeUsed licenses
+        for (LicenseConnector l : b.canBeUsedBy()) {
+
+            if (l.license().spdx().equals(a.license().spdx())) {
+                return true;
+            }
+
+            if (aCanUseBImpl(a, l, visited)) {
+                //  System.out.println(" Try 3 <--- : " + a.license().spdx() + "   CHECK: " + l.license().spdx());
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) {
+        return aCanUseBImpl(a, b, new ArrayList<>());
+    }
+
+/*
     public static boolean aUsesB(Component c, Report report, License user, License usee) throws LicenseViolationException, NoLicenseException {
         ///System.out.println("****: " + c.name() + " " + usee);
 
+
         if (usee == null) {
             Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...)  ===>  false");
-/*            Log.d(LOG_TAG, " violated license for " + c.name() + " 3");
 
-           report.violation().addObligationViolation(
-                    new LicenseViolation.ObligationViolation(c));*/
             throw new NoLicenseException("Used licenses unknown ", user, usee);
         }
         Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...) ");
@@ -37,14 +110,6 @@ public class LicenseArbiter {
         }
         Log.d(LOG_TAG, "Licenses differ");
 
-        // TODO: the below is just a try
-        //    apache can use gplv2 - if we license the software under gplv2
-    /*    if (user.spdxTag().equals(License.APACHE_2_0_SPDX) &&
-                usee.spdxTag().equals(License.GPL_2_0_SPDX)) {
-           // System.out.println("Apache is allowed to use GPL for the moment");
-         //   return false;
-        }
-*/
         // Below it will be assumed that the licenses differ
 
       //  System.out.println(" **************************** : " + c.name() + " " + usee.spdxTag() + "  => " + user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() + "????");
@@ -89,7 +154,7 @@ public class LicenseArbiter {
             return false;
         }
     }
-
+*/
 
     public static Report report(Component c, LicensePolicy policy) {
         Log.d(LOG_TAG, "reportViolations()    c: " + c.name());
@@ -221,31 +286,38 @@ public class LicenseArbiter {
             if (policy != null && policy.blackList().contains(l)) {
                 continue;
             }
-            Log.d(LOG_TAG, "    can " + c.name() + " with: " + l.spdxTag() + " in components: " + c.dependencies().size());
+            Log.d(LOG_TAG, "    can " + c.name() + " with: " + l.spdx() + " in components: " + c.dependencies().size());
             for (Component d : c.dependencies()) {
                 Log.d(LOG_TAG, c.name() + " myCheckedLicenses: " + myCheckedLicenses + " HESA");
 
-                Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")");
-                try {
+                Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")");
+        //        try {
                //     System.out.println("*** 1" + c + " " + l + " " + d + "   concluded: " + d.concludedLicense());
-                    aUsesB(d, report, l, d.concludedLicense());
-                    // So, the license l can be used when using d
-                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  OK choice  HESA");
-                    myCheckedLicenses.add(l);
-                    violatedComponents.remove(d);
-                    Log.d(LOG_TAG, "    myCheckedLicenses for " + c.name() + "  added " + l.spdxTag() + "  to " + myCheckedLicenses);
-                } catch (LicenseViolationException e) {
+                //aUsesB(d, report, l, d.concludedLicense());
+                  if (aCanUseB(l, d.concludedLicense())) {
+                      // So, the license l can be used when using d
+                      Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  OK choice  HESA");
+                      myCheckedLicenses.add(l);
+                      violatedComponents.remove(d);
+                      Log.d(LOG_TAG, "    myCheckedLicenses for " + c.name() + "  added " + l.spdx() + "  to " + myCheckedLicenses);
+                  } else {
+                      violationFound = true;
+                      violatedComponents.add(d);
+                      Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?  :  FAIL:   HESA");
+
+                  }
+          /*      } catch (LicenseViolationException e) {
                     violationFound = true;
                     violatedComponents.add(d);
-                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?  :  FAIL: " + e.getMessage() + "  HESA");
+                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?  :  FAIL: " + e.getMessage() + "  HESA");
                  //   allCleared = false;
                 } catch (NoLicenseException e) {
-                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdxTag() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?? :  FAIL: " + e.getMessage());
+                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?? :  FAIL: " + e.getMessage());
                   //  allCleared = false;
                     Log.d(LOG_TAG, " violated license? for " + c.name() + " 2");
                     violatedComponents.add(d);
                     violationFound = true;
-                }
+                }*/
                 Log.d(LOG_TAG, c.name() + " myCheckedLicenses: " + myCheckedLicenses + " HESA");
             }
 //            Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared);
