@@ -86,10 +86,14 @@ public class Component {
   
   public void concludedLicense(License license) {
     Log.d(LOG_TAG, "\n ======== UPDATING LICENSE on \"" + name +  "\" to \"" +
-                       (license!=null?""+license.spdxTag():license) + "\" ==========\n");
+                       (license!=null?""+license.spdx():license) + "\" ==========\n");
     concludedLicense = license;
   }
-  
+
+  public void addDependenciey(Component c) {
+    dependencies.add(c);
+  }
+
   public List<Component> dependencies() {
     return dependencies;
   }
@@ -101,7 +105,7 @@ public class Component {
     sb.append(name);
     sb.append("(");
     if (concludedLicense()!=null) {
-      sb.append("{ " + name + " (" + concludedLicense().spdxTag() + ") [");
+      sb.append("{ " + name + " (" + concludedLicense().spdx() + ") [");
     }
     sb.append(dualLicensed?" Dual licensed ":" Many licenses ");
     sb.append(") [");
@@ -118,16 +122,16 @@ public class Component {
     sb.append(name);
     sb.append(" (");
     if (concludedLicense()!=null) {
-      sb.append(concludedLicense().spdxTag());
+      sb.append(concludedLicense().spdx());
     }
     Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses().size());
     Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses());
     if (licenses().size()>1 && concludedLicense()==null) {
       sb.append(" (");
       for (License l : licenses()) {
-        Log.level(Log.DEBUG);
+        //        Log.level(Log.DEBUG);
         Log.d(LOG_TAG, "   toString c: " + name + "   license: " + l);
-        sb.append(l.spdxTag());
+        sb.append(l.spdx());
         sb.append(",");
       }
       sb.append(") ");
