@@ -110,14 +110,14 @@ cli-violations:
 
 stat:
 	@echo "Java: " ; 
-	@echo -n " * files: " ; find . -name "*.java" | wc -l
-	@echo -n " * loc: " ; find . -name "*.java" | xargs wc -l| tail -1
+	@echo -n " * files: " ; find . -name "*.java" | grep -v out/ | wc -l
+	@echo -n " * loc: " ; find . -name "*.java" | grep -v out/ | xargs wc -l| tail -1
 	@echo "Json: " ; 
-	@echo -n " * files: " ; find . -name "*.json" | wc -l
-	@echo -n " * loc: " ; find . -name "*.json" | xargs wc -l| tail -1
+	@echo -n " * files: " ; find . -name "*.json" | grep -v out/ | wc -l
+	@echo -n " * loc: " ; find . -name "*.json" | grep -v out/ | xargs wc -l| tail -1
 	@echo "Bash: " ; 
-	@echo -n " * files: " ; find . -name "*.sh" -o -name configure | wc -l
-	@echo -n " * loc: " ; find . -name "*.sh"  -o -name configure | xargs wc -l| tail -1
+	@echo -n " * files: " ; find . -name "*.sh" -o -name configure | grep -v out/ | wc -l
+	@echo -n " * loc: " ; find . -name "*.sh"  -o -name configure | grep -v out/ | xargs wc -l| tail -1
 
 clean:
 	rm -f $(CLASSES)
@@ -127,3 +127,9 @@ clean:
 test: all $(TEST_CLASSES) Makefile
 	java -ea -cp $(CLASSPATH) com/sandklef/compliance/test/TestAll
 
+cg: connector-grahp
+
+connector-grahp:
+	bin/license-checker.sh -cg -o license.dot
+	dot -Tpdf license.dot > license.pdf
+	file  license.pdf
