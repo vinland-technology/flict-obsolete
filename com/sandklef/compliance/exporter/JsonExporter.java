@@ -4,11 +4,12 @@
 
 package com.sandklef.compliance.exporter;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.Version;
 import com.sandklef.compliance.utils.LicenseArbiter;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class JsonExporter implements ReportExporter {
     
     @Override
     public String exportReport(Report report) {
-        JSONObject top = new JSONObject();
+/*        JSONObject top = new JSONObject();
         JSONObject meta = new JSONObject();
         meta.put(SOFTWARE_TAG, Version.POLICY_CHECKER_NAME);
         meta.put(VERSION_TAG, Version.POLICY_CHECKER_VERSION);
@@ -40,6 +41,9 @@ public class JsonExporter implements ReportExporter {
         data.put(POLICY_VIOLATION_TAG, exportPolicyViolationsJson(report.policyViolations()));
         top.put(REPORT_TAG, data);
         return top.toString();
+
+ */
+        return new Gson().toJson(report);
     }
 /*
     public JSONObject exportLicenseViolationImpl(LicenseObligationViolation violation) {
@@ -79,11 +83,12 @@ public class JsonExporter implements ReportExporter {
 */
     @Override
     public String exportLicenseViolations(List<LicenseObligationViolation> violations) {
-        return exportLicenseViolationsJson(violations).toString();
+        return new Gson().toJson(violations);
+//        return exportLicenseViolationsJson(violations);
     }
 
-    public JSONArray exportLicenseViolationsJson(List<LicenseObligationViolation> violations) {
-        JSONArray violationsArray = new JSONArray();
+    public String exportLicenseViolationsJson(List<LicenseObligationViolation> violations) {
+/*        JSONArray violationsArray = new JSONArray();
         for (LicenseObligationViolation lov : violations) {
             JSONObject lovJson = new JSONObject();
             lovJson.put("component", lov.user().name());
@@ -92,6 +97,9 @@ public class JsonExporter implements ReportExporter {
             violationsArray.put(lovJson);
         }
         return violationsArray;
+
+ */
+        return new Gson().toJson(violations);
     }
 /*
     private JSONObject exportConclusionImpl(LicenseConclusion conclusion) {
@@ -118,20 +126,21 @@ public class JsonExporter implements ReportExporter {
 */
     @Override
     public String exportConclusions(List<LicenseConclusion> conclusions) {
-        return exportConclusionsJson(conclusions).toString();
+        return new Gson().toJson(conclusions);
+//        return exportConclusionsJson(conclusions).toString();
     }
 
-
-    public JSONArray exportConclusionsJson(List<LicenseConclusion> conclusions) {
+/*
+    public String exportConclusionsJson(List<LicenseConclusion> conclusions) {
         JSONArray conclusionArray = new JSONArray();
         for (LicenseConclusion lc : conclusions) {
             JSONObject lcJson = new JSONObject();
             lcJson.put("component", lc.component().name());
-            lcJson.put("license", lc.license().spdxTag());
+            lcJson.put("license", lc.license().spdx());
             lcJson.put("licenses_type", LicenseArbiter.multipeLicensesInformation(lc.component()));
             JSONArray licArr = new JSONArray();
             for (License lic : lc.component().licenses()) {
-                licArr.put(lic.spdxTag());
+                licArr.put(lic.spdx());
             }
             lcJson.put("licenses", licArr);
             conclusionArray.put(lcJson);
@@ -139,40 +148,43 @@ public class JsonExporter implements ReportExporter {
         System.out.println("   concl array: " + conclusionArray.toString());
         return conclusionArray;
     }
+*/
 
-
+    /*
     public JSONArray exportConcernsJson(List<PolicyConcern> concerns) {
         JSONArray concernsArrary = new JSONArray();
         for (PolicyConcern licConcern: concerns) {
             JSONObject concJson = new JSONObject();
             concJson.put("component", licConcern.component().name());
-            concJson.put("license", licConcern.license().spdxTag());
+            concJson.put("license", licConcern.license().spdx());
             concJson.put("licenses_type", LicenseArbiter.multipeLicensesInformation(licConcern.component()));
             concernsArrary.put(concJson);
         }
         return concernsArrary;
     }
-
+*/
     @Override
     public String exportConcerns(List<PolicyConcern> concerns) {
-        return exportConcernsJson(concerns).toString();
+        return new Gson().toJson(concerns);
+//        return exportConcernsJson(concerns).toString();
     }
-
+/*
     public JSONArray exportPolicyViolationsJson(List<PolicyViolation> violations) {
         JSONArray violationArrary = new JSONArray();
         for (PolicyViolation pv: violations) {
             JSONObject concJson = new JSONObject();
             concJson.put("component", pv.component().name());
-            concJson.put("license", pv.license().spdxTag());
+            concJson.put("license", pv.license().spdx());
             concJson.put("licenses_type", LicenseArbiter.multipeLicensesInformation(pv.component()));
             violationArrary.put(concJson);
         }
         return violationArrary;
     }
-
+*/
     @Override
     public String exportPolicyViolations(List<PolicyViolation> violations) {
-        return exportPolicyViolationsJson(violations).toString();
+        return new Gson().toJson(violations);
+//        return exportPolicyViolationsJson(violations).toString();
     }
     /*    @Override
         public String exportConcern(List<LicenseConcern> concerns) {
@@ -185,6 +197,6 @@ public class JsonExporter implements ReportExporter {
     */
     @Override
     public String exportComponent(Component c) {
-        return null;
+        return new Gson().toJson(c);
     }
 }
