@@ -71,7 +71,7 @@ TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 %.class:%.java 
 	javac  -Xdiags:verbose -cp "$(CLASSPATH)" $<
 
-all: $(CLASSES) $(GSON_JAR) Makefile
+all: $(CLASSES) $(GSON_JAR) $(CLI_JAR) Makefile
 	@echo
 
 $(CLASSES): $(SOURCES) Makefile
@@ -80,6 +80,10 @@ $(CLI_JAR):
 	mkdir tmp; cd tmp ; wget "https://downloads.apache.org//commons/cli/binaries/commons-cli-1.4-bin.tar.gz"
 	cd tmp; tar zxvf commons-cli-1.4-bin.tar.gz commons-cli-1.4/commons-cli-1.4.jar
 	cd tmp; mv commons-cli-1.4/commons-cli-1.4.jar ../lib
+
+$(GSON_JAR):
+	cd lib; wget "http://www.java2s.com/Code/JarDownload/gson/gson-2.2.2.jar.zip"
+	cd lib; unzip $(GSON_JAR)
 
 #$(JUNIT_JAR):
 	mkdir -p lib
