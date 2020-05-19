@@ -1,0 +1,88 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "connections": [
+        {
+            "spdx":"PD",
+            "used_by": [ "MIT" , "X11"]
+        },
+        {
+            "spdx":"MIT",
+            "used_by": [ "BSD-3-Clause" , "X11" ]
+        },
+        {
+            "spdx":"X11",
+            "used_by": [ "BSD-3-Clause" , "MIT"]
+        },
+        {
+            "spdx":"BSD-3-Clause",
+            "used_by": [
+                "Apache-2.0",
+                "LGPL-2.1-only",
+                "LGPL-2.1-or-later",
+                "LGPL-3.0-only",
+                "LGPL-3.0-or-later",
+                "MPL-1.1"
+            ]
+        },
+        {
+            "spdx":"Apache-2.0",
+            "used_by": [
+                "LGPL-3.0-only",
+                "LGPL-3.0-or-later"
+            ]
+        },
+        {
+            "spdx":"MPL-1.1",
+            "used_by": []
+        },
+        {
+            "spdx": "LGPL-2.1-only",
+            "used_by": [
+                "GPL-2.0-only",
+                "GPL-2.0-or-later"
+            ]
+        },
+        {
+            "spdx": "LGPL-2.1-or-later",
+            "used_by": [
+                "LGPL-2.1-only",
+                "GPL-2.0-or-later",
+                "LGPL-3.0-or-later",
+                "LGPL-3.0-only"
+            ]
+        },
+        {
+            "spdx": "LGPL-3.0-only",
+            "used_by": [
+                "GPL-3.0-only",
+                "GPL-3.0-or-later"
+            ]
+        },
+        {
+            "spdx": "LGPL-3.0-or-later",
+            "used_by": [ 
+                "GPL-3.0-only",
+                "GPL-3.0-or-later"
+            ]
+        },
+        {
+            "spdx": "GPL-2.0-only",
+            "used_by": [  ]
+        },
+        {
+            "spdx": "GPL-2.0-or-later",
+            "used_by": [ "GPL-2.0-only" , "GPL-3.0-only", "GPL-3.0-or-later" ]
+        },
+        {
+            "spdx": "GPL-3.0-only",
+            "used_by": [ ]
+        },
+        {
+            "spdx": "GPL-3.0-or-later",
+            "used_by": [ ]
+        }
+    ]
+}
