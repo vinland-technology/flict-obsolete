@@ -58,12 +58,9 @@ public class TestPolicy {
     Log.d(LOG_TAG, " violations " + validReport.violations());
 
     //Log.level(Log.ERROR);
-    assertHelper("4 conclusions made", validReport.conclusions().size()==3);
-    assertHelper("0 violations made", validReport.violations().size()==0);
+    assertHelper("0 conclusions made", validReport.conclusions().size()==0);
+    assertHelper("5 violations made", validReport.violations().size()==5);
     assertHelper("0 concerns made", validReport.concerns().size()==0);
-    assertHelper("Both deps are lgpl",
-            c.dependencies().get(0).concludedLicense().spdx().equals("LGPL-2.1-only") &&
-                    c.dependencies().get(1).concludedLicense().spdx().equals("LGPL-2.1-only"));
 
 //    System.exit(0);
   }
@@ -91,12 +88,18 @@ public class TestPolicy {
                          +---------+-----+
                          |               |
                          b11 (apache2)   b12 (apache2)
+
+
+        policy.addWhiteLicense(apache20);
+        policy.addGrayLicense(lgpl21);
+        policy.addBlackLicense(gpl20);
+
      */
 //    Log.level(Log.DEBUG);
 //    Log.filterTag(LicenseArbiter.LOG_TAG);
     Report validReport = LicenseArbiter.report(validComponent(), policy);
 
-    //    Log.level(Log.DEBUG);
+//       Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result: " +
             " " + validReport.concerns().size() +
             " " + validReport.conclusions().size() +
@@ -105,9 +108,9 @@ public class TestPolicy {
             "\n concerns: " + validReport.concerns() +
             "\nviolations: " + validReport.violations());
 
-    assertHelper("concerns: ", validReport.concerns().size() == 1);
+    assertHelper("concerns: ", validReport.concerns().size() == 0);
     assertHelper("conclusions", validReport.conclusions().size() == 0);
-    assertHelper("violations: ", validReport.violations().size() == 4);
+    assertHelper("violations: ", validReport.violations().size() == 9);
 
     printSubTestStart("Valid component and Copyleft/weak policy");
 /*
@@ -139,9 +142,9 @@ public class TestPolicy {
             "\n concerns: " + validReport.concerns() +
             "\nviolations: " + validReport.violations());
 
-    assertHelper(" concern: ", validReport.concerns().size() == 1);
+    assertHelper(" concern: ", validReport.concerns().size() == 0);
     assertHelper("conclusion", validReport.conclusions().size() == 0);
-    assertHelper("violations: ", validReport.violations().size() == 7);
+    assertHelper("violations: ", validReport.violations().size() == 9);
 
 
 //    System.out.println("violations: " + validReport.violation().obligations());
@@ -194,8 +197,8 @@ public class TestPolicy {
             "\nviolations: " + report.violations());
 
     assertHelper(" concern: ", report.concerns().size() == 0);
-    assertHelper(" conclusion: ", report.conclusions().size() == 1);
-    assertHelper(" concern: ", report.violations().size() == 3);
+    assertHelper(" conclusion: ", report.conclusions().size() == 0);
+    assertHelper(" violations: ", report.violations().size() == 7);
 
 
   }
@@ -237,7 +240,7 @@ public class TestPolicy {
     // 1 conclusion
     Report report = LicenseArbiter.report(a, policy);
 
-/*    Log.level(Log.DEBUG);
+  //  Log.level(Log.DEBUG);
 
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusions().size() +
             " concerns: " + report.concerns().size() +
@@ -245,15 +248,13 @@ public class TestPolicy {
     Log.d(LOG_TAG, "  result:  \nconclusions: " + report.conclusions() +
             "\n concerns: " + report.concerns() +
             "\nviolations: " + report.violations());
-*/
+
     assertHelper(" concern: ", report.concerns().size() == 0);
-    assertHelper(" conclusion: ", report.conclusions().size() == 1);
-    assertHelper(" obligations: ", report.violations().size() == 4);
+    assertHelper(" conclusion: ", report.conclusions().size() == 0);
+    assertHelper(" violations: ", report.violations().size() == 7);
 
     // a should be in the violation list
     assertHelper(" a in the list of violations", checkViolation(report, a));
-    // a21 should have a license concluded
-    assertHelper(" a22 in the list of conclusions", checkConclusion(report, a22));
     // a11 and a1 should be in the violation test
     assertHelper(" a11 in the list of violations", checkViolation(report, a11));
     assertHelper(" a1 in the list of violations", checkViolation(report, a1));
