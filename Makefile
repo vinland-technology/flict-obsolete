@@ -60,47 +60,49 @@ CLASSES=$(JAVA_SOURCES:.java=.class)
 TEST_CLASSES=$(TEST_SOURCES:.java=.class)
 
 LIB_DIR=lib
-CLI_JAR=$(LIB_DIR)/commons-cli-1.4.jar
-GSON_JAR=lib/gson-2.2.2.jar
+CLI_JAR=commons-cli-1.4.jar
+GSON_JAR=gson-2.2.2.jar
 WINSTONE_JAR=$(LIB_DIR)/winstone.jar
 #JUNIT_JAR=$(LIB_DIR)/junit-jupiter-api-5.6.2.jar
 #JUNIT_V_JAR=$(LIB_DIR)/junit-vintage-engine-5.6.2.jar
-CLASSPATH=.:$(CLI_JAR):$(GSON_JAR)
+CLASSPATH=.:$(LIB_DIR)/$(CLI_JAR):$(LIB_DIR)/$(GSON_JAR)
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 
 %.class:%.java 
 	javac  -Xdiags:verbose -cp "$(CLASSPATH)" $<
 
-all: $(CLASSES) $(GSON_JAR) $(CLI_JAR) Makefile
-	@echo
+JARS=$(LIB_DIR)/$(CLI_JAR) $(LIB_DIR)/$(GSON_JAR)
+
+all: $(CLASSES) $(JARS) Makefile
+	@echo all is done
 
 $(CLASSES): $(SOURCES) Makefile
 
-$(CLI_JAR):
-	mkdir tmp; cd tmp ; wget "https://downloads.apache.org//commons/cli/binaries/commons-cli-1.4-bin.tar.gz"
+JARS=$(LIB_DIR)/$(CLI_JAR) $(LIB_DIR)/$(GSON_JAR)
+
+$(LIB_DIR):
+	@echo "Creating $(LIB_DIR)"
+	mkdir -p $(LIB_DIR)
+
+$(LIB_DIR)/$(CLI_JAR):
+	make $(LIB_DIR)
+	mkdir -p tmp; cd tmp ; wget "https://downloads.apache.org//commons/cli/binaries/commons-cli-1.4-bin.tar.gz"
 	cd tmp; tar zxvf commons-cli-1.4-bin.tar.gz commons-cli-1.4/commons-cli-1.4.jar
 	cd tmp; mv commons-cli-1.4/commons-cli-1.4.jar ../lib
 
-$(GSON_JAR):
-	cd lib; wget "http://www.java2s.com/Code/JarDownload/gson/gson-2.2.2.jar.zip"
-	cd lib; unzip $(GSON_JAR)
-
-#$(JUNIT_JAR):
-	mkdir -p lib
-	wget "https://search.maven.org/remotecontent?filepath=org/junit/jupiter/junit-jupiter-api/5.6.2/junit-jupiter-api-5.6.2.jar" -O $(JUNIT_JAR)
-
-#$(JUNIT_V_JAR):
-	mkdir -p lib
-	wget "https://search.maven.org/remotecontent?filepath=org/junit/vintage/junit-vintage-engine/5.6.2/junit-vintage-engine-5.6.2.jar" -O $(JUNIT_V_JAR)
+$(LIB_DIR)/$(GSON_JAR):
+	make $(LIB_DIR)
+	mkdir -p tmp && cd tmp && wget "http://www.java2s.com/Code/JarDownload/gson/gson-2.2.2.jar.zip" 
+	cd tmp && unzip $(GSON_JAR).zip && mv $(GSON_JAR) ../$(LIB_DIR)/
 
 $(WINSTONE_JAR):
 	mkdir -p lib
 	wget 'https://sourceforge.net/projects/winstone/files/latest/download?source=typ_redirect' -O $(LIB_DIR)/winstone.jar
 
-dload-libs: $(CLI_JAR) $(WINSTONE_JAR)
+dload-libs: $(JARS)
 #$(JUNIT_JAR) $(JUNIT_V_JAR)
 
-$(CLASSES): $(GSON_JAR) $(CLI_JAR)
+$(CLASSES): $(JARS)
 
 cli:
 	make cli-licenses
