@@ -16,9 +16,9 @@ public class TestDualLicenses {
   public static void test() {
     printTestStart("TestDualLicenses");
 
-/*    Log.level(Log.DEBUG);
-    Log.filterTag(LOG_TAG);
-  */
+    Log.level(Log.DEBUG);
+//    Log.filterTag(LOG_TAG);
+
     Report validReport = LicenseArbiter.report(dualLicensedComponent(), null);
     Log.d(LOG_TAG,"   nr: "+ validReport.conclusions().size());
     Log.d(LOG_TAG,"   nr: "+ validReport.conclusions());

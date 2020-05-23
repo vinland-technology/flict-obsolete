@@ -62,9 +62,6 @@ public class TestPolicy {
     assertHelper("3 conclusions made", validReport.conclusions().size()==3);
     assertHelper("0 violations made", validReport.violations().size()==0);
     assertHelper("0 concerns made", validReport.concerns().size()==0);
-    assertHelper("Both deps are lgpl",
-            c.dependencies().get(0).concludedLicense().spdx().equals("LGPL-2.1-only") &&
-                    c.dependencies().get(1).concludedLicense().spdx().equals("LGPL-2.1-only"));
 
 //    System.exit(0);
   }
@@ -92,12 +89,17 @@ public class TestPolicy {
                          +---------+-----+
                          |               |
                          b11 (apache2)   b12 (apache2)
+
+
+        policy.addWhiteLicense(apache20);
+        policy.addGrayLicense(lgpl21);
+        policy.addBlackLicense(gpl20);
+
      */
 //    Log.level(Log.DEBUG);
 //    Log.filterTag(LicenseArbiter.LOG_TAG);
     Report validReport = LicenseArbiter.report(validComponent(), policy);
 
-//        Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result: " +
             " " + validReport.concerns().size() +
             " " + validReport.conclusions().size() +
@@ -106,7 +108,7 @@ public class TestPolicy {
             "\n concerns: " + validReport.concerns() +
             "\nviolations: " + validReport.violations());
 
-    assertHelper("concerns: ", validReport.concerns().size() == 1);
+    assertHelper("concerns: ", validReport.concerns().size() == 0);
     assertHelper("conclusions", validReport.conclusions().size() == 0);
     assertHelper("violations: ", validReport.violations().size() == 1);
 
@@ -238,7 +240,7 @@ public class TestPolicy {
     // 1 conclusion
     Report report = LicenseArbiter.report(a, policy);
 
-//    Log.level(Log.DEBUG);
+  //  Log.level(Log.DEBUG);
 
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusions().size() +
             " concerns: " + report.concerns().size() +
@@ -253,6 +255,7 @@ public class TestPolicy {
 
     // a11 should be in the violation list
     assertHelper(" a in the list of violations", checkViolation(report, a11));
+
   }
 
 
