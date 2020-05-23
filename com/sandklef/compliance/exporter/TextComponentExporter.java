@@ -50,7 +50,14 @@ public class TextComponentExporter implements ReportExporter {
         if (conclusions.size()==0) {
             return "Conclusions:  none" ;
         } else {
-            return "Conclusions:  " + conclusions;
+            StringBuilder sb = new StringBuilder();
+            sb.append("Conclusions:\n");
+            for (LicenseConclusion lc : conclusions) {
+                sb.append(" * ");
+                sb.append(lc);
+                sb.append("\n");
+            }
+            return sb.toString();
         }
     }
 

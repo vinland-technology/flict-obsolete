@@ -226,8 +226,8 @@ public class LicenseChecker {
         Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 
         Report report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
-
         writer.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report) + "\n");
+
     }
 
 }

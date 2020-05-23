@@ -90,11 +90,15 @@ public class Component {
   public List<License> licenses() {
     return licenses;
   }
-  
+
   public void concludedLicense(License license) {
     Log.d(LOG_TAG, "\n ======== UPDATING LICENSE on \"" + name +  "\" to \"" +
-                       (license!=null?""+license.spdx():license) + "\" ==========\n");
+            (license!=null?""+license.spdx():license) + "\" ==========\n");
     concludedLicense = license;
+  }
+
+  public void invalidateConcludedLicense() {
+    concludedLicense = null;
   }
 
   public void addDependenciey(Component c) {

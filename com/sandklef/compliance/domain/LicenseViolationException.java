@@ -4,17 +4,28 @@
 
 package com.sandklef.compliance.domain;
 
+import javax.swing.*;
+
 public class LicenseViolationException extends Exception {
 
-  public final License user;
-  public final License usee;
-  
+  private License user;
+  private License usee;
+
+  public Component component() {
+    return component;
+  }
+
+  private Component component;
+
   public LicenseViolationException(String message) {
     super(message);
-    user=null;
-    usee=null;
   }
-  
+
+  public LicenseViolationException(String message, Component c) {
+    super(message);
+    component = c;
+  }
+
   public LicenseViolationException(String message,
                                    License user,
                                    License usee) {

@@ -17,7 +17,7 @@
                 "license": "Apache-2.0 | LGPL-2.1-only",
                 "dependencies": [
                     {
-                        "name": "Awseomly fancy library",
+                        "name": "Aweseomly fancy library",
                         "license": "LGPL-2.1-only | GPL-2.0-only | Apache-2.0",
                         "dependencies": [
                         ]

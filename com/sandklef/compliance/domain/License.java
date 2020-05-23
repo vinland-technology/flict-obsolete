@@ -116,12 +116,14 @@ public class License {
 //  }
 
   public final static String GPL_2_0_SPDX = "GPL-2.0-only";
-  public final static String GPL_3_0_SPDX = "GPL-3.0-only";  
+  public final static String GPL_3_0_SPDX = "GPL-3.0-only";
+  public final static String GPL_3_1_SPDX = "GPL-3.1-only";
   public final static String LGPL_3_0_SPDX = "LGPL-3.0-only";
   public final static String LGPL_2_0_SPDX = "LGPL-2.0-only";
   public final static String GPL_2_0_LATER_SPDX = "GPL-2.0-or-later";
   public final static String LGPL_2_1_SPDX = "LGPL-2.1-only";
   public final static String LGPL_2_1_LATER_SPDX = "LGPL-2.1-or-later";
+  public final static String LGPL_3_1_SPDX = "LGPL-3.1-or-later";
   public final static String APACHE_2_0_SPDX = "Apache-2.0";
   public final static String BSD_3_SPDX = "BSD-3-Clause";
 

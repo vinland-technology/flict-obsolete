@@ -8,6 +8,7 @@ import com.sandklef.compliance.utils.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.sandklef.compliance.domain.License.*;
@@ -16,10 +17,13 @@ import static com.sandklef.compliance.domain.License.*;
 public class Utils {
     public static String beforeFormat = "%-50s";
     public static License lgpl21;
+    public static License lgpl31;
+    public static License lgpl30;
     public static License gpl20;
     public static License gpl20_later;
     public static License lgpl21_later;
     public static License gpl30;
+    public static License gpl31;
     public static License apache20;
     public static License bsd3;
     public static boolean useAsserts;
@@ -36,11 +40,14 @@ public class Utils {
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("licenses/json"));
             LicenseStore.getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection("licenses/connections/dwheeler.json"));
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
+            lgpl31 = LicenseStore.getInstance().license(LGPL_3_1_SPDX);
+            lgpl30 = LicenseStore.getInstance().license(LGPL_3_0_SPDX);
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_1_SPDX);
             gpl20 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
             gpl20_later = LicenseStore.getInstance().license(GPL_2_0_LATER_SPDX);
             lgpl21_later = LicenseStore.getInstance().license(LGPL_2_1_LATER_SPDX);
             gpl30 = LicenseStore.getInstance().license(GPL_3_0_SPDX);
+            gpl31 = LicenseStore.getInstance().license(GPL_3_1_SPDX);
             apache20 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
             bsd3 = LicenseStore.getInstance().license(BSD_3_SPDX);
         } catch (IOException e) {
@@ -75,17 +82,59 @@ public class Utils {
         return policy;
     }
 
+
+
+    public static Component bigComponent() {
+    /*
+                   A (gpl2|bsd|gpl3)
+                     |
+           +---------+------------------------+
+           |                                  |
+           AA (apache2|bsd)           AB (gpl2|gpl3|apache|lgpl3)
+           |                                  |
+        +--+------------+                +----+-------------+
+        |               |                |                  |
+ AAA (apache2|gpl3)  AAB (apache|gpl3)  ABA (apache|bsd3)  ABB (gpl3|bsd3|apache)
+                                   |                        |
+                      +------------+--------+              ABBA (bsd)
+                      |                     |
+             AABA (apache|bsd3|lgpl3)     AABB (bsd3|apache|gpl3)
+     */
+
+
+        // left
+        Component AABA = new Component("AABA", Arrays.asList(new License[]{apache20, bsd3, lgpl30}), null);
+        Component AABB = new Component("AABB", Arrays.asList(new License[]{bsd3, apache20, gpl30}), null);
+        Component AAB = new Component("AAB", Arrays.asList(new License[]{apache20, lgpl30}), Arrays.asList(new Component[]{AABA, AABB}));
+
+        Component AAA = new Component("AAA", Arrays.asList(new License[]{apache20, gpl30}), null);
+
+        Component AA = new Component("AA", Arrays.asList(new License[]{apache20, gpl30}), Arrays.asList(new Component[]{AAA, AAB}));
+
+        // Right
+        Component ABBA = new Component("ABBA", Arrays.asList(new License[]{bsd3}), null);
+        Component ABA = new Component("ABA", Arrays.asList(new License[]{apache20, bsd3}), null);
+        Component ABB = new Component("ABB", Arrays.asList(new License[]{gpl30, bsd3, apache20}), Arrays.asList(new Component[]{ABBA}));
+        Component AB = new Component("AB", Arrays.asList(new License[]{gpl20, gpl30, apache20, lgpl31}), Arrays.asList(new Component[]{ABA, ABB}));
+
+        // A
+        Component A = new Component("A", Arrays.asList(new License[]{bsd3, gpl20, lgpl21, gpl20, bsd3, gpl20, gpl30, gpl20}), Arrays.asList(new Component[]{AA, AB}));
+
+
+        return A;
+    }
+
     public static Component validComponent() {
     /*
-             top (gpl2)
+             top (gpl3)
               |
            +--+--------------------+
            |                       |
-           a (apache2)             b (gpl2)
+           a (apache2)             b (gpl3)
            |                       |
         +--+---------+             +------+--------+
         |            |             |               |
-      a1 (apache2)  a2 (lgpl2)     b1 (apache2)   b2 (gpl2)
+      a1 (apache2)  a2 (apachw2)     b1 (apache2)   b2 (gpl3)
                                    |
                          +---------+-----+
                          |               |
@@ -96,7 +145,7 @@ public class Utils {
         Component a1 = new Component("a1", apache20, null);
 
         // a2
-        Component a2 = new Component("a2", lgpl21, null);
+        Component a2 = new Component("a2", apache20, null);
 
         // a    q
         ArrayList<Component> aDeps = new ArrayList<>();
@@ -117,22 +166,51 @@ public class Utils {
         Component b1 = new Component("b1", apache20, b1Deps);
 
         // b2
-        Component b2 = new Component("b2", gpl20, null);
+        Component b2 = new Component("b2", gpl30, null);
 
         // b
         ArrayList<Component> bDeps = new ArrayList<>();
         bDeps.add(b1);
         bDeps.add(b2);
-        Component b = new Component("b", gpl20, bDeps);
+        Component b = new Component("b", gpl30, bDeps);
 
 
         // top
         ArrayList<Component> deps = new ArrayList<>();
         deps.add(a);
         deps.add(b);
-        Component top = new Component("Top", gpl20, deps);
+        Component top = new Component("Top", gpl30, deps);
 
         return top;
+    }
+
+    public static Component dynamicComponent() {
+    /*
+             top (GPL)
+              |
+           +--+--------------------+---------------------+
+           |                       |                     |
+           a (apache2)             b (lgpl2)         c(BSD)
+*/
+        Component a = new Component("a", apache20, null);
+
+        // b
+        Component b = new Component("b", lgpl21, null);
+
+        // c
+        Component c = new Component("c", bsd3, null);
+
+
+        // top
+        ArrayList<Component> deps = new ArrayList<>();
+        deps.add(a);
+        deps.add(b);
+        deps.add(c);
+        Component top = new Component("DynamicTop", gpl30, deps);
+
+        return top;
+
+
     }
 
     public static Component invalidComponent() {

@@ -44,9 +44,10 @@ public class TestPolicy {
     printSubTestStart("Valid component and apache blacklisted (using JSON)");
 //    Log.level(Log.DEBUG);
   //  Log.filterTag(LicenseArbiter.class.getSimpleName());
+//    Log.level(Log.DEBUG);
     Report validReport = LicenseArbiter.report(c, policy);
 
-//    Log.level(Log.DEBUG);
+  //  Log.level(Log.DEBUG);
   //  Log.filterTag(null);
     Log.d(LOG_TAG, " component: " + c.toStringLong());
     Log.d(LOG_TAG, " top " + validReport.component().name());
@@ -57,8 +58,8 @@ public class TestPolicy {
     Log.d(LOG_TAG, " violations " + validReport.violations().size());
     Log.d(LOG_TAG, " violations " + validReport.violations());
 
-    //Log.level(Log.ERROR);
-    assertHelper("4 conclusions made", validReport.conclusions().size()==3);
+//    Log.level(Log.ERROR);
+    assertHelper("3 conclusions made", validReport.conclusions().size()==3);
     assertHelper("0 violations made", validReport.violations().size()==0);
     assertHelper("0 concerns made", validReport.concerns().size()==0);
     assertHelper("Both deps are lgpl",
@@ -96,7 +97,7 @@ public class TestPolicy {
 //    Log.filterTag(LicenseArbiter.LOG_TAG);
     Report validReport = LicenseArbiter.report(validComponent(), policy);
 
-    //    Log.level(Log.DEBUG);
+//        Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result: " +
             " " + validReport.concerns().size() +
             " " + validReport.conclusions().size() +
@@ -107,7 +108,7 @@ public class TestPolicy {
 
     assertHelper("concerns: ", validReport.concerns().size() == 1);
     assertHelper("conclusions", validReport.conclusions().size() == 0);
-    assertHelper("violations: ", validReport.violations().size() == 4);
+    assertHelper("violations: ", validReport.violations().size() == 1);
 
     printSubTestStart("Valid component and Copyleft/weak policy");
 /*
@@ -130,7 +131,7 @@ public class TestPolicy {
         policy.addBlackLicense(apache2);
 */
     policy = Utils.copyleftAndWeakPolicy();
-  // Log.level(Log.DEBUG);
+//   Log.level(Log.DEBUG);
     validReport = LicenseArbiter.report(validComponent(), policy);
     Log.d(LOG_TAG, "  result sizes: " + validReport.conclusions().size() +
             " " + validReport.concerns().size() +
@@ -139,9 +140,9 @@ public class TestPolicy {
             "\n concerns: " + validReport.concerns() +
             "\nviolations: " + validReport.violations());
 
-    assertHelper(" concern: ", validReport.concerns().size() == 1);
+    assertHelper(" concern: ", validReport.concerns().size() == 0);
     assertHelper("conclusion", validReport.conclusions().size() == 0);
-    assertHelper("violations: ", validReport.violations().size() == 7);
+    assertHelper("violations: ", validReport.violations().size() == 1);
 
 
 //    System.out.println("violations: " + validReport.violation().obligations());
@@ -185,7 +186,7 @@ public class TestPolicy {
  //   Log.level(Log.DEBUG);
     Report report = LicenseArbiter.report(a, policy);
 
-    //    Log.level(Log.DEBUG);
+//        Log.level(Log.DEBUG);
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusions().size() +
             " concerns: " + report.concerns().size() +
             " violations: " + report.violations().size() );
@@ -194,8 +195,8 @@ public class TestPolicy {
             "\nviolations: " + report.violations());
 
     assertHelper(" concern: ", report.concerns().size() == 0);
-    assertHelper(" conclusion: ", report.conclusions().size() == 1);
-    assertHelper(" concern: ", report.violations().size() == 3);
+    assertHelper(" conclusion: ", report.conclusions().size() == 0);
+    assertHelper(" concern: ", report.violations().size() == 1);
 
 
   }
@@ -237,7 +238,7 @@ public class TestPolicy {
     // 1 conclusion
     Report report = LicenseArbiter.report(a, policy);
 
-/*    Log.level(Log.DEBUG);
+//    Log.level(Log.DEBUG);
 
     Log.d(LOG_TAG, "  result sizes: conclusions: " + report.conclusions().size() +
             " concerns: " + report.concerns().size() +
@@ -245,18 +246,13 @@ public class TestPolicy {
     Log.d(LOG_TAG, "  result:  \nconclusions: " + report.conclusions() +
             "\n concerns: " + report.concerns() +
             "\nviolations: " + report.violations());
-*/
-    assertHelper(" concern: ", report.concerns().size() == 0);
-    assertHelper(" conclusion: ", report.conclusions().size() == 1);
-    assertHelper(" obligations: ", report.violations().size() == 4);
 
-    // a should be in the violation list
-    assertHelper(" a in the list of violations", checkViolation(report, a));
-    // a21 should have a license concluded
-    assertHelper(" a22 in the list of conclusions", checkConclusion(report, a22));
-    // a11 and a1 should be in the violation test
-    assertHelper(" a11 in the list of violations", checkViolation(report, a11));
-    assertHelper(" a1 in the list of violations", checkViolation(report, a1));
+    assertHelper(" concern: ", report.concerns().size() == 0);
+    assertHelper(" conclusion: ", report.conclusions().size() == 0);
+    assertHelper(" obligations: ", report.violations().size() == 1);
+
+    // a11 should be in the violation list
+    assertHelper(" a in the list of violations", checkViolation(report, a11));
   }
 
 

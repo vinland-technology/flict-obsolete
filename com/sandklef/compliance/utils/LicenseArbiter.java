@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.exporter.ReportExporterFactory;
 import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
 
 public class LicenseArbiter {
@@ -47,13 +48,14 @@ public class LicenseArbiter {
                 LicenseStore.getInstance().connectors().get((b.spdx())));
     }
 
-    private static boolean aCanUseBImpl(LicenseConnector a, LicenseConnector b, List<LicenseConnector> visited) {
+    private static boolean  aCanUseBImpl(LicenseConnector a, LicenseConnector b, List<LicenseConnector> visited) {
         Log.d(LOG_TAG, "   ---> check lic: " + a + " and " + b + "    { " + visited + " }");
 
         // Check if we've visited this connector already. If so, false
+        Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b.license().spdx() + " ******** " + visited.contains(b));
         if (visited.contains(b)) {
             // already checked b
-            Log.d(LOG_TAG, "\n\n ***************** ALREADY BEEN IN " + b.license().spdx() + " ********\n\n\n");
+ //           Log.d(LOG_TAG, "\n\n ***************** ALREADY BEEN IN " + b.license().spdx() + " ********\n\n\n");
             return false;
         } else if (b==null) {
             // probably a violation in "lower" components
@@ -66,6 +68,8 @@ public class LicenseArbiter {
         if (a.license().spdx().equals(b.license().spdx())) {
             return true;
         }
+
+
         if (a.canUse().contains(b)) {
             return true;
         }
@@ -88,78 +92,24 @@ public class LicenseArbiter {
     }
 
     private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) {
+        debug("aCanUse", "   new arraylist: NOT ALREADY");
         return aCanUseBImpl(a, b, new ArrayList<>());
     }
 
-/*
-    public static boolean aUsesB(Component c, Report report, License user, License usee) throws LicenseViolationException, NoLicenseException {
-        ///System.out.println("****: " + c.name() + " " + usee);
-
-
-        if (usee == null) {
-            Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...)  ===>  false");
-
-            throw new NoLicenseException("Used licenses unknown ", user, usee);
-        }
-        Log.d(LOG_TAG, "aUsesB(" + user + ", " + usee + ", ...) ");
-        Log.d(LOG_TAG, "aUsesB(" + user.spdxTag() + ", " + usee.spdxTag() + ", ...)");
-
-        if (user.spdxTag().equals(usee.spdxTag())) {
-          Log.d(LOG_TAG, "Same license: true");
-          return true;
-        }
-        Log.d(LOG_TAG, "Licenses differ");
-
-        // Below it will be assumed that the licenses differ
-
-      //  System.out.println(" **************************** : " + c.name() + " " + usee.spdxTag() + "  => " + user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() + "????");
-        // If we can sublicense (e.g A(MIT) using B(GPLv2) turns A into GPLv2)
-        if (user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() ==
-                ObligationState.TRUE) {
-          //   System.out.println("Liverpool: " + c.name() + " " + usee.spdxTag() + "  => " + user.obligations().get(Obligation.SUBLICENSING_ALLOWED_NAME).state() + " DOING IT");
-          Log.d(LOG_TAG, "SUBLICENSING ");
-
-          //          return true;
-        }
-
-        // if not copylefted - ok to use
-        if (!usee.isCopyleft()) {
-            Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : non copyleft so OK, no possible violation");
-            return true;
-        }
-
-        // If usee is copylefted AND user NOT copylefted  => violation
-        if (usee.isCopyleft() && (!user.isCopyleft())) {
-       //     System.out.println(" UH UH UH UH: " + c.name() + "  " + user + " using " + usee);
-            Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : possible violation detected");
-            throw new LicenseViolationException(user.spdxTag() + " can not link/use " + usee.spdxTag(), user, usee);
-        }
-
-        // TODO: If usee is copylefted AND user copylefted  => check gpl etc
-        
-
-        Log.d(LOG_TAG, user.spdxTag() + " using " + usee.spdxTag() + " : no possible violation detected");
-        return true;
-    }
-
-    public static boolean canAUseB(Component c, Report report, License user, License usee) {
-        try {
-         //   System.out.println("*** 1" + c + " " + user + " " + usee);
-            return aUsesB(c, report, user, usee);
-        } catch (LicenseViolationException | NoLicenseException e) {
-            Log.d(LOG_TAG, "Exception");
-            Log.d(LOG_TAG, "    message: " + e.getMessage());
-//            Log.d(LOG_TAG, "    user:    (" + e.user.spdxTag() + ")");
-            //          Log.d(LOG_TAG, "    usee:    (" + e.usee.spdxTag() + ")");
-            return false;
-        }
-    }
-*/
-
-    public static Report report(Component c, LicensePolicy policy) {
+    public static Report report(Component c, LicensePolicy policy)  {
         Log.d(LOG_TAG, "reportViolations()    c: " + c.name());
         Report report = new Report(c);
-        report(c, policy, report);
+        try {
+            Log.level(Log.DEBUG);
+
+            reportConcludeLate(c, policy, report);
+        } catch (ConclusionImpossibleException e) {
+//            e.printStackTrace();
+            // TOOO: errror log
+        } catch (LicenseViolationException e) {
+  //          e.printStackTrace();
+            // TOOO: errror log
+        }
         return report;
     }
 
@@ -167,200 +117,222 @@ public class LicenseArbiter {
         c.concludedLicense(l);
         // ONly add conclusion report if we have concluded from more than 1 licenses
         if (c.licenses().size() > 1) {
-            Log.d(LOG_TAG, " concluded license for " + c.name() + " is " + l + "  # licenses: " + c.licenses().size());
+            debug("addConcluded", "     adding conclusion of " +l );
             report.addLicenseConclusion(new LicenseConclusion(c, l));
         }
     }
 
-    private static void handleDualLicensesNoDeps(Component c, LicensePolicy policy, Report report) {
+    private static void handleDualLicensesNoDeps(Component c, LicensePolicy policy, Report report) throws ConclusionImpossibleException {
+        debug("handleDualLicensesNoDeps", "      ----> ");
+
         // Sort the licenses in permissive order
         c.licenses().sort(MostPermissiveLicenseComparator.comparator);
+
+        // loop through licenses for the component (no deps)
         for (License l : c.licenses()) {
-            Log.d(LOG_TAG, c.name() + ": has no deps, try concluding license: " + l);
-            if (policy != null && policy.blackList().contains(l)) {
-                Log.d(LOG_TAG, "Black colored license found for " + c.name() + ", can't conclude it: " + l + " sorry");
-            } else if (policy != null && policy.grayList().contains(l)) {
-                Log.d(LOG_TAG, "Gray colored license found for " + c.name() + " : " + l);
-                Log.d(LOG_TAG, " concerned license for " + c.name() + " is " + l);
-                report.addLicenseConcern(new PolicyConcern(c, l, ListType.GRAY_LIST));
-                // TODO: add in some kind of list of gray yet possible licenses instead of marking as concluded?
+            if (policy == null) {
+                debug("handleDualLicensesNoDeps", "      ----  no policy: " + l.spdx());
                 addConcluded(report, l, c);
-                return;
             } else {
-                Log.d(LOG_TAG, "White colored license found for " + c.name() + ": " + l);
-                addConcluded(report, l, c);
-                return ;
-            }
-        }
-    }
-
-    private static void handleManyLicensesNoDeps(Component c, LicensePolicy policy, Report report) {
-        // Sort the licenses in least permissive order
-        // The first one is hopefully something we can conclude
-        c.licenses().sort(LeastPermissiveLicenseComparator.comparator);
-        List<License> blackListed = new ArrayList<>();
-        //        System.out.println("handleManyLicensesNoDeps   black " + policy + "    licenses: " + c.licenses());
-        for (License l : c.licenses()) {
-          //            System.out.println("handleManyLicensesNoDeps   black " + policy + "    license: " + l);
-          //System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + "  " + policy.blackList() + "--------------------------------");
-            Log.d(LOG_TAG, c.name() + ": has no deps, try concluding license: " + l);
-            if (policy != null && policy.blackList().contains(l)) {
-              //    System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + " BLACK FOUND +++++++++++++++++");
-                Log.d(LOG_TAG, "Black colored license found for " + c.name() + ", can't exclude it: " + l + " sorry");
-                blackListed.add(l);
-                //                System.out.println("handleManyLicensesNoDeps " + l + " " +c.dualLicensed() + " BLACK FOUND +++++++++++++++++ " + blackListed.size());
-            } else if (policy != null && policy.grayList().contains(l)) {
-                Log.d(LOG_TAG, "Gray colored license found for " + c.name() + " : " + l);
-                Log.d(LOG_TAG, " concerned license for " + c.name() + " is " + l);
-                report.addLicenseConcern(new PolicyConcern(c, l, ListType.GRAY_LIST));
-                break;
-            } else {
-                Log.d(LOG_TAG, "White colored license found for " + c.name() + ": " + l);
-                break ;
-            }
-        }
-
-        //        System.out.println("handleManyLicensesNoDeps any BLACK FOUND +++++++++++++++++ " + blackListed.size());
-        if (blackListed.size()>0) {
-          //  System.out.println("handleManyLicensesNoDeps   black " + policy + "    licenses: " + c.licenses() + "REPORING VIOLATION ++++++++++++++++++++++++++++");
-            for (License l : blackListed) {
-              //    System.out.println(" ADDING POLICY VIOLATION FOR " + c + "   AND LICENSE: " + l.spdxTag());
-              report.addPolicyViolation(new PolicyViolation(c, l));
-            }
-        }
-    }
-
-    private static void report(Component c, LicensePolicy policy, Report report) {
-        Log.d(LOG_TAG, "report() component: " + c.name() + " violation: " + c.name() + "   viols: " + report.violations.size());
-
-        // second - return true if no deps
-        if (c.dependencies().size() == 0) {
-          //            System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name());
-            if (c.dualLicensed()) {
-              //    System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " dual");
-                handleDualLicensesNoDeps(c, policy, report);
-            } else if (c.manyLicensed()) {
-              //System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " many");
-                handleManyLicensesNoDeps(c,policy, report);
-                //System.out.println("Hurrrweopwqe   --------===| " + c.concludedLicense());
-            } else if (c.singleLicensed()){
-              //System.out.println("Hurrrweopwqe   --------===|||||||||||||||||||||||||||||||||||||<  " + c.name() + " single");
-                License l = c.licenses().get(0);
-                if (policy != null && policy.blackList().contains(l)) {
-                  //    System.out.println("single license and no deps BLACK FOUND +++++++++++++++++");
-                    report.addPolicyViolation(new PolicyViolation(c, l));
-                } else if (policy != null && policy.grayList().contains(l)) {
-                  //System.out.println("single license and no deps GRAY FOUND +++++++++++++++++");
-                    report.addLicenseConcern(new PolicyConcern(c, l, ListType.GRAY_LIST));
-                    addConcluded(report, l, c);
+                if (policy.blackList().contains(l)) {
+                    debug("handleDualLicensesNoDeps", "      ----  blacklisted: " + l.spdx());
                 } else {
-                    Log.d(LOG_TAG, "White colored license found for " + c.name() + ": " + l);
-                    c.concludedLicense(l);
+                    if (policy.grayList().contains(l)) {
+                        report.addLicenseConcern(new PolicyConcern(c, l, ListType.GRAY_LIST));
+                        debug("handleDualLicensesNoDeps", "      ----  graylisted: " + l.spdx());
+                    } else {
+                        debug("handleDualLicensesNoDeps", "      ----  not listed: " + l.spdx());
+                    }
+                    addConcluded(report, l, c);
                 }
             }
-            Log.d(LOG_TAG, " License for " + c.name() + ": " + c.concludedLicense() + "  ... is this ok");
-            if (c.concludedLicense() == null) {
-                report.addLicenseObligationViolation(new LicenseObligationViolation(c));
-            }
-            return;
-        } else {
-            Log.d(LOG_TAG, " * checking dependencies for : " + c + "   nr: " + c.dependencies().size());
-            for (Component d : c.dependencies()) {
-                Log.d(LOG_TAG, " * checking component: " + d);
-                report(d, policy, report);
+            if (c.concludedLicense()!=null) {
+                debug("handleDualLicensesNoDeps", "      <---- concluded: " + c.concludedLicense().spdx() + " do nada");
+                return;
             }
         }
 
-        // For each of the current component's licenses
-        // -- for each of the dependency component's concluded license
-        // ------ check if ok
-     //   boolean allCleared = true;
 
-        // List for all licenses that can be used - we will choose which one later on
-        List<License> myCheckedLicenses = new ArrayList<>();
-        List<Component> violatedComponents = new ArrayList<>();
-        for (License l : c.licenses()) {
+        debug("handleDualLicensesNoDeps", "      <---- throwing exception since no license could be concluded ");
+        report.addLicenseObligationViolation(new LicenseObligationViolation(c));
+        throw new ConclusionImpossibleException("Could not conclude license for " + c.name(), c);
+    }
 
-            boolean violationFound = false;
-//            allCleared = false;
-            if (policy != null && policy.blackList().contains(l)) {
+    private static void debug(String method, String msg) {
+        Log.d(method + "." + method, msg);
+    }
+
+    private static String indents(int indent) {
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<indent;i++) {
+            sb.append("  ");
+        }
+        return sb.toString();
+    }
+
+    private static void debug(String method, String msg, int indent) {
+        Log.d(method + method , indents(indent)  + msg);
+    }
+
+
+    private static boolean checkLicenseOnDependencies(License l, List<Component> components) {
+        boolean licenseUsable = true;
+        debug ("checkLicenseOnDependencies", "    ----> " + l.spdx());
+        for (Component d : components) {
+            if (! aCanUseB(l, d.concludedLicense())) {
+                licenseUsable = false;
+            }
+        }
+        debug ("checkLicenseOnDependencies", "    <---- " + l.spdx() + "   " + licenseUsable);
+        return licenseUsable;
+    }
+
+    private static boolean subComponentCompatibleWith(Report report, Component component, License license, LicensePolicy policy, int indent) {
+        debug("subComponentCompatibleWith", " -->   " + component.name() + " (compat with? " + license.spdx() + ")", indent);
+        for (License l : component.licenses()) {
+            debug("subComponentCompatibleWith", " ---   " + component.name() + "                                   l: " + l.spdx(), indent);
+            // Blacklisted => continue with next
+         //   debug("subComponentCompatibleWith", "  --   " + component.name() + "(" + license.spdx() + ")  check: " + l.spdx(), indent);
+            if ( policy != null && policy.blackList().contains(l.spdx())) {
+                debug("subComponentCompatibleWith", "  --   " + component.name() + " (compat with? " + license.spdx() + ")  BLACKLISTED", indent);
                 continue;
             }
-            Log.d(LOG_TAG, "    can " + c.name() + " with: " + l.spdx() + " in components: " + c.dependencies().size());
-            for (Component d : c.dependencies()) {
-                Log.d(LOG_TAG, c.name() + " myCheckedLicenses: " + myCheckedLicenses + " HESA");
-
-                Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")");
-        //        try {
-               //     System.out.println("*** 1" + c + " " + l + " " + d + "   concluded: " + d.concludedLicense());
-                //aUsesB(d, report, l, d.concludedLicense());
-                  if (aCanUseB(l, d.concludedLicense())) {
-                      // So, the license l can be used when using d
-                      Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ") :  OK choice  HESA");
-                      myCheckedLicenses.add(l);
-                      violatedComponents.remove(d);
-                      Log.d(LOG_TAG, "    myCheckedLicenses for " + c.name() + "  added " + l.spdx() + "  to " + myCheckedLicenses);
-                  } else {
-                      violationFound = true;
-                      violatedComponents.add(d);
-                      Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?  :  FAIL:   HESA");
-
-                  }
-          /*      } catch (LicenseViolationException e) {
-                    violationFound = true;
-                    violatedComponents.add(d);
-                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?  :  FAIL: " + e.getMessage() + "  HESA");
-                 //   allCleared = false;
-                } catch (NoLicenseException e) {
-                    Log.d(LOG_TAG, "    can " + c.name() + " (" + l.spdx() + ")    use: " + d.name() + "(" + d.concludedLicense() + ")?? :  FAIL: " + e.getMessage());
-                  //  allCleared = false;
-                    Log.d(LOG_TAG, " violated license? for " + c.name() + " 2");
-                    violatedComponents.add(d);
-                    violationFound = true;
-                }*/
-                Log.d(LOG_TAG, c.name() + " myCheckedLicenses: " + myCheckedLicenses + " HESA");
-            }
-//            Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared);
-            Log.d(LOG_TAG, " DINKEY 3 " + c.name() + "  possible licenses:        " + myCheckedLicenses + " HESA");
-            if (violationFound) {
-                Log.d(LOG_TAG, " DINKEY 3 violation found, removing: " + l + " from list");
-                myCheckedLicenses.remove(l);
+            // Can't combine work => continue with next
+            if ( ! aCanUseB(license, l)) {
+                debug("subComponentCompatibleWith", "  --   " + component.name() + " (compat with? " + license.spdx() + ")  can not use: " + l.spdx(), indent);
+                continue;
             }
 
-            myCheckedLicenses.sort(MostPermissiveLicenseComparator.comparator);
-            if (myCheckedLicenses.size()>0) {
-//                Log.d(LOG_TAG, " DINKEY 2 " + c.name() + " allCleared:        " + allCleared + " <----- choose: " + l + " for " + c.name() + "  # licenses: " + c.licenses().size());
-                Log.d(LOG_TAG, " DINKEY 2 " + c.name() + "l: " + l + " for " + c.name() + "    # licenses: " + myCheckedLicenses);
-                addConcluded(report, l, c);
+            //debug("subComponentCompatibleWith", "  --   " + component.name() + "(" + license.spdx() + ")  moving on", indent);
 
-                if (policy != null && policy.grayList().contains(l)) {
-                    report.addLicenseConcern(new PolicyConcern(c, l, ListType.GRAY_LIST));
-                }
+            // So, l (License) :
+            // * not black listed
+            // * can be used by license (maybe null)
 
-                break;
-                //}
+            boolean licenseCompliant = true;
+            // if no deps, simply check this one with license
+            if (component.dependencies().size()==0) {
+                debug("subComponentCompatibleWith", "  --   " + component.name() + " (compat with? " + license.spdx() + ")  no deps so concluded .... BUG", indent);
+                addConcluded(report, l, component);
+                return true;
             } else {
-//                Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible licenses:        " + myCheckedLicenses.size() + " HESA " + myCheckedLicenses.size() + " " + myCheckedLicenses);
-                Log.d(LOG_TAG, " DINKEY 3 " + c.name() + "  possible licenses:  " + myCheckedLicenses.size() + " HESA " + myCheckedLicenses.size() + " " + myCheckedLicenses);
-              //  if (myCheckedLicenses.size() > 0) {
-//                    Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " " + allCleared + " possible license:        " + myCheckedLicenses.get(0));
-                //    Log.d(LOG_TAG, " DINKEY 3 " + c.name() + " possible license:        " + myCheckedLicenses.get(0));
-                  //  addConcluded(report, l, c);
-                //}
+                // Check all sub components if l can be used with them
+                for (Component c : component.dependencies()) {
+                    debug("subComponentCompatibleWith", "  --   " + component.name() + "  ----- check " + c.name() + " compat with: " + l.spdx() , indent);
+                    boolean canUse = subComponentCompatibleWith(report, c, l, policy, indent+2);
+//                    debug("subComponentCompatibleWith", "  --   " + component.name() + "(" + license.spdx() + ")  DEPS can use: " + l.spdx() + " : " + canUse, indent);
+                    if (!canUse) {
+                        // at least one component could not use l
+                        // continue with next
+                        debug("subComponentCompatibleWith", "  --   " + component.name() + "  ----- check " + c.name() + " NOT compat with: " + l.spdx() , indent);
+                        clearConcluded(report, c);
+//                        return false;
+                        licenseCompliant = false;
+                        break;
+                    }
+                }
             }
 
-        }
-        Log.d(LOG_TAG, c.name() + " myCheckedLicenses:  " + myCheckedLicenses + " HESA END");
-        Log.d(LOG_TAG, c.name() + " violatedComponents: " + violatedComponents + " HESA END");
+            if (! licenseCompliant ) {
+                continue;
+            }
 
-        License concludedLicense = c.concludedLicense();
-        Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " concluded license: " + concludedLicense);
-        if (c.concludedLicense() == null) {
-            Log.d(LOG_TAG, " DINKEY component:      " + c.name() + " violated license: " + concludedLicense);
-            Log.d(LOG_TAG, " addObligationViolation " + c.name() + " 3");
-            report.addLicenseObligationViolation(new LicenseObligationViolation(c));
+            if (aCanUseB(license, l)) {
+                debug("subComponentCompatibleWith", " <--   " + component.name() + " (compat with? " + license.spdx() + ")  true", indent);
+                addConcluded(report, l, component);
+                return true;
+            }
+        }
+
+        debug("subComponentCompatibleWith", " <--   " + component.name() + " (" + license.spdx() + ")  false (last stand)", indent);
+        // TODO: violation?
+        return false;
+    }
+
+    private static void clearConcluded(Report report, Component c) {
+        c.invalidateConcludedLicense();
+        for (Component d : c.dependencies()) {
+            clearConcluded(report, d);
         }
     }
+
+    public static void reportConcludeLate(Component c, LicensePolicy policy, Report report) throws ConclusionImpossibleException, LicenseViolationException {
+        for (License l : c.licenses()) {
+           // clearConcluded(report, c);
+//            Log.d(LOG_TAG, " checkLicense: " + l );
+//            debug("reportConcludeLate", " calling subComponentCompatibleWith   --   " + c.name() + " ( ----- compat with: " + l.spdx() );
+
+            boolean licenseOk = subComponentCompatibleWith(report, c, l, policy, 2);
+            Log.d(LOG_TAG, " reportConcludeLate: " + l + " ===> " + licenseOk );
+            if (!licenseOk) {
+                clearConcluded(report, c);
+            } else {
+                System.out.println("Yes, me happy!");
+//                System.out.println(" report: " + ReportExporterFactory.getInstance().exporter(ReportExporterFactory.OutputFormat.TEXT).exportReport(report));
+                System.out.println(" conclusions: " + ReportExporterFactory.getInstance().exporter(ReportExporterFactory.OutputFormat.TEXT).exportConclusions(report.conclusions));
+                break;
+            }
+        }
+    }
+
+
+
+    private static void reportConcludeFirst(Component c, LicensePolicy policy, Report report) throws ConclusionImpossibleException, LicenseViolationException {
+        debug("report", "--->   c: " + c);
+
+        // are we the last component or do we have dependency components?
+        if (c.dependencies().size()==0) {
+            // we're the last component (i e has no deps)
+            handleDualLicensesNoDeps(c, policy, report);
+            // we should now have a license (otherwise exception passed to caller)
+            debug("report", "<---   c: " + c + "  license: " + c.concludedLicense().spdx());
+            return;
+        } else {
+            // we have dependency components
+            // conclude license for all dependency components
+            for (Component d : c.dependencies()) {
+              //  report(d, policy, report);
+            }
+        }
+
+        // We have dependency components (otherwise already returned)
+        // and these should now have a concluded license (otherwise exception should have been thrown)
+        // Check all licenses for this component if we can chose any to fit all dep components
+        for (License l : c.licenses()) {
+
+            // policy blacklists license, skip it
+            if (policy != null && policy.blackList().contains(l)) {
+                debug("report", "    --- blacklisted, skip: " + l);
+                continue;
+            }
+
+            // check all dependency components if they ALL can use this license (l)
+            if (checkLicenseOnDependencies(l, c.dependencies())) {
+                // we can use license l
+                // if more then one license in the component, report conclusion
+                if (c.licenses().size()>1) {
+                    debug ("report", "  --- license concluded " + l + "  for " + c +  "  among dual licenses: " + c.licenses());
+                    report.addLicenseConclusion(new LicenseConclusion(c, l));
+                }
+                debug ("report", "  --- license concluded " + l + "  for " + c + " among one license: " + c.licenses());
+                c.concludedLicense(l);
+                break;
+            }
+        }
+
+        // we have checked all licenses of this component, against all deps
+        if ( c.concludedLicense() == null )  {
+            report.addLicenseObligationViolation(new LicenseObligationViolation(c));
+            debug("report", "<---   c: " + c + "  no concluded license for " + c.name() + " throw LicenseViolationException");
+            throw new LicenseViolationException("Violation found for component " + c.name(), c);
+        }
+
+        // This component (with deps ... otherwise returned earlier) now has a concluded
+        // license with no violation
+        debug("report", "<---   c: " + c + "  license: " + c.concludedLicense().spdx() + "    from (" + c.licenses() + ")");
+    }
+
+
 
   
   public static String multipeLicensesInformation(Component c) {

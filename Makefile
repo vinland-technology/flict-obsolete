@@ -47,6 +47,7 @@ TEST_SOURCES=\
   com/sandklef/compliance/test/TestAll.java\
   com/sandklef/compliance/test/Utils.java\
   com/sandklef/compliance/test/TestComponents.java \
+  com/sandklef/compliance/test/TestConcern.java \
   com/sandklef/compliance/test/TestCanAUseB.java \
   com/sandklef/compliance/test/TestPolicy.java \
   com/sandklef/compliance/test/TestDualLicenses.java \

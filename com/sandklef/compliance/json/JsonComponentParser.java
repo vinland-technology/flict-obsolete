@@ -94,10 +94,13 @@ public class JsonComponentParser {
       return current;
     }
 
+/*
     // We have deps, add them
     List<ComponentIntermediate> deps  =
             gson.fromJson(componentJson.get("dependencies").getAsJsonArray(),
               new TypeToken<List<ComponentIntermediate>>() {}.getType());
+*/
+
 
     for (JsonElement je : depArray) {
       Log.d(LOG_TAG, "   ===================  SUB READ: " + je.toString());
@@ -105,9 +108,9 @@ public class JsonComponentParser {
       current.addDependenciey(dep);
     }
 
-
     return current;
   }
+
   private static class LicenseIntermediate {
       private String spdx;
   }
