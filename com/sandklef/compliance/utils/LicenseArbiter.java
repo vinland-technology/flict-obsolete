@@ -32,13 +32,22 @@ public class LicenseArbiter {
     public static class ComplianceAnswer {
 
         // License.spdx
-        Map<String, Map<Component, List<ComplianceAnswer>>> answers;
+        private Map<String, Map<Component, List<ComplianceAnswer>>> answers;
+        private ListType color;
 
         @Override
         public String toString() {
             return "ComplianceAnswer{" +
                     "answers=" + answers +
                     '}';
+        }
+
+        public ListType color() {
+            return color;
+        }
+
+        public void color(ListType color) {
+            this.color = color;
         }
 
         public String toString(int indent) {
@@ -55,6 +64,11 @@ public class LicenseArbiter {
                         sb.append("  | ");
                         //sb.append(key + " ( keyset: \"" + ((Map<Component, List<ComplianceAnswer>>) value).keySet().size() + "\")");
                         sb.append(key);
+                        if (this.color()!=ListType.WHITE_LIST) {
+                            sb.append(" (");
+                            sb.append(this.color());
+                            sb.append(")");
+                       }
                         sb.append("\n");
                         for (Map.Entry<Component, List<ComplianceAnswer>> entry2 : ((Map<Component, List<ComplianceAnswer>>) value).entrySet()) {
                             sb.append(indents(indent));
@@ -88,16 +102,68 @@ public class LicenseArbiter {
                 }
             } else {
                 sb.append(indents(indent));
-                sb.append("  | OK\n");
+                sb.append("  | OK");
+                if (this.color()!=ListType.WHITE_LIST) {
+                    sb.append(" (");
+                    sb.append(this.color());
+                    sb.append(")");
+                }
+                sb.append("\n");
+
             }
             return sb.toString();
         }
 
-        public static ComplianceAnswer okAnswerNoDeps = new ComplianceAnswer();
+        public int paths(ListType color) {
+            int count = 0;
+            if (answers.entrySet().size() > 0 ) {
+                for (Map.Entry<String, Map<Component, List<ComplianceAnswer>>> entry : answers.entrySet()) {
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+                    if (((Map<Component, List<ComplianceAnswer>>) value).entrySet().size() > 0) {
+                        if (this.color()!=ListType.WHITE_LIST) {
+                        }
+                        for (Map.Entry<Component, List<ComplianceAnswer>> entry2 : ((Map<Component, List<ComplianceAnswer>>) value).entrySet()) {
+                            if (entry2.getValue() != null) {
+                                for (ComplianceAnswer ca : entry2.getValue()) {
+                                    if (ca != null) {
+                                        count += ca.paths(color);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                count++;
+                if (this.color()!=ListType.WHITE_LIST) {
+                }
+            }
+            return count;
+        }
+
+        public int grayPaths() {
+            return paths(ListType.GRAY_LIST);
+        }
+
+        public static ComplianceAnswer okAnswerNoDeps() {
+            return new ComplianceAnswer();
+        }
+
+        public static ComplianceAnswer okAnswerNoDepsGray() {
+            return new ComplianceAnswer(ListType.GRAY_LIST);
+        }
+
         public static ComplianceAnswer failAnswer; // initialized to null, keep it that way
 
         public ComplianceAnswer() {
             answers = new HashMap<>();
+            color = ListType.WHITE_LIST;
+        }
+
+        public ComplianceAnswer(ListType color) {
+            answers = new HashMap<>();
+            this.color = color;
         }
 
         public Map<Component, List<ComplianceAnswer>> licenseMap(License license) {
@@ -351,8 +417,8 @@ public class LicenseArbiter {
             debug("subComponentCompatibleWith", " ---   " + component.name() + " " + license.spdx() + " try l: " + l.spdx(), indent);
             // Blacklisted => continue with next
             //   debug("subComponentCompatibleWith", "  --   " + component.name() + "(" + license.spdx() + ")  check: " + l.spdx(), indent);
-            if (policy != null && policy.blackList().contains(l.spdx())) {
-                debug("subComponentCompatibleWith", "  --   " + component.name() + " (compat with? " + license.spdx() + ")  BLACKLISTED", indent);
+            if (policy != null && policy.blackList().contains(l)) {
+                debug("subComponentCompatibleWith", "  --    policy: " + policy.grayList() + " contains: " + l.spdx() + " => BLACK", indent);
                 continue;
             }
             // Can't combine work => continue with next
@@ -372,7 +438,15 @@ public class LicenseArbiter {
             if (component.dependencies().size() == 0) {
                 // add to this license,
                 debug("subComponentCompatibleWith", "  --   " + component.name() + " (compat with? " + license.spdx() + ") " + l.spdx() + "   no deps, so concluded .... BUG", indent);
-                answer.answers(l.spdx(),component).add(ComplianceAnswer.okAnswerNoDeps);
+                debug("subComponentCompatibleWith", "  --    policy: " + policy + " contains: " + l.spdx() + " => " +
+                        (policy==null?false:policy.grayList().contains(l)), indent);
+                if (policy!=null && policy.grayList().contains(l)) {
+                    debug("subComponentCompatibleWith", "  --    policy: " + policy.grayList() + " contains: " + l.spdx() + " => GRAY", indent);
+                    answer.answers(l.spdx(),component).add(ComplianceAnswer.okAnswerNoDepsGray());
+                } else {
+                    debug("subComponentCompatibleWith", "  --    policy: " + policy + " contains: " + l.spdx() + " => WHITE", indent);
+                    answer.answers(l.spdx(),component).add(ComplianceAnswer.okAnswerNoDeps());
+                }
             } else {
                 // Check all sub components if l can be used with them
                 for (Component c : component.dependencies()) {
@@ -445,6 +519,8 @@ public class LicenseArbiter {
         }
     }
 
+
+
     public static void reportConcludeLate(Component c, LicensePolicy policy, Report report) throws ConclusionImpossibleException, LicenseViolationException {
         for (License l : c.licenses()) {
             // clearConcluded(report, c);
@@ -465,6 +541,7 @@ public class LicenseArbiter {
     }
 
 
+
     public static ComplianceAnswer reportConcludeLate(Component c, LicensePolicy policy, Report report, int dummy) throws ConclusionImpossibleException, LicenseViolationException {
         for (License l : c.licenses()) {
             // clearConcluded(report, c);
@@ -483,6 +560,7 @@ public class LicenseArbiter {
 //                System.out.println(" conclusions: " + ReportExporterFactory.getInstance().exporter(ReportExporterFactory.OutputFormat.TEXT).exportConclusions(report.conclusions));
                 System.out.println("answer:\n" + c.name());
                 System.out.println(answer.toString(2));
+                System.out.println("gray paths: " + answer.grayPaths());
             }
         }
         return null;

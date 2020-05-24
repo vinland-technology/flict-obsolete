@@ -62,6 +62,25 @@ public class Utils {
         return policy;
     }
 
+    public static LicensePolicy grayListApachePolicy() {
+        LicensePolicy policy = new LicensePolicy();
+        policy.addGrayLicense(apache20);
+        return policy;
+    }
+
+    public static LicensePolicy grayListBSDPolicy() {
+        LicensePolicy policy = new LicensePolicy();
+        policy.addGrayLicense(bsd3);
+        return policy;
+    }
+
+    public static LicensePolicy grayListApacheBlackBSDPolicy() {
+        LicensePolicy policy = new LicensePolicy();
+        policy.addGrayLicense(apache20);
+        policy.addBlackLicense(bsd3);
+        return policy;
+    }
+
     public static LicensePolicy permissiveAndWeakPolicy() {
         LicensePolicy policy = new LicensePolicy();
 
