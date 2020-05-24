@@ -4,8 +4,10 @@
 
 package com.sandklef.compliance.utils;
 
+import java.awt.event.ComponentListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +27,72 @@ public class LicenseArbiter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static class ComplianceAnswer {
+
+        // License.spdx
+        Map<String, Map<Component, List<ComplianceAnswer>>> answers;
+
+        @Override
+        public String toString() {
+            return "ComplianceAnswer{" +
+                    "answers=" + answers +
+                    '}';
+        }
+
+        public String toString(int indent) {
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, Map<Component, List<ComplianceAnswer>>> entry : answers.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                sb.append(indents(indent));
+                sb.append("  | ");
+                sb.append(key);
+                sb.append("\n");
+                for (Map.Entry<Component, List<ComplianceAnswer>> entry2 : ((Map<Component, List<ComplianceAnswer>>)value).entrySet()) {
+                    sb.append(indents(indent));
+                    sb.append("  +-- ");
+                    sb.append(entry2.getKey().name());
+                    sb.append("\n");
+                    if (entry2.getValue()!=null) {
+                        for (ComplianceAnswer ca : entry2.getValue()) {
+                            if (ca != null) {
+                                sb.append(ca.toString(indent+4));
+                            }
+                        }
+                        sb.append("\n");
+                    } else {
+                        sb.append(indents(indent));
+                        sb.append("  | -- OK\n");
+                    }
+                }
+            }
+            return sb.toString();
+        }
+
+        public ComplianceAnswer() {
+            answers = new HashMap<>();
+        }
+
+        public Map<Component, List<ComplianceAnswer>> licenseMap(License license) {
+            return licenseMap(license.spdx());
+        }
+
+        public Map<Component, List<ComplianceAnswer>> licenseMap(String spdx) {
+            if (answers.get(spdx) == null) {
+                answers.put(spdx, new HashMap<>());
+            }
+            return answers.get(spdx);
+        }
+
+        public List<ComplianceAnswer> answers(String spdx, Component component) {
+            if (licenseMap(spdx).get(component)==null) {
+                licenseMap(spdx).put(component, new ArrayList<>());
+            }
+            return licenseMap(spdx).get(component);
+        }
+
     }
 
     /*
@@ -102,7 +170,7 @@ public class LicenseArbiter {
         try {
             Log.level(Log.DEBUG);
 
-            reportConcludeLate(c, policy, report);
+            ComplianceAnswer answer = reportConcludeLate(c, policy, report, 0);
         } catch (ConclusionImpossibleException e) {
 //            e.printStackTrace();
             // TOOO: errror log
@@ -187,6 +255,8 @@ public class LicenseArbiter {
         return licenseUsable;
     }
 
+
+
     private static boolean subComponentCompatibleWith(Report report, Component component, License license, LicensePolicy policy, int indent) {
         debug("subComponentCompatibleWith", " -->   " + component.name() + " (compat with? " + license.spdx() + ")", indent);
         for (License l : component.licenses()) {
@@ -224,9 +294,8 @@ public class LicenseArbiter {
                     if (!canUse) {
                         // at least one component could not use l
                         // continue with next
-                        debug("subComponentCompatibleWith", "  --   " + component.name() + "  ----- check " + c.name() + " NOT compat with: " + l.spdx() , indent);
+                        debug("subComponentCompatibleWith", "  --   " + component.name() + "  ----- check " + c.name() + " NOT compat with: " + l.spdx() + " don't check anymore", indent);
                         clearConcluded(report, c);
-//                        return false;
                         licenseCompliant = false;
                         break;
                     }
@@ -244,9 +313,87 @@ public class LicenseArbiter {
             }
         }
 
-        debug("subComponentCompatibleWith", " <--   " + component.name() + " (" + license.spdx() + ")  false (last stand)", indent);
+        debug("subComponentCompatibleWith", " <--   " + component.name() + " (" + license.spdx() + ")  false (last stand) ", indent);
+        debug("subComponentCompatibleWith", " <--   VIOLATION " + component.name() + "  and license " + license.spdx() , indent);
         // TODO: violation?
         return false;
+    }
+
+
+    private static ComplianceAnswer subComponentCompatibleWith(Report report, Component component, License license, LicensePolicy policy, int indent, int dummy) {
+        debug("subComponentCompatibleWith", " -->   " + component.name() + " (compat with? " + license.spdx() + ")", indent);
+        ComplianceAnswer answer = new ComplianceAnswer();
+        for (License l : component.licenses()) {
+            debug("subComponentCompatibleWith", " ---   " + component.name() + "                                   l: " + l.spdx(), indent);
+            // Blacklisted => continue with next
+            //   debug("subComponentCompatibleWith", "  --   " + component.name() + "(" + license.spdx() + ")  check: " + l.spdx(), indent);
+            if ( policy != null && policy.blackList().contains(l.spdx())) {
+                debug("subComponentCompatibleWith", "  --   " + component.name() + " (compat with? " + license.spdx() + ")  BLACKLISTED", indent);
+                continue;
+            }
+            // Can't combine work => continue with next
+            if ( ! aCanUseB(license, l)) {
+                debug("subComponentCompatibleWith", "  --   " + component.name() + " (compat with? " + license.spdx() + ")  can not use: " + l.spdx(), indent);
+                continue;
+            }
+
+            //debug("subComponentCompatibleWith", "  --   " + component.name() + "(" + license.spdx() + ")  moving on", indent);
+
+            // So, l (License) :
+            // * not black listed
+            // * can be used by license (maybe null)
+
+            boolean licenseCompliant = true;
+            // if no deps, simply check this one with license
+            if (component.dependencies().size()==0) {
+                // add to this license,
+                debug("subComponentCompatibleWith", "  --   " + component.name() + " (compat with? " + license.spdx() + ")  no deps so concluded .... BUG", indent);
+                answer.licenseMap(l).put(component, null); // null, means no deps but compliant
+            } else {
+                // Check all sub components if l can be used with them
+                for (Component c : component.dependencies()) {
+                    debug("subComponentCompatibleWith", "  --   " + component.name() + "  ----- check " + c.name() + " compat with: " + l.spdx() , indent);
+                    ComplianceAnswer answerFromDep = subComponentCompatibleWith(report, c, l, policy, indent+2, 0);
+                    debug("subComponentCompatibleWith", "  --   " + component.name() + "  ----- DEBUG: " + answerFromDep , indent);
+//                    debug("subComponentCompatibleWith", "  --   " + component.name() + "(" + license.spdx() + ")  DEPS can use: " + l.spdx() + " : " + canUse, indent);
+                    if (answerFromDep==null || answerFromDep.answers.isEmpty()) {
+                        // at least one component could not use l
+                        // continue with next
+                        debug("subComponentCompatibleWith", "  --   " + component.name() + "  ----- check " + c.name() + " NOT compat with: " + l.spdx() + " don't check anymore", indent);
+                        clearConcluded(report, c);
+                        licenseCompliant = false;
+                        break;
+                    } else {
+                        answer.answers(l.spdx(), component).add(answerFromDep);
+                    }
+                }
+            }
+
+            if (! licenseCompliant ) {
+                debug("subComponentCompatibleWith", " ----- REMOVE", indent);
+
+                answer.licenseMap(l).remove(component);
+                continue;
+            }
+
+            if (aCanUseB(license, l)) {
+                debug("subComponentCompatibleWith", " <--   " + component.name() + " (compat with? " + license.spdx() + ")  true", indent);
+                addConcluded(report, l, component);
+            }
+        }
+
+        debug("subComponentCompatibleWith", " <--   " + component.name() + " (" + license.spdx() + ")  false (last stand) ", indent);
+        debug("subComponentCompatibleWith", " <--   VIOLATION " + component.name() + "  and license " + license.spdx() , indent);
+        return answer;
+    }
+
+    private static void addToList(Map<String, List<Component>> map, String key, Component component) {
+        List<Component> components = map.get(key);
+        if (components == null) {
+            map.put(key, new ArrayList<Component>());
+            components = map.get(key);
+        }
+        components.add(component);
     }
 
     private static void clearConcluded(Report report, Component c) {
@@ -258,7 +405,7 @@ public class LicenseArbiter {
 
     public static void reportConcludeLate(Component c, LicensePolicy policy, Report report) throws ConclusionImpossibleException, LicenseViolationException {
         for (License l : c.licenses()) {
-           // clearConcluded(report, c);
+            // clearConcluded(report, c);
 //            Log.d(LOG_TAG, " checkLicense: " + l );
 //            debug("reportConcludeLate", " calling subComponentCompatibleWith   --   " + c.name() + " ( ----- compat with: " + l.spdx() );
 
@@ -273,6 +420,28 @@ public class LicenseArbiter {
                 break;
             }
         }
+    }
+
+
+    public static ComplianceAnswer reportConcludeLate(Component c, LicensePolicy policy, Report report, int dummy) throws ConclusionImpossibleException, LicenseViolationException {
+        for (License l : c.licenses()) {
+            // clearConcluded(report, c);
+//            Log.d(LOG_TAG, " checkLicense: " + l );
+//            debug("reportConcludeLate", " calling subComponentCompatibleWith   --   " + c.name() + " ( ----- compat with: " + l.spdx() );
+
+            ComplianceAnswer answer = subComponentCompatibleWith(report, c, l, policy, 2, 0);
+            Log.d(LOG_TAG, " reportConcludeLate: " + l + " ===> " + answer );
+            if (answer==null) {
+                clearConcluded(report, c);
+            } else {
+                System.out.println("Yes, me happy!");
+//                System.out.println(" report: " + ReportExporterFactory.getInstance().exporter(ReportExporterFactory.OutputFormat.TEXT).exportReport(report));
+                System.out.println(" conclusions: " + ReportExporterFactory.getInstance().exporter(ReportExporterFactory.OutputFormat.TEXT).exportConclusions(report.conclusions));
+                System.out.println("answer:\n" + c.name());
+                System.out.println(answer.toString(2));
+            }
+        }
+        return null;
     }
 
 
