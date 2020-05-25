@@ -5,13 +5,11 @@
 package com.sandklef.compliance.json;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.*;
 
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -24,128 +22,135 @@ import java.util.regex.Pattern;
 
 public class JsonComponentParser {
 
-  public static final String COMPONENT_TAG = "component";
-  public static final String DEPENDENCIES_TAG = "dependencies";
-  public static final String LICENSE_TAG = "license";
-  public static final String NAME_TAG = "name";
-  public static final String INCLUDE_DEPENDENCIES_TAG = "include_dependencies";
+    public static final String COMPONENT_TAG = "component";
+    public static final String DEPENDENCIES_TAG = "dependencies";
+    public static final String LICENSE_TAG = "license";
+    public static final String NAME_TAG = "name";
+    public static final String INCLUDE_DEPENDENCIES_TAG = "include_dependencies";
 
-  public static final String LOG_TAG = JsonComponentParser.class.getSimpleName();
+    public static final String LOG_TAG = JsonComponentParser.class.getSimpleName();
 
-  public Component readComponent(String fileName) throws IOException{
-    if (fileName.equals("-")) {
-      BufferedReader reader =
-              new BufferedReader(new InputStreamReader(System.in));
-      StringBuilder sb = new StringBuilder();
-      try {
-        while(true) {
-          String line = reader.readLine();
-          if (line==null) {
-            break;
-          }
-          sb.append(line);
+    public List<Component> readComponent(String fileName) throws IOException {
+        if (fileName.equals("-")) {
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(System.in));
+            StringBuilder sb = new StringBuilder();
+            try {
+                while (true) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    sb.append(line);
 //          System.out.println(" sb: " + sb.toString());
+                }
+            } catch (IOException e) {
+                System.out.println(e);
+                System.exit(1);
+            }
+            return readComponentString(sb.toString());
         }
-      } catch (IOException e) {
-        System.out.println(e);
-        System.exit(1);
-      }
-      return readComponentString(sb.toString());
+        return readComponentString(new String(Files.readAllBytes(Paths.get(fileName))));
     }
-    return readComponentString(new String(Files.readAllBytes(Paths.get(fileName))));
-  }
-  public Component readComponentString(String json) {
-    JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
-    //    Log.level(Log.DEBUG);
-    Log.d(LOG_TAG, " n *** read co:   " + jo + " ****\n\n");
+
+    public List<Component> readComponentString(String json) {
+        JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
+        //    Log.level(Log.DEBUG);
+        Log.d(LOG_TAG, " n *** read co:   " + jo + " ****\n\n");
 //    Log.d(LOG_TAG, " \n\n\n *** read meta: " + jo.get("meta").getAsJsonObject() + " ****\n\n");
 //    Log.d(LOG_TAG, "  *** read comp: " + jo.get("component").getAsJsonObject() + " ****\n\n");
-    JsonObject componentJson = jo.get("component").getAsJsonObject();
+        JsonObject componentJson = jo.get("component").getAsJsonObject();
 
-    return readComponentStringHelper(componentJson);
-
-/*    Log.d(LOG_TAG, " c: " + c);
-
-    for (Component d : c.dependencies()) {
-      Log.d(LOG_TAG, "   d: " + d);
-
-      for (Component e : d.dependencies()) {
-        Log.d(LOG_TAG, "      e: " + e);
-      }
+        return readComponentStringHelper(componentJson);
 
     }
-*/
-  }
 
-  public Component readComponentStringHelper(JsonObject componentJson) {
-    Gson gson = new Gson();
-    ComponentIntermediate componentIntermediate = gson.fromJson(componentJson, ComponentIntermediate.class);
-    Log.d(LOG_TAG, "  *** read comp: " + componentIntermediate + " ****\n\n");
+    public List<Component> readComponentStringHelper(JsonObject componentJson) {
+        Gson gson = new Gson();
+        ComponentIntermediate componentIntermediate = gson.fromJson(componentJson, ComponentIntermediate.class);
+        Log.d(LOG_TAG, "  *** read comp: " + componentIntermediate + " ****\n\n");
 
-    Component current = componentIntermediate.export();
+        List<Component> currents = componentIntermediate.export();
 
-    JsonElement depElem = componentJson.get("dependencies");
-    if ( depElem == null ) {
-      return current;
+        JsonElement depElem = componentJson.get("dependencies");
+        if (depElem == null) {
+            return currents;
+        }
+
+        JsonArray depArray = depElem.getAsJsonArray();
+        if (depArray == null || depArray.size() == 0) {
+            return currents;
+        }
+
+        Log.level(Log.DEBUG);
+      // for each component in currents
+        for (Component cur : currents) {
+            // for each dep in json
+            for (JsonElement je : depArray) {
+                Log.d(LOG_TAG, "   ===================  SUB READ: " + je.toString());
+                List<Component> deps = readComponentStringHelper(je.getAsJsonObject());
+                //   for each dep inflated from json
+                for (Component dep : deps) {
+                  Log.d(LOG_TAG, "   ===================  component loop: " + cur.name() + " add " + dep.name());
+                    cur.addDependency(dep);
+                }
+            }
+        }
+
+        return currents;
     }
 
-    JsonArray depArray = depElem.getAsJsonArray();
-    if ( depArray == null || depArray.size() == 0) {
-      return current;
+    private static class LicenseIntermediate {
+        private String spdx;
     }
 
-/*
-    // We have deps, add them
-    List<ComponentIntermediate> deps  =
-            gson.fromJson(componentJson.get("dependencies").getAsJsonArray(),
-              new TypeToken<List<ComponentIntermediate>>() {}.getType());
-*/
+    private static class ComponentIntermediate {
+        private String name;
+        private String license;
+        private List<License> dependencies;
+
+        @Override
+        public String toString() {
+            return "ComponentIntermediate{" +
+                    "name='" + name + '\'' +
+                    ", license='" + license + '\'' +
+                    ", dependencies=" + dependencies +
+                    '}';
+        }
 
 
-    for (JsonElement je : depArray) {
-      Log.d(LOG_TAG, "   ===================  SUB READ: " + je.toString());
-      Component dep = readComponentStringHelper(je.getAsJsonObject());
-      current.addDependenciey(dep);
-    }
+        public List<Component> export() {
+            if (license.contains("|") ||
+                    license.contains("&")) {
+                boolean dualLicensed = license.contains("|");
+                Log.d(LOG_TAG, name + " license string: " + license.trim() );
+                List<License> licenses = licensesToList(license.trim());
+                List<Component> components = new ArrayList<>();
 
-    return current;
-  }
-
-  private static class LicenseIntermediate {
-      private String spdx;
-  }
-
-  private static class ComponentIntermediate {
-    private String name;
-    private String license;
-    private List<License> dependencies;
-
-    @Override
-    public String toString() {
-      return "ComponentIntermediate{" +
-              "name='" + name + '\'' +
-              ", license='" + license + '\'' +
-              ", dependencies=" + dependencies +
-              '}';
-    }
-
-    public Component export() {
-      if (license.contains("|") ||
-              license.contains("&")) {
-        boolean dualLicensed = license.contains("|");
-
-        List<License> licenses = licensesToList(license);
-        return new Component(name, licenses, null);
-      } else {
-        Log.d(LOG_TAG,name + " LicenseName: " + license + " DOES NOT contains PIPE");
-        License licenseReturn = LicenseStore.getInstance().license(license.trim());
+                if (dualLicensed) {
+                    components.add(new Component(name, licenses, null));
+                    return components;
+                } else {
+                    int i = 0;
+                    for (License l : licenses) {
+                        Log.d(LOG_TAG, name + " virtual : " + l );
+                        components.add(new Component(name + "_virtual_" + i, l, null));
+                        i++;
+                    }
+                    return components;
+                }
+            } else {
+                Log.d(LOG_TAG, name + " LicenseName: " + license + " DOES NOT contains PIPE");
+                License licenseReturn = LicenseStore.getInstance().license(license.trim());
 //      System.out.println("License: " + license);
-        Log.d(LOG_TAG,name + " will get license: " + license + "   no PIPE");
-        return new Component(name, licenseReturn, null);
-      }
-    }
+                Log.d(LOG_TAG, name + " will get license: " + license + "   no PIPE");
+                List<Component> components = new ArrayList<>();
+                components.add(new Component(name, licenseReturn, null));
+                return components;
+            }
+        }
 
-  }
+    }
 
 
 /*  private Component readComponentHelper(JSONObject jo) throws IOException {
@@ -196,22 +201,26 @@ public class JsonComponentParser {
   }
 */
 
-  private static List<License> licensesToList(String licensefield) {
-    List<String> licenseList ;
-    List<License> licenses = new ArrayList<>();
+    private static List<License> licensesToList(String licensefield) {
+        List<String> licenseList;
+        List<License> licenses = new ArrayList<>();
 
-    if (licensefield.contains("|")) {
-      licenseList = Arrays.asList(Pattern.compile("\\|").split(licensefield));
-    } else {
-      licenseList = Arrays.asList(Pattern.compile("&").split(licensefield));
-    }
+        if (licensefield.contains("|")) {
+            licenseList = Arrays.asList(Pattern.compile("\\|").split(licensefield));
+        } else {
+            licenseList = Arrays.asList(Pattern.compile("&").split(licensefield));
+        }
 
-    for(String l : licenseList){
-      Log.d(LOG_TAG," * \"" + l.trim() + "\"");
-      licenses.add(LicenseStore.getInstance().license(l.trim()));
+        for (String l : licenseList) {
+            if (l.equals("")) { continue; }
+            License lic = LicenseStore.getInstance().license(l.trim());
+            Log.d(LOG_TAG, " * translate license: \"" + l.trim() + "\" => \"" + lic + "\"");
+            Log.d(LOG_TAG, " * translate license: \"" + l.trim() + "\" => \"" + lic.spdx() + "\"");
+            licenses.add(lic);
+            Log.d(LOG_TAG, " * translate license: \"" + licenses);
+        }
+        return licenses;
     }
-    return licenses;
-  }
 
 /*
   public MetaData readMetaDate(String fileName) throws IOException {

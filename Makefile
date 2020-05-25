@@ -35,7 +35,6 @@ JAVA_SOURCES=\
   com/sandklef/compliance/cli/LicenseChecker.java \
   com/sandklef/compliance/exporter/ReportExporter.java \
   com/sandklef/compliance/exporter/ReportExporterFactory.java \
-  com/sandklef/compliance/exporter/TestJsonComponentParser.java \
   com/sandklef/compliance/exporter/JsonExporter.java \
   com/sandklef/compliance/exporter/MDExporter.java \
   com/sandklef/compliance/exporter/TextComponentExporter.java \
@@ -55,6 +54,7 @@ TEST_SOURCES=\
   com/sandklef/compliance/json/test/TestLicenseParser.java \
   com/sandklef/compliance/test/TestLicenseConnector.java \
   com/sandklef/compliance/test/VirtualLicenseBuilderTest.java \
+  com/sandklef/compliance/json/test/TestJsonComponentParser.java \
 
 
 CLASSES=$(JAVA_SOURCES:.java=.class)

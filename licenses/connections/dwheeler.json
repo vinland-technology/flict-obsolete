@@ -74,15 +74,17 @@
         },
         {
             "spdx": "GPL-2.0-or-later",
-            "used_by": [ "GPL-2.0-only" , "GPL-3.0-only", "GPL-3.0-or-later" ]
+            "used_by": [ "GPL-2.0-only" ,
+			 "GPL-3.0-only",
+			 "GPL-3.0-or-later" ]
         },
         {
             "spdx": "GPL-3.0-only",
-            "used_by": [ ]
+            "used_by": [ "GPL-3.0-or-later" ]
         },
         {
             "spdx": "GPL-3.0-or-later",
-            "used_by": [ ]
+            "used_by": [ "GPL-3.0-only" ]
         }
     ]
 }

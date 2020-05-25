@@ -5,6 +5,7 @@
 package com.sandklef.compliance.json.test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import com.sandklef.compliance.domain.*;
@@ -15,7 +16,14 @@ import static com.sandklef.compliance.test.Utils.*;
 
 public class TestJsonComponentParser {
 
+  private static final String LOG_TAG = TestJsonComponentParser.class.getCanonicalName() ;
+
   public static void test() throws IOException {
+    test_dual();
+    test_many();
+  }
+
+  public static void test_dual() throws IOException {
     int fileIndex=0;
     boolean compliant = true;
 
@@ -23,10 +31,12 @@ public class TestJsonComponentParser {
 
     Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
     LicenseStore.getInstance().addLicenses(licenses);
-    Component c = jp.readComponent("com/sandklef/compliance/json/test/simple.json");
+    List<Component> components = jp.readComponent("com/sandklef/compliance/json/test/simple.json");
 
-
+    Component c = components.get(0);
     printTestStart("TestJsonComponentParser");
+    printSubTestStart("Dual");
+
     assertHelper("Component name", c.name().equals("Main program"));
     assertHelper("Component has two dependencies", c.dependencies().size()==2);
     assertHelper("Component is licensed under lgpl", c.licenses().get(0).spdx().equals(gpl20.spdx()));
@@ -50,8 +60,27 @@ public class TestJsonComponentParser {
 
   }
 
+  public static void test_many() throws IOException {
+    int fileIndex=0;
+    boolean compliant = true;
+    printSubTestStart("Many");
+
+    JsonComponentParser jp = new JsonComponentParser();
+
+    Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
+    LicenseStore.getInstance().addLicenses(licenses);
+    List<Component> components = jp.readComponent("com/sandklef/compliance/json/test/simple-many.json");
+
+    assertHelper("Components is 1", components.size()==1);
+
+    Log.level(Log.DEBUG);
+    Log.d(LOG_TAG, " components: " + components);
+
+  }
+
   public static void main(String[] args) throws IOException {
-    test();
+//    test();
+    test_many();
   }
   
 }

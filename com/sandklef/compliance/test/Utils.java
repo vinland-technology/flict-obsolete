@@ -21,8 +21,10 @@ public class Utils {
     public static License lgpl30;
     public static License gpl20;
     public static License gpl20_later;
+    public static License lgpl21_only;
     public static License lgpl21_later;
     public static License gpl30;
+    public static License gpl30_later;
     public static License gpl31;
     public static License apache20;
     public static License bsd3;
@@ -46,7 +48,9 @@ public class Utils {
             gpl20 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
             gpl20_later = LicenseStore.getInstance().license(GPL_2_0_LATER_SPDX);
             lgpl21_later = LicenseStore.getInstance().license(LGPL_2_1_LATER_SPDX);
+            lgpl21_only = LicenseStore.getInstance().license(LGPL_2_1_ONLY_SPDX);
             gpl30 = LicenseStore.getInstance().license(GPL_3_0_SPDX);
+            gpl30_later = LicenseStore.getInstance().license(GPL_3_0_LATER_SPDX);
             gpl31 = LicenseStore.getInstance().license(GPL_3_1_SPDX);
             apache20 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
             bsd3 = LicenseStore.getInstance().license(BSD_3_SPDX);

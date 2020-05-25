@@ -199,10 +199,10 @@ public class LicenseArbiter {
             // violation in "lower" components
             return false;
         }
-        Log.d(LOG_TAG, "aCanUseB " + a.spdx() + " " + b.spdx());
-        Log.d(LOG_TAG, "aCanUseB " + LicenseStore.getInstance().connectors());
-        Log.d(LOG_TAG, "aCanUseB c " + LicenseStore.getInstance().connectors().get(a.spdx()));
-        Log.d(LOG_TAG, "aCanUseB c " + LicenseStore.getInstance().connectors().get(b.spdx()));
+        Log.d(LOG_TAG, "aCanUseB spdx: " + a.spdx() + " " + b.spdx());
+        Log.d(LOG_TAG, "aCanUseB conns " + LicenseStore.getInstance().connectors());
+        Log.d(LOG_TAG, "aCanUseB a " + LicenseStore.getInstance().connectors().get(a.spdx()));
+        Log.d(LOG_TAG, "aCanUseB b " + LicenseStore.getInstance().connectors().get(b.spdx()));
         return aCanUseB(LicenseStore.getInstance().connectors().get(a.spdx()),
                 LicenseStore.getInstance().connectors().get((b.spdx())));
     }
@@ -211,7 +211,7 @@ public class LicenseArbiter {
         Log.d(LOG_TAG, "   ---> check lic: " + a + " and " + b + "    { " + visited + " }");
 
         // Check if we've visited this connector already. If so, false
-        Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b.license().spdx() + " ******** " + visited.contains(b));
+        Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b.license() + " ******** " + visited.contains(b));
         if (visited.contains(b)) {
             // already checked b
             //           Log.d(LOG_TAG, "\n\n ***************** ALREADY BEEN IN " + b.license().spdx() + " ********\n\n\n");
@@ -251,7 +251,7 @@ public class LicenseArbiter {
     }
 
     private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) {
-        debug("aCanUse", "   new arraylist: NOT ALREADY");
+        debug("aCanUse", "   new arraylist: NOT ALREADY" + "  " + a + "   " + b);
         return aCanUseBImpl(a, b, new ArrayList<>());
     }
 

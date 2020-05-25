@@ -203,7 +203,8 @@ public class LicenseChecker {
         Log.d(LOG_TAG, "printing component...");
         Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
         JsonComponentParser jp = new JsonComponentParser();
-        Component c = jp.readComponent((String) values.get("componentFile"));
+        // TODO: remove get(0)
+        Component c = jp.readComponent((String) values.get("componentFile")).get(0);
         writer.println(c.toStringLong());
     }
 
@@ -221,7 +222,8 @@ public class LicenseChecker {
         // Read component
         Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
         JsonComponentParser jp = new JsonComponentParser();
-        Component c = jp.readComponent((String) values.get("componentFile"));
+        // TODO: remove get(0)
+        Component c = jp.readComponent((String) values.get("componentFile")).get(0);
         Log.d(LOG_TAG, "Component read: " + c.name());
         Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 

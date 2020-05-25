@@ -101,7 +101,7 @@ public class Component {
     concludedLicense = null;
   }
 
-  public void addDependenciey(Component c) {
+  public void addDependency(Component c) {
     dependencies.add(c);
   }
 
@@ -132,8 +132,14 @@ public class Component {
       sb.append("Single licensed");
       break;
     }
-      
+
     sb.append(") [");
+    for (License l : licenses) {
+      sb.append( "  " + l.spdx()  );
+    }
+    sb.append(" ],  ");
+
+    sb.append(" [");
     for (Component c : dependencies) {
       sb.append( "  " + c.toStringLong()  );
     }
