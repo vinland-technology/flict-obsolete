@@ -2,8 +2,6 @@ package com.sandklef.compliance.utils;
 
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.exporter.ReportExporter;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.List;
 
