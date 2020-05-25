@@ -1,0 +1,34 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "A with dual and many" ,
+        "license": "GPL-3.0-only | GPL-3.0-or-later",
+        "dependencies": [
+            {
+                "name": "AA",
+                "license": "LGPL-3.0-only | BSD-3-Clause",
+                "dependencies": []
+            },
+            {
+                "name": "AB",
+                "license": "GPL-3.0-only & LGPL-2.1-only",
+                "dependencies": [
+                    {
+                        "name": "ABA",
+                        "license": "LGPL-3.0-only | GPL-3.0-only | Apache-2.0 | BSD-3-Clause",
+                        "dependencies": [
+                        ]
+                    },
+                    {
+                        "name": "ABB",
+                        "license": "LGPL-3.0-only | Apache-2.0 | BSD-3-Clause",
+                        "dependencies": []
+                    }
+                ]
+            }
+        ]
+    }
+}
