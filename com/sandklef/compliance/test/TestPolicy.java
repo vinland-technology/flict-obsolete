@@ -39,7 +39,7 @@ public class TestPolicy {
     LicensePolicy policy = pp.readLicensePolicy("com/sandklef/compliance/json/test/blacklist-apache.json");
 
     JsonComponentParser jp = new JsonComponentParser();
-    Component c = jp.readComponent("com/sandklef/compliance/json/test/simple-dual.json");
+    Component c = jp.readComponent("com/sandklef/compliance/json/test/simple-dual.json").get(0);
 
     printSubTestStart("Valid component and apache blacklisted (using JSON)");
 //    Log.level(Log.DEBUG);
