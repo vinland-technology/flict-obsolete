@@ -70,7 +70,7 @@ CLASSPATH=.:$(LIB_DIR)/$(CLI_JAR):$(LIB_DIR)/$(GSON_JAR)
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 
 %.class:%.java 
-	javac  -Xdiags:verbose -cp "$(CLASSPATH)" $<
+	javac  -Xdiags:verbose -Xlint:unchecked -cp "$(CLASSPATH)" $<
 
 JARS=$(LIB_DIR)/$(CLI_JAR) $(LIB_DIR)/$(GSON_JAR)
 

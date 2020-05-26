@@ -4,79 +4,51 @@
 
 package com.sandklef.compliance.domain;
 
+import com.sandklef.compliance.utils.LicenseArbiter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Report {
 
     private Component component;
-    public List<LicenseObligationViolation> violations;
-    public List<LicenseConclusion> conclusions;
-    private List<PolicyConcern> concerns;
-    private List<PolicyViolation> policyViolations;
+    private List<ComplianceAnswer> answers;
+    private LicensePolicy policy;
+    private MetaData metaData;
 
-    public Report(Component component) {
+    public Report(Component component, LicensePolicy policy) {
         this.component = component;
-        violations = new ArrayList<>();
-        conclusions = new ArrayList<>();
-        concerns = new ArrayList<>();
-        policyViolations = new ArrayList<>();
-    }
-
-    //
-    // add
-    //
-    public void addLicenseObligationViolation(LicenseObligationViolation violation) {
-        violations.add(violation);
-    }
-
-    public void addLicenseConcern(PolicyConcern concern) {
-        concerns.add(concern);
-    }
-
-    public void addLicenseConclusion(LicenseConclusion conclusion) {
-        conclusions.add(conclusion);
-    }
-
-    public void addPolicyViolation(PolicyViolation violations) {
-        policyViolations.add(violations);
-    }
-
-    //
-    // get
-    //
-    public List<PolicyConcern> concerns() {
-        return concerns;
-    }
-
-    public List<PolicyViolation> policyViolations() {
-        return policyViolations;
-    }
-
-    public List<LicenseConclusion> conclusions() {
-        return conclusions;
-    }
-
-    public List<LicenseObligationViolation> violations() {
-        return violations;
+        this.policy = policy;
+        this.answers = new ArrayList<>();
+        this.metaData = new MetaData();
     }
 
     public Component component() {
         return component;
     }
 
-
-    // has
-    public boolean licenseViolation() {
-        return violations.size()>0;
+    public List<ComplianceAnswer> answers() {
+        return answers;
     }
 
-    public boolean policyViolation() {
-        return policyViolations.size()>0;
+    public LicensePolicy policy() {
+        return policy;
     }
 
-    public boolean hasViolations() {
-         return policyViolation() || licenseViolation();
+    public MetaData metaData() {
+        return metaData;
+    }
+
+    public void addAnswer(ComplianceAnswer answer) {
+        answers.add(answer);
+    }
+
+    public void finished() {
+        metaData.finished();
+    }
+
+    public String duration() {
+        return metaData.duration();
     }
 
 

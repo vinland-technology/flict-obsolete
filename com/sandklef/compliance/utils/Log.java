@@ -79,4 +79,20 @@ public class Log {
         currentLevel = level;
     }
 
+    public static void debug(String method, String msg) {
+        Log.d(method + "." + method, msg);
+    }
+
+    public static String indents(int indent) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < indent; i++) {
+            sb.append("  ");
+        }
+        return sb.toString();
+    }
+
+    public static void debug(String method, String msg, int indent) {
+        Log.d(method + method, indents(indent) + msg);
+    }
+
 }

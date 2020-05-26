@@ -425,7 +425,7 @@ public class Utils {
         return deps;
     }
 
-    public static boolean checkViolation(Report report, Component c) {
+/*    public static boolean checkViolation(Report report, Component c) {
         for (LicenseObligationViolation ov : report.violations()) {
             if (ov.user().name().equals(c.name())) { return true; }
         }
@@ -445,5 +445,5 @@ public class Utils {
         }
         return false;
     }
-
+*/
 }
