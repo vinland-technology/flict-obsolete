@@ -18,11 +18,13 @@ JAVA_SOURCES=\
   com/sandklef/compliance/domain/ObligationState.java \
   com/sandklef/compliance/domain/LicenseType.java \
   com/sandklef/compliance/domain/PolicyConcern.java \
+  com/sandklef/compliance/domain/ComplianceAnswer.java \
   com/sandklef/compliance/domain/PolicyViolation.java \
   com/sandklef/compliance/utils/LeastPermissiveLicenseComparator.java \
   com/sandklef/compliance/utils/MostPermissiveLicenseComparator.java \
   com/sandklef/compliance/utils/Log.java \
   com/sandklef/compliance/utils/ObligationBuilder.java \
+  com/sandklef/compliance/utils/LicenseUtils.java \
   com/sandklef/compliance/utils/LicenseStore.java \
   com/sandklef/compliance/utils/LicenseArbiter.java \
   com/sandklef/compliance/json/JsonLicenseParser.java \

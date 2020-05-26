@@ -73,7 +73,7 @@ public class TestJsonComponentParser {
 
     assertHelper("Components is 1", components.size()==1);
 
-    Log.level(Log.DEBUG);
+   // Log.level(Log.DEBUG);
     Log.d(LOG_TAG, " components: " + components);
 
   }

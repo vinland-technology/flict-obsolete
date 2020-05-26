@@ -82,7 +82,7 @@ public class JsonComponentParser {
             return currents;
         }
 
-        Log.level(Log.DEBUG);
+     //   Log.level(Log.DEBUG);
       // for each component in currents
         for (Component cur : currents) {
             // for each dep in json

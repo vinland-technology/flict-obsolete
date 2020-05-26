@@ -24,7 +24,6 @@ public class TestAll {
         TestJsonComponentParser.test();
         System.out.println("\n");
         System.out.println("\n");
-        Log.level(Log.ERROR);
         TestCanAUseB.test();
         System.out.println("\n");
         //System.exit(1);

@@ -98,6 +98,15 @@ public class LicenseArbiter {
     public static Report report(Component c, LicensePolicy policy) {
         Log.d(LOG_TAG, "reportViolations()    c: " + c.name());
         Report report = reportConcludeLate(c, policy);
+
+
+        Log.d(LOG_TAG, "let's go....." + report.answers().size());
+        Log.d(LOG_TAG, "let's go....." + report.answers().get(0).answers().size());
+        Log.d(LOG_TAG, "let's go....." + report.answers().get(1).answers().size());
+
+        Log.d(LOG_TAG, "let's go 1 .....\n\n");
+        LicenseUtils.stupidifier(c, report.answers().get(0).answers());
+        Log.d(LOG_TAG, "let's go 1 done.....\n\n");
         return report;
     }
 
@@ -113,6 +122,8 @@ public class LicenseArbiter {
         ComplianceAnswer answer = new ComplianceAnswer();
         boolean componentCompliant = false;
         for (License l : component.licenses()) {
+//            System.out.println("sub-Check " + component.name() + "  under license: " + l.spdx());
+
             debug("subComponentCompatibleWith", " ---   " + component.name() + " " + license.spdx() + " try l: " + l.spdx(), indent);
             // Blacklisted => continue with next
             //   debug("subComponentCompatibleWith", "  --   " + component.name() + "(" + license.spdx() + ")  check: " + l.spdx(), indent);
@@ -214,7 +225,9 @@ public class LicenseArbiter {
     private static Report reportConcludeLate(Component c, LicensePolicy policy)  {
         Report report = new Report(c, policy);
 
+        // TODO: not needed to do per license!!!
         for (License l : c.licenses()) {
+            System.out.println("Check " + c.name() + "  under license: " + l.spdx());
             // clearConcluded(report, c);
 //            Log.d(LOG_TAG, " checkLicense: " + l );
             debug("reportConcludeLate", " calling subComponentCompatibleWith   --   " + c.name() + " ( ----- compat with: " + l.spdx() );

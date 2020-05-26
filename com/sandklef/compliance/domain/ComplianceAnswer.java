@@ -1,5 +1,8 @@
 package com.sandklef.compliance.domain;
 
+import com.sandklef.compliance.utils.Log;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +12,8 @@ import static com.sandklef.compliance.utils.Log.indents;
 
 public class ComplianceAnswer {
 
-    
 
+    private static final String LOG = ComplianceAnswer.class.getCanonicalName() ;
     // License.spdx
     private Map<String, Map<Component, List<ComplianceAnswer>>> answers;
     private ListType color;
@@ -30,9 +33,15 @@ public class ComplianceAnswer {
         this.color = color;
     }
 
+
+
+
+
+
+
     public String toString(int indent) {
         StringBuilder sb = new StringBuilder();
-        if (answers.entrySet().size() > 0 ) {
+        if (answers.entrySet().size() > 0) {
             for (Map.Entry<String, Map<Component, List<ComplianceAnswer>>> entry : answers.entrySet()) {
 
                 //              sb.append(indents(indent));
@@ -44,7 +53,7 @@ public class ComplianceAnswer {
                     sb.append("  | ");
                     //sb.append(key + " ( keyset: \"" + ((Map<Component, List<ComplianceAnswer>>) value).keySet().size() + "\")");
                     sb.append(key);
-                    if (this.color()!=ListType.WHITE_LIST) {
+                    if (this.color() != ListType.WHITE_LIST) {
                         sb.append(" (");
                         sb.append(this.color());
                         sb.append(")");
@@ -83,7 +92,7 @@ public class ComplianceAnswer {
         } else {
             sb.append(indents(indent));
             sb.append("  | OK");
-            if (this.color()!=ListType.WHITE_LIST) {
+            if (this.color() != ListType.WHITE_LIST) {
                 sb.append(" (");
                 sb.append(this.color());
                 sb.append(")");
@@ -96,12 +105,12 @@ public class ComplianceAnswer {
 
     public int paths(ListType color) {
         int count = 0;
-        if (answers.entrySet().size() > 0 ) {
+        if (answers.entrySet().size() > 0) {
             for (Map.Entry<String, Map<Component, List<ComplianceAnswer>>> entry : answers.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
                 if (((Map<Component, List<ComplianceAnswer>>) value).entrySet().size() > 0) {
-                    if (this.color()!=ListType.WHITE_LIST) {
+                    if (this.color() != ListType.WHITE_LIST) {
                     }
                     for (Map.Entry<Component, List<ComplianceAnswer>> entry2 : ((Map<Component, List<ComplianceAnswer>>) value).entrySet()) {
                         if (entry2.getValue() != null) {
@@ -116,7 +125,7 @@ public class ComplianceAnswer {
             }
         } else {
             count++;
-            if (this.color()!=ListType.WHITE_LIST) {
+            if (this.color() != ListType.WHITE_LIST) {
             }
         }
         return count;
@@ -164,4 +173,7 @@ public class ComplianceAnswer {
         return licenseMap(spdx).get(component);
     }
 
+    public Map<String, Map<Component, List<ComplianceAnswer>>> answers() {
+        return answers;
+    }
 }
