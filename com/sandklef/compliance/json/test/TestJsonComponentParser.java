@@ -69,7 +69,11 @@ public class TestJsonComponentParser {
 
     Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
     LicenseStore.getInstance().addLicenses(licenses);
-    List<Component> components = jp.readComponent("com/sandklef/compliance/json/test/simple-many.json");
+
+
+    Log.d(LOG_TAG, " * " + jp);
+
+    List<Component> components = jp.readComponent("com/sandklef/compliance/json/test/simple-dual.json");
 
     assertHelper("Components is 1", components.size()==1);
 

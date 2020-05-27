@@ -11,24 +11,44 @@ import java.util.List;
 
 public class Report {
 
+    public static class ComponentResult {
+        private ListType color;
+        private LicenseArbiter.InterimComponent component;
+        boolean compliant ;
+
+        public ComponentResult(ListType color, LicenseArbiter.InterimComponent component, boolean compliant) {
+            this.color = color;
+            this.component = component;
+            this.compliant = compliant;
+        }
+
+        public boolean compliant() {
+            return compliant;
+        }
+
+        public ListType color() {
+            return color;
+        }
+
+        public LicenseArbiter.InterimComponent component() {
+            return component;
+        }
+    }
+
     private Component component;
-    private List<ComplianceAnswer> answers;
     private LicensePolicy policy;
     private MetaData metaData;
+    private List<ComponentResult> componentResults;
 
     public Report(Component component, LicensePolicy policy) {
         this.component = component;
         this.policy = policy;
-        this.answers = new ArrayList<>();
         this.metaData = new MetaData();
+        this.componentResults = new ArrayList<>();
     }
 
     public Component component() {
         return component;
-    }
-
-    public List<ComplianceAnswer> answers() {
-        return answers;
     }
 
     public LicensePolicy policy() {
@@ -39,8 +59,12 @@ public class Report {
         return metaData;
     }
 
-    public void addAnswer(ComplianceAnswer answer) {
-        answers.add(answer);
+    public void addComponentResult(ComponentResult result) {
+        this.componentResults.add(result);
+    }
+
+    public List<ComponentResult> componentResults() {
+        return componentResults;
     }
 
     public void finished() {

@@ -64,47 +64,111 @@ public class LicenseUtils {
         public List<MiniComponent>dependencies;
         public String license;
         public ListType color;
+        public int id;
+
+        private static int counter = 200;
+
+        public static int next() { return ++counter; }
 
         public MiniComponent(Component component, String license, ListType color) {
             this.component = component;
             this.license = license;
             this.color = color;
+            this.id = counter++;
             dependencies = new ArrayList<>();
         }
 
         @Override
         public String toString() {
             return "{ " +
-                    component.name() +
-                    ", " + dependencies +
-                    ", " + license +
+                    " " + id +
+                    ",  " + component.name() +
+                    ",  " + license +
+                    ",  " + dependencies +
                     "}";
         }
+
+        public MiniComponent clone() {
+            MiniComponent mc = new MiniComponent(component, license, color);
+            mc.id = this.id;
+            for (MiniComponent d : dependencies) {
+                mc.dependencies.add(d.clone());
+            }
+            return mc;
+        }
+
+        public MiniComponent find(int id) {
+            if (this.id == id ) {
+                return this;
+            }
+            for (MiniComponent d : dependencies) {
+                if ( d.find(id) != null ) {
+                    return d;
+                }
+            }
+            return null;
+        }
+
+
+
+
     }
 
     public static void stupidifier(Component c,
                                    Map<String, Map<Component, List<ComplianceAnswer>>> answers) {
         ArrayList<MiniComponent> components = new ArrayList<>();
-        Log.level(Log.DEBUG);
-        stupidifierHelper(components, answers, null);
+        stupidifierHelper(components, answers, null, null);
     }
 
 
     public static void stupidifierHelper(ArrayList<MiniComponent> topList,
                                          Map<String, Map<Component, List<ComplianceAnswer>>> answers,
+                                         MiniComponent topMc,
                                          MiniComponent parentMc) {
+
+        int i =0;
+        Log.d(LOG, " LIST print " + topList.size() + "  add to : " + (parentMc==null?0:parentMc.id));
+        for (MiniComponent mc : topList) {
+            Log.d(LOG, " * LIST print " + i++ + ": " + mc);
+        }
+        Log.d(LOG, " * LIST print ");
+
+        int parentId = -1;
+        if (parentMc!=null) {
+            parentId = parentMc.id;
+        }
 
 
         if (answers.entrySet().size() > 0) {
+
+            Log.d(LOG, " ============================================================= PREPARE ADDING LICENSE " + answers.entrySet().size() + "    parentId: " + parentId);
+
+            int outer=0;
+            // For every license
             for (Map.Entry<String, Map<Component, List<ComplianceAnswer>>> entry : answers.entrySet()) {
+
+                outer++;
+                // license (spdx)
                 String license = entry.getKey();
+                // Map<Component, List<ComplianceAnswer>> for above license
                 Object mapCL = entry.getValue();
+                Log.d(LOG, " ============================================================= SOON   ADDING LICENSE " +
+                        answers.entrySet().size() + " | " +
+                        ((Map<Component, List<ComplianceAnswer>>) mapCL).entrySet().size() );
+
+                if (parentMc!=null)
+                Log.d(LOG, " ============================================================= ADDING LICENSE " +
+                         license + " out: "  + outer + " " +
+                        "\"" + parentMc.component.name() + "\"   size: " +
+                        ((Map<Component, List<ComplianceAnswer>>) mapCL).entrySet().size());
+
                 if (((Map<Component, List<ComplianceAnswer>>) mapCL).entrySet().size() > 0) {
-//                    Log.d(LOG, "license: " + license);
-                    //                  Log.d(LOG, "color: " + color);
 
+                    int added = -1;
 
+                    // Loop through components (key)
                     for (Map.Entry<Component, List<ComplianceAnswer>> entry2 : ((Map<Component, List<ComplianceAnswer>>) mapCL).entrySet()) {
+                        added++;
 
                         // Component to add
                         Component c = entry2.getKey();
@@ -113,19 +177,41 @@ public class LicenseUtils {
 
                         if (parentMc==null) {
                             // Top component: add to list
+                            Log.d(LOG, " ============================================================= ADDING TOP 0    " + mc.component.name() + " to " + "---" + " " + added + " " +outer + " " + mc);
                             topList.add(mc);
+                            topMc = mc;
                         }  else {
+                            Log.d(LOG, " ============================================================= ADDING TOP -    " + mc.component.name() + " to " + parentMc.id + " " + added + " " +outer + " " + mc);
+                            if (outer==1) {
+                                parentId = parentMc.id;
+                                parentMc.dependencies.add(mc);
+                                Log.d(LOG, " ============================================================= ADDING TOP 1 " + mc.component.name() + " to " + parentMc.id + " " + added + " " +outer);
+                            } else {
+                                MiniComponent newTopMc = topMc.clone();
+                                newTopMc = newTopMc.find(parentId);
+                                topList.add(newTopMc);
+                                newTopMc.id =newTopMc.id+1000;
+                                        Log.d(LOG, " ============================================================= ADDING TOP 2 newTopMc: " + newTopMc + " from " + parentId);
+                             /*   newTopMc.id = MiniComponent.next();
+                                topList.add(newTopMc);
+                                newTopMc.license = " DONKEY BALLS";
+                                newTopMc.id = MiniComponent.next();
+                                newTopMc.dependencies.add(mc);
+*/
+                                topMc = newTopMc;
+
+                            }
+
                             // Not top component
-                            Log.d(LOG, " ============================================================= " );
-                            //ArrayList<MiniComponent> listCopy = (ArrayList<MiniComponent>) topList.clone();
-                            parentMc.dependencies.add(mc);
+//                            parentMc.dependencies.add(mc);
                         }
-                        Log.d(LOG, "list: " + topList);
+                        Log.d(LOG, " ============================================================= " );
+                        Log.d(LOG, "list: " + topList.size() + " " + topList);
 
                         // Dependencies
                         for (ComplianceAnswer ca : entry2.getValue()) {
                             Log.d(LOG, "  --- " + ca.answers().size());
-                            stupidifierHelper(topList, ca.answers(), mc);
+                           stupidifierHelper(topList, ca.answers(), topMc, mc);
                         }
                     }
                 }

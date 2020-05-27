@@ -1,7 +1,6 @@
 package com.sandklef.compliance.domain;
 
 import com.sandklef.compliance.utils.Log;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,8 +19,8 @@ public class ComplianceAnswer {
 
     @Override
     public String toString() {
-        return "ComplianceAnswer{" +
-                "answers=" + answers +
+        return " {" +
+                   answers +
                 '}';
     }
 
@@ -46,20 +45,34 @@ public class ComplianceAnswer {
 
                 //              sb.append(indents(indent));
 //                sb.append("[" + answers.entrySet().size() + "]\n");
-                String key = entry.getKey();
+                String license = entry.getKey();
                 Object value = entry.getValue();
+                System.out.println("TOSTRING: " + license + "   " + ((Map<Component, List<ComplianceAnswer>>) value).entrySet().size());
+                System.out.println("TOSTRING: " + license + "   " + ((Map<Component, List<ComplianceAnswer>>) value).getClass().getCanonicalName());
                 if (((Map<Component, List<ComplianceAnswer>>) value).entrySet().size() > 0) {
-                    sb.append(indents(indent));
-                    sb.append("  | ");
+//                    sb.append(indents(indent));
+  //                  sb.append("  | ");
                     //sb.append(key + " ( keyset: \"" + ((Map<Component, List<ComplianceAnswer>>) value).keySet().size() + "\")");
-                    sb.append(key);
+                    //sb.append(license);
+                    /*
                     if (this.color() != ListType.WHITE_LIST) {
                         sb.append(" (");
                         sb.append(this.color());
                         sb.append(")");
                     }
+                    */
                     sb.append("\n");
+                    int count=0;
                     for (Map.Entry<Component, List<ComplianceAnswer>> entry2 : ((Map<Component, List<ComplianceAnswer>>) value).entrySet()) {
+                        System.out.println("TOSTRING: count: " + count++);
+                        System.out.println("TOSTRING: class: " + entry2.getKey().getClass().getCanonicalName());
+                        System.out.println("TOSTRING: class: " + entry2.getClass().getCanonicalName());
+                        System.out.println("TOSTRING: class: " + entry2.getValue().getClass().getCanonicalName());
+                        System.out.println("TOSTRING: class: " + entry2.getKey());
+                        System.out.println("TOSTRING: size:  " + entry2.getValue().size());
+                        System.out.println("TOSTRING: ");
+                        ;
+
                         sb.append(indents(indent));
                         sb.append("  +-- ");
                         sb.append(entry2.getKey().name());
@@ -70,7 +83,8 @@ public class ComplianceAnswer {
                             sb.append("   answers:");
                             sb.append(entry2.getValue() == null ? 0 : entry2.getValue().size());
                           */
-                        sb.append("\n");
+//                        sb.append(" " + ((Map<Component, List<ComplianceAnswer>>) value).entrySet().size()+ "\n");
+                        sb.append(" (" + license + " )");
                         if (entry2.getValue() != null) {
 //                                sb.append(" TEST: " + entry2.getValue() + "\n");
                             for (ComplianceAnswer ca : entry2.getValue()) {
@@ -90,8 +104,8 @@ public class ComplianceAnswer {
                 }
             }
         } else {
-            sb.append(indents(indent));
-            sb.append("  | OK");
+//            sb.append(indents(indent));
+//            sb.append("  OK");
             if (this.color() != ListType.WHITE_LIST) {
                 sb.append(" (");
                 sb.append(this.color());

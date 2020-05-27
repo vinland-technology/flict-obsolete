@@ -150,14 +150,14 @@ public class Component {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    sb.append(name);
-    sb.append(" (");
+    sb.append(" #" + name + "# ");
+/*    sb.append(" (");
     if (concludedLicense()!=null) {
       sb.append(concludedLicense().spdx());
     }
     Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses().size());
     Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses());
-    if (licenses().size()>1 && concludedLicense()==null) {
+   if (licenses().size()>1 && concludedLicense()==null) {
       sb.append(" (");
       for (License l : licenses()) {
         //        Log.level(Log.DEBUG);
@@ -174,6 +174,8 @@ public class Component {
     }
     sb.append("]" );
     sb.append(" )");
+
+ */
     return sb.toString();
   }
   
