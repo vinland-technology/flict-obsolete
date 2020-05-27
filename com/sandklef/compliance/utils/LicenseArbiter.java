@@ -65,6 +65,10 @@ public class LicenseArbiter {
             }
         }
 
+        public Component component() {
+            return component;
+        }
+
         // A typical Skansholm constructor
         public InterimComponent() {
         }

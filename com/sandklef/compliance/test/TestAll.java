@@ -48,8 +48,9 @@ public class TestAll {
             System.out.println(" * " +
                     cr.compliant() + " " +
                     cr.color() + " " +
-                    cr.component().name());
+                    cr.component() + "\n");
         }
+
 //        LicenseArbiter.report(Utils.bigComponent(), null);
         System.out.println(" END <----\n");
         System.exit(1);
