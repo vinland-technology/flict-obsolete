@@ -41,6 +41,8 @@ JAVA_SOURCES=\
   com/sandklef/compliance/exporter/MDExporter.java \
   com/sandklef/compliance/exporter/TextComponentExporter.java \
   com/sandklef/compliance/utils/VirtualLicenseBuilder.java \
+  com/sandklef/compliance/domain/LicenseExpression.java \
+  com/sandklef/compliance/utils/LicenseExpressionParser.java \
   com/sandklef/compliance/domain/LicenseConnector.java \
 
 

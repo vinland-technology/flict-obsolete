@@ -1,14 +1,12 @@
 package com.sandklef.compliance.test;
 
-import com.sandklef.compliance.domain.Component;
-import com.sandklef.compliance.domain.License;
-import com.sandklef.compliance.domain.LicenseConnector;
-import com.sandklef.compliance.domain.Report;
+import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonComponentParser;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.json.test.TestJsonComponentParser;
 import com.sandklef.compliance.json.test.TestLicenseParser;
 import com.sandklef.compliance.utils.LicenseArbiter;
+import com.sandklef.compliance.utils.LicenseExpressionParser;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
 
@@ -21,7 +19,63 @@ public class TestAll {
     public static void main(String args[]) throws IOException {
 
         System.out.println("\n");
+        Log.level(Log.DEBUG);
+        Map<String, License> licenses1 = new JsonLicenseParser().readLicenseDir("licenses/json");
+        LicenseStore.getInstance().addLicenses(licenses1);
+
+        System.out.println(" licenses: " + licenses1);
+
+        try {
+            LicenseExpressionParser lep = new LicenseExpressionParser();
+
+            LicenseExpression le = lep.parse(" MIT ");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse(" MIT & BSD-3-Clause");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse(" MIT & BSD-3-Clause & Apache-2.0");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse(" ( MIT ) ");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse(" ( ( MIT ) ) ");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse(" LGPL-2.1-only ");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse(" ( LGPL-2.1-only ) ");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse(" (( LGPL-2.1-only ) )  ");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse(" ( ( ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) ) ) )");
+            System.out.println(" expr: " + le);
+            System.out.println("\n");
+
+            le = lep.parse("  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) ");
+            System.out.println(" expr: " + le);
+            System.out.println("\n");
+
+            le = lep.parse("  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) & ( BSD-3-Clause & MIT )");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse("(  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) & ( BSD-3-Clause & MIT ) & (GPL-2.0-or-later & BSD-3-Clause) )");
+            System.out.println(" expr: " + le);
+
+            le = lep.parse("( GPL-2.0-or-later & MIT ) | ( LGPL-2.1-or-later & BSD-3-Clause)");
+            System.out.println(" expr: " + le);
+
+        } catch (LicenseExpressionException e) {
+            e.printStackTrace();
+        }
+
         System.out.println("\n");
+        System.exit(1);
+
         TestJsonComponentParser.test();
         System.out.println("\n");
         System.out.println("\n");
@@ -37,7 +91,7 @@ public class TestAll {
         JsonComponentParser jp = new JsonComponentParser();
         Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
         LicenseStore.getInstance().addLicenses(licenses);
-        List<Component> components = jp.readComponent("com/sandklef/compliance/json/test/simple-dimple.json");
+        List<Component> components = jp.readComponent("com/sandklef/compliance/json/test/archive.json");
         for (Component c : components) {
             System.out.println(" * component: " + c.toStringLong() + "\n");
         }
