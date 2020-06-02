@@ -16,6 +16,22 @@ import java.util.Map;
 
 public class TestAll {
 
+  private static void testAndPrint(String expr) throws LicenseExpressionException  {
+    LicenseExpressionParser lep = new LicenseExpressionParser();
+    LicenseExpression le = lep.parse(expr);
+    System.out.println("expr: " + expr + "\n  ==>  " + le + "\n");
+  }
+
+  
+  private static void testAndPrintFixed(String expr) throws LicenseExpressionException  {
+    Log.level(Log.DEBUG);
+    expr = expr.replaceAll("\\s", "");
+    LicenseExpressionParser lep = new LicenseExpressionParser();
+    String fixed = lep.fixLicenseExpression(expr);
+    System.out.println("expr: " + expr + "\n  ==>  " + fixed);
+  }
+
+  
     public static void main(String args[]) throws IOException {
 
         System.out.println("\n");
@@ -26,56 +42,66 @@ public class TestAll {
         System.out.println(" licenses: " + licenses1);
 
         try {
-            LicenseExpressionParser lep = new LicenseExpressionParser();
 
-            LicenseExpression le = lep.parse(" MIT ");
-            System.out.println(" expr: " + le);
+          LicenseExpressionParser lep = new LicenseExpressionParser();
+          LicenseExpression le;
 
-            le = lep.parse(" MIT & BSD-3-Clause");
-            System.out.println(" expr: " + le);
+          
 
-            le = lep.parse(" MIT & BSD-3-Clause & Apache-2.0");
-            System.out.println(" expr: " + le);
+          
+          testAndPrint(" MIT ");
 
-            le = lep.parse(" ( MIT ) ");
-            System.out.println(" expr: " + le);
+          
+          testAndPrint(" MIT & BSD-3-Clause");
 
-            le = lep.parse(" ( ( MIT ) ) ");
-            System.out.println(" expr: " + le);
+          testAndPrint(" MIT & BSD-3-Clause & Apache-2.0");
 
-            le = lep.parse(" LGPL-2.1-only ");
-            System.out.println(" expr: " + le);
+          testAndPrint(" ( MIT ) ");
 
-            le = lep.parse(" ( LGPL-2.1-only ) ");
-            System.out.println(" expr: " + le);
 
-            le = lep.parse(" (( LGPL-2.1-only ) )  ");
-            System.out.println(" expr: " + le);
+          testAndPrint(" ( ( MIT ) ) ");
 
-            le = lep.parse(" ( ( ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) ) ) )");
-            System.out.println(" expr: " + le);
+
+          testAndPrint(" LGPL-2.1-only ");
+
+
+          testAndPrint(" ( LGPL-2.1-only ) ");
+
+
+          testAndPrint(" (( LGPL-2.1-only ) )  ");
+
+
+          testAndPrint(" ( ( ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) ) ) )");
+
+          testAndPrint("  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) ");
+
+          testAndPrint("  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) & ( BSD-3-Clause & MIT )");
+
+          testAndPrint("  ( ( LGPL-2.1-or-later | GPL-2.0-or-later ) | BSD-3-Clause )");
+
+          testAndPrint(" LGPL-2.1-or-later | GPL-2.0-or-later & BSD-3-Clause  & MIT  & MIT");
+          testAndPrint(" LGPL-2.1-or-later & GPL-2.0-or-later | BSD-3-Clause  ");
+          testAndPrint(" LGPL-2.1-or-later & GPL-2.0-or-later | LGPL-2.1-only | BSD-3-Clause & MIT   ");
+          System.exit(1);
+
+
+
+          testAndPrint(" LGPL-2.1-or-later | GPL-2.0-or-later & BSD-3-Clause  ");
+
+
+
+          testAndPrint("(  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) & ( BSD-3-Clause & MIT ) & (GPL-2.0-or-later & BSD-3-Clause) )");
+
+
             System.out.println("\n");
-
-            le = lep.parse("  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) ");
-            System.out.println(" expr: " + le);
-            System.out.println("\n");
-
-            le = lep.parse("  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) & ( BSD-3-Clause & MIT )");
-            System.out.println(" expr: " + le);
-
-            le = lep.parse("(  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) & ( BSD-3-Clause & MIT ) & (GPL-2.0-or-later & BSD-3-Clause) )");
-            System.out.println(" expr: " + le);
-
-
             System.out.println("\n");
             System.out.println("\n");
-            System.out.println("\n");
-            le = lep.parse("( GPL-2.0-or-later & MIT )  | ( LGPL-2.1-or-later & BSD-3-Clause)");
-            System.out.println(" expr: " + le);
-            le = lep.parse("( GPL-2.0-or-later & MIT )  | ( LGPL-2.1-or-later & BSD-3-Clause) | ( GPL-2.0-or-later)");
-            System.out.println(" expr: " + le);
-            le = lep.parse("GPL-2.0-or-later | MIT | LGPL-2.1-or-later | BSD-3-Clause | GPL-2.0-or-later");
-            System.out.println(" expr: " + le);
+            testAndPrint("( GPL-2.0-or-later & MIT )  | ( LGPL-2.1-or-later & BSD-3-Clause)");
+
+            testAndPrint("( GPL-2.0-or-later & MIT )  | ( LGPL-2.1-or-later & BSD-3-Clause) | ( GPL-2.0-or-later)");
+
+            testAndPrint("GPL-2.0-or-later | MIT | LGPL-2.1-or-later | BSD-3-Clause | GPL-2.0-or-later");
+
 
         } catch (LicenseExpressionException e) {
             e.printStackTrace();

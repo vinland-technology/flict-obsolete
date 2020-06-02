@@ -13,16 +13,6 @@ public class LicenseExpressionParser {
 
     private static final String LOG_TAG = LicenseExpressionParser.class.getSimpleName();
 
-    /*
-
-        ( a & ( b & c) ) | ( d & e ) | f | (g)
-
-	a AND 
-	AND [ a 
-	  AND [ b c ]
-	AND [ a AND [ b c ]
-     */
-
     public boolean letterNext(String s) {
         return s.charAt(0)>='A' && s.charAt(0)<='Z';
     }
@@ -63,6 +53,59 @@ public class LicenseExpressionParser {
         return s.substring(0, index);
     }
 
+
+  public String fixLicenseExpression(String expr) throws LicenseExpressionException {
+    expr = expr.replaceAll("\\s", "");
+    Log.d(LOG_TAG, "fixLicenseExpression ");
+    if (expr.charAt(0)=='(') {
+      Log.d(LOG_TAG, "   ( found: ");
+      Log.d(LOG_TAG, "  expr to parse with paranthesises: " + expr);
+      int parCount = 0;
+      int i;
+      for (i = 0; i < expr.length(); i++) {
+        char current = expr.charAt(i);
+        if (current == '(') {
+          parCount++;
+        } else if (current == ')') {
+          parCount--;
+        }
+        if (parCount == 0) {
+          Log.d(LOG_TAG, "  current at break: " + current);
+          break;
+        }
+      }
+      String subExpr = expr.substring(1, i);
+      Log.d(LOG_TAG, "  expr         : " + expr);
+      Log.d(LOG_TAG, "  subExpr      : " + subExpr);
+      expr = expr.substring(i + 1);
+      Log.d(LOG_TAG, "  remaining    : " + expr);
+
+      fixLicenseExpression(subExpr);
+      if (expr.length()>0) {
+        fixLicenseExpression(expr);
+      }
+    } else {
+      Log.d(LOG_TAG, "  NO ( found: ");
+      String licenseString = readLicense(expr);
+      expr = expr.substring(licenseString.length());
+      Log.d(LOG_TAG, "  license      : "    + licenseString);
+      Log.d(LOG_TAG, "  expr         : "    + expr);
+
+      if (expr.length()>0) {
+        fixLicenseExpression(expr);
+      }
+      LicenseExpression.Operator op = op(expr);
+      expr = expr.substring(1);
+      Log.d(LOG_TAG, "  op           : "    + op);
+      Log.d(LOG_TAG, "  remaining    : "    + expr);
+      
+      LicenseExpression le = new LicenseExpression();
+      
+    }
+    
+    return null;
+  }
+  
     
     public LicenseExpression parse(String expression) throws LicenseExpressionException {
         String expr = expression.replaceAll("\\s", "");
@@ -116,7 +159,7 @@ public class LicenseExpressionParser {
 
             LicenseExpression le = new LicenseExpression();
 
-            // Either operator or end of string (return new expr)
+            // Either operator or end of string (if so, return new expr)
             if (!opNext(expr)) {
                 return new LicenseExpression(LicenseStore.getInstance().license(licenseString));
             }
@@ -128,36 +171,103 @@ public class LicenseExpressionParser {
             le.op(op);
             le.addLicense(new LicenseExpression(LicenseStore.getInstance().license(licenseString)));
 
+            LicenseExpression.Operator currentOp = op;
+            
+            boolean isAnd = ( op == LicenseExpression.Operator.AND );
+            Log.d(LOG_TAG, " isAnd: " + isAnd);
+
+            LicenseExpression andLe= null;
+                
             while (true) {
                 Log.d(LOG_TAG, "  reading rest: " + expr);
-                if (letterNext(expr)) {
-                    Log.d(LOG_TAG, "  reading rest: license found " + expr);
-                    licenseString = readLicense(expr);
-                    le.addLicense(new LicenseExpression(LicenseStore.getInstance().license(licenseString)));
 
-                    Log.d(LOG_TAG, " license n found: \"" + licenseString + "\"   from: " + expr);
-                    // read away license
-                    expr = expr.substring(licenseString.length());
+                LicenseExpression leToAdd;
+                if (letterNext(expr)) {
+                  Log.d(LOG_TAG, "  reading rest: license found " + expr);
+                  licenseString = readLicense(expr);
+                  
+                  leToAdd = new LicenseExpression(LicenseStore.getInstance().license(licenseString));
+                  // read away license
+                  expr = expr.substring(licenseString.length());
+                  
                 } else {
-                    Log.d(LOG_TAG, "  --- implement me :)");
-                    le.addLicense(parse(expr));
+                  Log.d(LOG_TAG, "  --- implement me :)");
+                  leToAdd = parse(expr);
                 }
+
+                // We have an expression to add
+
+                // Last one, simply add it
                 if (expr.equals("")) {
-                    Log.d(LOG_TAG, " license n found: \"" + licenseString + "\"  no more to read");
-                    return le;
+                  Log.d(LOG_TAG, " license n found: \"" + licenseString + "\"  no more to read");
+                  if (andLe!=null) {
+                    andLe.addLicense(leToAdd);
+                    le.addLicense(andLe);
+                    andLe=null;
+                  } else {
+                    le.addLicense(leToAdd);
+                  }
+                  return le;
                 }
-                Log.d(LOG_TAG, " license n found: " + licenseString + "   remains: \"" + expr + "\"");
 
                 if (opNext(expr)) {
-                    if (! op.equals(op(expr))) {
-                        throw new LicenseExpressionException("Can't have different operators within same parenthesises");
-                    }
+                  // get next operator
+                  op = op(expr);
+                  // read away operator
+                  expr = expr.substring(1);
+                } else {
+                  Log.d(LOG_TAG, "   HU AH ---------------------- ");
                 }
-                // read away operator
-                expr = expr.substring(1);
+                
+                if (isAnd) {
+                  // Currently in an AND expression
+                  if ( op == LicenseExpression.Operator.AND ) {
+                    // Next op also AND
+                    Log.d(LOG_TAG, "   isAnd : AND and next AND");
+                    le.addLicense(leToAdd);
+                  } else {
+                    // Next op OR
+                    Log.d(LOG_TAG, "   isAnd : AND and next OR <------- PANIC MODE IN DETROIT");
+                    Log.d(LOG_TAG, "   isAnd : AND and next OR <------- PANIC MODE IN DETROIT " + le);
+                    Log.d(LOG_TAG, "   isAnd : AND and next OR <------- PANIC MODE IN DETROIT " + andLe);
+                    Log.d(LOG_TAG, "   isAnd : AND and next OR <------- PANIC MODE IN DETROIT " + leToAdd);
+                    if (andLe!=null) {
+                      le.addLicense(andLe);
+                      andLe=null;
+                    }
+                    LicenseExpression temp = new LicenseExpression();
+                    le.addLicense(leToAdd);
+                    temp.op(op);
+                    temp.addLicense(le);
+                    le = temp;
+                    isAnd = !isAnd;
+                  }
+                } else {
+                  // Currently in an OR expression
+                  Log.d(LOG_TAG, "   isAnd : OR  " + leToAdd);
+                  if ( op == LicenseExpression.Operator.AND ) {
+                    // Next op AND
+                    Log.d(LOG_TAG, "   isAnd : OR and next AND  <------- DEALING");
+                    if (andLe==null) {
+                      andLe = new LicenseExpression();
+                    }
+                    andLe.op(op);
+                    andLe.addLicense(leToAdd);
+                    Log.d(LOG_TAG, "   isAnd : OR and next AND  <------- DEALING : " + andLe);
+                  } else {
+                    // Next op also OR
+                    if ( andLe != null ) {
+                      Log.d(LOG_TAG, "   isAnd : OR and next OR <--- andLe found: " + andLe);
+                    }
+                    Log.d(LOG_TAG, "   isAnd : OR and next OR");
+                    le.addLicense(leToAdd);
+                  }
+                }
+                op = currentOp;
             }
+            
         }
-
+        
 
         return null;
     }

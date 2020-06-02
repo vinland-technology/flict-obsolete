@@ -47,6 +47,10 @@ public class LicenseExpression {
         this.op = op;
     }
 
+    public Operator op() {
+        return this.op;
+    }
+
     public void licenses(List<LicenseExpression> licenses) {
         this.licenses = licenses;
     }
