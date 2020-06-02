@@ -66,7 +66,15 @@ public class TestAll {
             le = lep.parse("(  ( ( LGPL-2.1-or-later & GPL-2.0-or-later ) & BSD-3-Clause ) & ( BSD-3-Clause & MIT ) & (GPL-2.0-or-later & BSD-3-Clause) )");
             System.out.println(" expr: " + le);
 
-            le = lep.parse("( GPL-2.0-or-later & MIT ) | ( LGPL-2.1-or-later & BSD-3-Clause)");
+
+            System.out.println("\n");
+            System.out.println("\n");
+            System.out.println("\n");
+            le = lep.parse("( GPL-2.0-or-later & MIT )  | ( LGPL-2.1-or-later & BSD-3-Clause)");
+            System.out.println(" expr: " + le);
+            le = lep.parse("( GPL-2.0-or-later & MIT )  | ( LGPL-2.1-or-later & BSD-3-Clause) | ( GPL-2.0-or-later)");
+            System.out.println(" expr: " + le);
+            le = lep.parse("GPL-2.0-or-later | MIT | LGPL-2.1-or-later | BSD-3-Clause | GPL-2.0-or-later");
             System.out.println(" expr: " + le);
 
         } catch (LicenseExpressionException e) {
