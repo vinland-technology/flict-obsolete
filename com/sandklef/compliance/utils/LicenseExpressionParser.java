@@ -71,6 +71,7 @@ public class LicenseExpressionParser {
         // expr begins with "("
         if (expr.charAt(0)=='(') {
             Log.d(LOG_TAG, "   ( found: ");
+            Log.d(LOG_TAG, "  expr to parse with paranthesises: " + expr);
             int parCount = 0;
             int i;
             for (i = 0; i < expr.length(); i++) {
@@ -87,7 +88,6 @@ public class LicenseExpressionParser {
             }
             String subExpr = expr.substring(1, i);
             expr = expr.substring(i + 1);
-            Log.d(LOG_TAG, "  expr to parse: " + subExpr);
             Log.d(LOG_TAG, "  expr remain  : " + expr);
             LicenseExpression le = new LicenseExpression();
 
@@ -150,7 +150,7 @@ public class LicenseExpressionParser {
 
                 if (opNext(expr)) {
                     if (! op.equals(op(expr))) {
-                        throw new LicenseExpressionException("Can't have different operators without parenthesises");
+                        throw new LicenseExpressionException("Can't have different operators within same parenthesises");
                     }
                 }
                 // read away operator
