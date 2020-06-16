@@ -399,6 +399,35 @@ public class LicenseExpression {
     }
 
 
+
+  // REMOVE THIS???
+  
+  // How many paths does this expression cause/generate
+  public int paths() {
+    // If single license: 1
+    if (license!=null) {
+      Log.d(LOG_TAG, " paths: " + 1 + "  <---- " + license.spdx());
+      return 1;
+    }
+
+    int pathCount = (op==Operator.AND?1:0);
+    // If license expression(s)
+    for (LicenseExpression le : licenses ) {
+
+      int subPaths = le.paths();
+      Log.d(LOG_TAG, " paths:          " + subPaths);
+      
+      if (op==Operator.AND) {
+        pathCount *= subPaths;
+      } else if (op==Operator.OR) {
+        pathCount += subPaths;
+      }
+      Log.d(LOG_TAG, " paths:          => " + pathCount +  " (" + subPaths + ") " +  "  " + op);
+    }
+    Log.d(LOG_TAG, " paths: " + pathCount);
+    return pathCount;
+  }
+  
     @Override
     public String toString() {
         //System.out.println("Lice: " + license + "  op: " + op);
