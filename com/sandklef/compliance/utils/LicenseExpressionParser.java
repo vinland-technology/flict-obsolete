@@ -89,9 +89,11 @@ public class LicenseExpressionParser {
         Log.d(LOG_TAG, "fixLicenseExpression: --->" + expr + "<---");
 
         String first = null;
+        boolean isParanthesis = true;
 
         if (expr.charAt(0) == '(') {
             Log.d(LOG_TAG, "   ( found:  in " + expr + " <-----------------------------------------");
+            isParanthesis = true;
             String pExpr = readParenthisedExpr(expr);
             expr = expr.substring(pExpr.length() + 1);
             Log.d(LOG_TAG, "(  found    : " + pExpr);
@@ -107,14 +109,14 @@ public class LicenseExpressionParser {
                 }
             } else if (expr.length()==0) {
                 Log.d(LOG_TAG, " noting left in expr,   pExpr: " + pExpr);
-                return fixLicenseExpression(pExpr);
+                return "(" + fixLicenseExpression(pExpr) + ")";
             }
 
             if (expr.charAt(0)==')') {
                 expr = expr.substring(1);
             }
             Log.d(LOG_TAG, "(  remaining    : \"" + expr + "\"   after returns pExpr: " + pExpr);
-            first = pExpr;
+            first = "(" + pExpr + ")" ;
         } else if (letterNext(expr)) {
             Log.d(LOG_TAG, "  NO ( found: ");
             String licenseString = readLicense(expr);
@@ -141,14 +143,18 @@ public class LicenseExpressionParser {
             expr = expr.substring(1);
             if (op == LicenseExpression.Operator.AND) {
                 Log.d(LOG_TAG, "  AND found: " + first + "  remain: " + expr + "   current: " + first);
-                sb.append("(");
+                if (isParanthesis) {
+                    sb.append("(");
+                }
                 sb.append(first);
                 first="";
                 // loop until op==|
                 while (true) {
                     if (op == LicenseExpression.Operator.OR) {
                         Log.d(LOG_TAG, "  OR found: " + first + " quit loop");
-                        sb.append(")");
+                        if (isParanthesis) {
+                            sb.append(")");
+                        }
                         break;
                     }
                     if (expr.charAt(0) == '(') {
@@ -167,7 +173,9 @@ public class LicenseExpressionParser {
                         Log.d(LOG_TAG, "  license found in AND statement expr:  " + expr.length());
                         if (innerExpr.length()==expr.length()) {
                             Log.d(LOG_TAG, "  license found in AND statement remain: " + expr + "   (" + sb.toString() + ")");
-                            sb.append(")");
+                            if (isParanthesis) {
+                                sb.append(")");
+                            }
                             expr="";
                             break;
                         }
@@ -178,7 +186,9 @@ public class LicenseExpressionParser {
                     }
 
                     if (expr.length()==0) {
-                        sb.append(")");
+                        if (isParanthesis) {
+                            sb.append(")");
+                        }
                         break;
                     }
                     Log.d(LOG_TAG, "  license found in AND statement check next op: " + expr);
@@ -265,8 +275,9 @@ public class LicenseExpressionParser {
                 Log.d(LOG_TAG, "doParse license: \"" + expr + "\"" + " " + firstExprStr.length() + " " + expr.length());
                 Log.d(LOG_TAG, "doParse license: \"" + expr + "\"" + "       " + firstExprStr + " is valid: " + firstExpr.valid());
             } else {
-                throw new IllegalLicenseExpression("Invalid expression, from: " + expr);
+                throw new IllegalLicenseExpression("Invalid expression, from: " + expr + " and previous op: " + op);
             }
+
 
             Log.d(LOG_TAG, " op: " + op);
             Log.d(LOG_TAG, " le: " + le);
@@ -285,8 +296,6 @@ public class LicenseExpressionParser {
                 expr = expr.substring(1);
                 Log.d(LOG_TAG, "doParse license: op null, and now set to: " + op + "  expr: " + expr);
             } else {
-
-
                 // We should homogenous expressions now, so this should not happen
                 if ( op != op(expr) ) {
                     throw new IllegalLicenseExpression("Invalid expression: " + expr + " given previous op: " + op);

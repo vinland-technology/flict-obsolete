@@ -10,17 +10,11 @@ import com.sandklef.compliance.json.JsonComponentParser;
 import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.json.JsonPolicyParser;
-import com.sandklef.compliance.utils.LicenseArbiter;
-import com.sandklef.compliance.utils.LicenseStore;
-import com.sandklef.compliance.utils.LicenseUtils;
-import com.sandklef.compliance.utils.Log;
+import com.sandklef.compliance.utils.*;
 import org.apache.commons.cli.*;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.sandklef.compliance.utils.LicenseStore.*;
 
@@ -30,6 +24,7 @@ public class LicenseChecker {
         PRINT_LICENSES,
         PRINT_CONNECTIONS,
         PRINT_COMPONENT,
+        PRINT_EXPRESSION,
         CHECK_VIOLATION;
     }
 
@@ -38,7 +33,7 @@ public class LicenseChecker {
     private static final String LOG_TAG = LicenseChecker.class.getSimpleName();
     private static PrintStream writer;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
 
         // Create and setup Options
         Options options = setupOptions();
@@ -76,25 +71,47 @@ public class LicenseChecker {
             writer = System.out;
         }
 
+        execMode em = (execMode) values.get("mode");
         //        System.out.println(("  mode: " + values.get("mode")));
         // Take action
-        if (execMode.PRINT_LICENSES == values.get("mode")) {
-            licensePrint(writer);
-        } else if (execMode.PRINT_CONNECTIONS == values.get("mode")) {
-            LicenseUtils.connectionsPrintDot(writer);
-        } else if (execMode.PRINT_COMPONENT == values.get("mode")) {
-            try {
-                componentPrint(writer, values, options);
-            } catch (LicenseExpressionException e) {
-                e.printStackTrace();
-            }
-        } else if (execMode.CHECK_VIOLATION == values.get("mode")) {
-            try {
-                reportPrint(writer, values, options);
-            } catch (LicenseExpressionException | IllegalLicenseExpression e) {
-                e.printStackTrace();
-            }
+        switch (em) {
+            case PRINT_LICENSES:
+                licensePrint(writer);
+                break;
+            case PRINT_CONNECTIONS:
+                LicenseUtils.connectionsPrintDot(writer);
+                break;
+            case PRINT_COMPONENT:
+                try {
+                    componentPrint(writer, values, options);
+                } catch (LicenseExpressionException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case CHECK_VIOLATION:
+                try {
+                    reportPrint(writer, values, options);
+                } catch (LicenseExpressionException | IllegalLicenseExpression e) {
+                    e.printStackTrace();
+                }
+                break;
+            case PRINT_EXPRESSION:
+                String expr = (String) values.get("expression");
+                System.out.println("\nLicense expression:\n--------------------------------\n" + expr);
+                LicenseExpressionParser lep = new LicenseExpressionParser();
+                expr = lep.fixLicenseExpression(expr);
+                System.out.println("\nLicense expression with parenthesises:\n--------------------------------\n" + expr);
+                LicenseExpression licenseExpression = lep.parse(expr);
+                System.out.println("\nLicenseExpression:\n--------------------------------\n" + licenseExpression);
+                List<List<License>> licenes = licenseExpression.licenseList();
+                System.out.println("\nList of License Lists:\n--------------------------------\n" + LicenseExpression.licenseListToString(licenes));
+               //
+                // System.out.println("le: " + LicenseStore.getInstance().licenses());
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + em);
         }
+
     }
 
 
@@ -108,6 +125,7 @@ public class LicenseChecker {
         options.addOption(new Option("d", "debug", false, "Turn on debug."));
         options.addOption(new Option("dc", "debug-class", true, "Turn on debug for class only."));
         options.addOption(new Option("o", "output", true, "Output to file."));
+        options.addOption(new Option("e", "expression", true, "Parse and print a license expression"));
         options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
         options.addOption(new Option("l", "license-dir", true, "Directory with license files."));
@@ -130,6 +148,7 @@ public class LicenseChecker {
         values.put("licenseDir", "licenses/json");
         values.put("policyFile", null);
         values.put("policy", null);
+        values.put("expression", null);
         values.put("mode", execMode.PRINT_LICENSES);
         return values;
     }
@@ -161,6 +180,11 @@ public class LicenseChecker {
             if (line.hasOption("component")) {
                 values.put("componentFile", line.getOptionValue("component"));
                 Log.d(LOG_TAG, " Component file: " + values.get("componentFile"));
+            }
+            if (line.hasOption("expression")) {
+                values.put("expression", line.getOptionValue("expression"));
+                values.put("mode", execMode.PRINT_EXPRESSION);
+                Log.d(LOG_TAG, "License expression: " + values.get("expression"));
             }
             if (line.hasOption("licenses")) {
                 values.put("mode", execMode.PRINT_LICENSES);
