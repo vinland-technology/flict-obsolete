@@ -400,8 +400,7 @@ public class LicenseExpression {
 
 
 
-  // REMOVE THIS???
-  
+  /*  
   // How many paths does this expression cause/generate
   public int paths() {
     // If single license: 1
@@ -427,6 +426,7 @@ public class LicenseExpression {
     Log.d(LOG_TAG, " paths: " + pathCount);
     return pathCount;
   }
+  */
   
     @Override
     public String toString() {
