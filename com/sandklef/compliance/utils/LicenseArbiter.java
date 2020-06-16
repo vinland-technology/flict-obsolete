@@ -123,7 +123,7 @@ public class LicenseArbiter {
         return null;
     }
 
-
+/*
     public static int countNodes(Component c) {
         if (c.dependencies().size()==0) {
             debug(" count: " + c.name(), 0);
@@ -148,6 +148,7 @@ public class LicenseArbiter {
         return sum*c.licenses().size();
     }
 
+*/
 
     public static ListType color(InterimComponent c, LicensePolicy policy) {
         // if black, return now
@@ -170,7 +171,7 @@ public class LicenseArbiter {
 
 
     public static List<InterimComponent> copies(Component c) {
-        int paths = countPaths(c);
+        int paths = c.paths();
         List<InterimComponent> components = new ArrayList<>();
         InterimComponent ic = new InterimComponent(c);
         for (int i=0; i<paths; i++) {
@@ -180,14 +181,19 @@ public class LicenseArbiter {
     }
 
 
-    public static void fillComponent(InterimComponent component, List<InterimComponent> components, int indent) {
+    public static void fillComponent(InterimComponent component, List<InterimComponent> components, int indent) throws LicenseExpressionException, IllegalLicenseExpression {
         debug("fill " + component.name() + "   license: " + component.license, indent);
+
+        // For each component in the list of (same) component
         for (int i=0 ; i<components.size(); i++) {
+            // Fetch the corresponding interim
             InterimComponent c = components.get(i);
+            // Using id, find component to change
             InterimComponent componentToChange = findById(component.id, c);
-            List<License> licenses = componentToChange.component.licenses();
-            debug("edit: " + componentToChange.component.name() + " i: " + i + "   => " + licenses.get(i%licenses.size()), indent+2);
-            componentToChange.license = licenses.get(i%licenses.size());
+
+            // TODO:  FIX THIS - IT MUST BE THERE
+            LicenseExpression le = componentToChange.component.licenseExpression();
+    //        List<InterimComponent> componentsToAdd = componentsFromLicenseExpression(le);
 
             debug("recurse: " + c.id + " == " + component.id, 0);
         }
@@ -280,11 +286,14 @@ public class LicenseArbiter {
         return aCanUseBImpl(a, b, new ArrayList<>());
     }
 
-    public static Report reportConcludeAllPaths(Component c, LicensePolicy policy) {
+    public static Report reportConcludeAllPaths(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression {
         Report report = new Report(c,policy);
 
+        // Create a list of Components (out of c) with all combinations of licenses
         List<InterimComponent> components = copies(c);
+        // Fill the licenses of the Component
         fillComponent(components.get(0), components, 0);
+
         printComponents(components, 2);
         for (InterimComponent d : components) {
             boolean compliant = compliant(components.get(0).license, d, 2);
@@ -296,14 +305,14 @@ public class LicenseArbiter {
         return report;
     }
 
-    public static Report report(Component c, LicensePolicy policy) {
+    public static Report report(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression {
         Log.d(LOG_TAG, "reportViolations()    c: " + c.name());
         Report report = reportConcludeAllPaths(c, policy);
         return report;
     }
 
     private static void addConcluded(Report report, License l, Component c) {
-        c.concludedLicense(l);
+//        c.concludedLicense(l);
         // ONly add conclusion report if we have concluded from more than 1 licenses
 
     }

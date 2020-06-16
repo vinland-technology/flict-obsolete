@@ -83,9 +83,17 @@ public class LicenseChecker {
         } else if (execMode.PRINT_CONNECTIONS == values.get("mode")) {
             LicenseUtils.connectionsPrintDot(writer);
         } else if (execMode.PRINT_COMPONENT == values.get("mode")) {
-            componentPrint(writer, values, options);
+            try {
+                componentPrint(writer, values, options);
+            } catch (LicenseExpressionException e) {
+                e.printStackTrace();
+            }
         } else if (execMode.CHECK_VIOLATION == values.get("mode")) {
-            reportPrint(writer, values, options);
+            try {
+                reportPrint(writer, values, options);
+            } catch (LicenseExpressionException | IllegalLicenseExpression e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -199,17 +207,17 @@ public class LicenseChecker {
         writer.println(getInstance().licenseString());
     }
 
-    private static void componentPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException {
+    private static void componentPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException {
         Log.d(LOG_TAG, "printing component...");
         Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
         JsonComponentParser jp = new JsonComponentParser();
-        // TODO: remove get(0)
-        Component c = jp.readComponent((String) values.get("componentFile")).get(0);
+
+        Component c = jp.readComponent((String) values.get("componentFile"));
         writer.println(c.toStringLong());
     }
 
 
-    private static void reportPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException {
+    private static void reportPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
         if (values.get("componentFile") == null) {
             System.err.println("\n*** Error: missing component file! ***\n\n");
             help(options);
@@ -223,7 +231,7 @@ public class LicenseChecker {
         Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
         JsonComponentParser jp = new JsonComponentParser();
         // TODO: remove get(0)
-        Component c = jp.readComponent((String) values.get("componentFile")).get(0);
+        Component c = jp.readComponent((String) values.get("componentFile"));
         Log.d(LOG_TAG, "Component read: " + c.name());
         Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 

@@ -1,9 +1,6 @@
 package com.sandklef.compliance.test;
 
-import com.sandklef.compliance.domain.Component;
-import com.sandklef.compliance.domain.License;
-import com.sandklef.compliance.domain.LicensePolicy;
-import com.sandklef.compliance.domain.Report;
+import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.LicenseArbiter;
 import com.sandklef.compliance.utils.Log;
 
@@ -16,7 +13,7 @@ public class TestConcern {
 
     private final static String LOG_TAG = TestConcern.class.getSimpleName();
 
-    public static void test() {
+    public static void test() throws LicenseExpressionException, IllegalLicenseExpression {
         printTestStart("TestConcern");
 
         printSubTestStart("One concern");
@@ -70,7 +67,7 @@ public class TestConcern {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws LicenseExpressionException, IllegalLicenseExpression {
         test();
     }
 }

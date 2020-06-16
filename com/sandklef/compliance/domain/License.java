@@ -26,9 +26,14 @@ public class License {
     return spdx;
   }
 
+
   public License(String name, String spdx) {
     this.name = name;
     this.spdx = spdx;
+  }
+
+  public License clone() {
+    return new License(this.name, this.spdx);
   }
 
   public License(String spdx) {

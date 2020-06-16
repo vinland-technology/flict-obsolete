@@ -16,10 +16,10 @@ import java.util.Map;
 
 public class TestAll {
 
-  private static void testAndPrint(String expr) throws LicenseExpressionException  {
+  private static void testAndPrint(String expr) throws LicenseExpressionException, IllegalLicenseExpression {
     LicenseExpressionParser lep = new LicenseExpressionParser();
     LicenseExpression le = lep.parse(expr);
-    System.out.println("expr: " + expr + "\n  ==>  " + le + "\n");
+    System.out.println("expr: " + expr + "\n  ==>  " + le + " (" + le.paths() + ")\n");
   }
 
   
@@ -32,7 +32,7 @@ public class TestAll {
   }
 
   
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
 
         System.out.println("\n");
         Log.level(Log.DEBUG);
@@ -103,7 +103,7 @@ public class TestAll {
             testAndPrint("GPL-2.0-or-later | MIT | LGPL-2.1-or-later | BSD-3-Clause | GPL-2.0-or-later");
 
 
-        } catch (LicenseExpressionException e) {
+        } catch (LicenseExpressionException | IllegalLicenseExpression e) {
             e.printStackTrace();
         }
 
@@ -125,12 +125,10 @@ public class TestAll {
         JsonComponentParser jp = new JsonComponentParser();
         Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
         LicenseStore.getInstance().addLicenses(licenses);
-        List<Component> components = jp.readComponent("com/sandklef/compliance/json/test/archive.json");
-        for (Component c : components) {
-            System.out.println(" * component: " + c.toStringLong() + "\n");
-        }
+        Component component = jp.readComponent("com/sandklef/compliance/json/test/archive.json");
 
-        Report report = LicenseArbiter.report(components.get(0), null);
+
+        Report report = LicenseArbiter.report(component, null);
         System.out.println(report.component());
         for (Report.ComponentResult cr : report.componentResults()) {
             System.out.println(" * " +

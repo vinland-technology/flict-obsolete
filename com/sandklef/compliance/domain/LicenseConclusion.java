@@ -38,6 +38,7 @@ public class LicenseConclusion {
         }
     }
 */
+    /*
     public LicenseConclusion(Component component, License license) {
         this.component = component;
         this.license = license;
@@ -57,7 +58,7 @@ public class LicenseConclusion {
 
         return component.name()  + " (" + license.spdx() + "  from: " + component.licenses() + ")";
     }
-
+*/
     /*    public LicenseConclusion(Component component, List<LicenseConclusion> conclusions) {
         this.component = component;
         this.licenseConclusions = conclusions;

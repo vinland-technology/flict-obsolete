@@ -30,7 +30,7 @@ public class JsonComponentParser {
 
     public static final String LOG_TAG = JsonComponentParser.class.getSimpleName();
 
-    public List<Component> readComponent(String fileName) throws IOException {
+    public Component readComponent(String fileName) throws IOException, LicenseExpressionException {
         if (fileName.equals("-")) {
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(System.in));
@@ -53,7 +53,7 @@ public class JsonComponentParser {
         return readComponentString(new String(Files.readAllBytes(Paths.get(fileName))));
     }
 
-    public List<Component> readComponentString(String json) {
+    public Component readComponentString(String json) throws LicenseExpressionException {
         JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
         //    Log.level(Log.DEBUG);
         Log.d(LOG_TAG, " n *** read co:   " + jo + " ****\n\n");
@@ -62,42 +62,32 @@ public class JsonComponentParser {
         JsonObject componentJson = jo.get("component").getAsJsonObject();
 
         return readComponentStringHelper(componentJson);
-
     }
 
-    public List<Component> readComponentStringHelper(JsonObject componentJson) {
+    public Component readComponentStringHelper(JsonObject componentJson) throws LicenseExpressionException {
         Gson gson = new Gson();
         ComponentIntermediate componentIntermediate = gson.fromJson(componentJson, ComponentIntermediate.class);
         Log.d(LOG_TAG, "  *** read comp: " + componentIntermediate + " ****\n\n");
 
-        List<Component> currents = componentIntermediate.export();
+        Component current = componentIntermediate.export();
 
         JsonElement depElem = componentJson.get("dependencies");
         if (depElem == null) {
-            return currents;
+            return current;
         }
 
         JsonArray depArray = depElem.getAsJsonArray();
         if (depArray == null || depArray.size() == 0) {
-            return currents;
+            return current;
         }
 
-     //   Log.level(Log.DEBUG);
-      // for each component in currents
-        for (Component cur : currents) {
-            // for each dep in json
-            for (JsonElement je : depArray) {
-                Log.d(LOG_TAG, "   ===================  SUB READ: " + je.toString());
-                List<Component> deps = readComponentStringHelper(je.getAsJsonObject());
-                //   for each dep inflated from json
-                for (Component dep : deps) {
-                  Log.d(LOG_TAG, "   ===================  component loop: " + cur.name() + " add " + dep.name());
-                    cur.addDependency(dep);
-                }
-            }
+        for (JsonElement je : depArray) {
+            Log.d(LOG_TAG, "   ===================  SUB READ: " + je.toString());
+            Component dep = readComponentStringHelper(je.getAsJsonObject());
+            current.addDependency(dep);
         }
 
-        return currents;
+        return current;
     }
 
     private static class LicenseIntermediate {
@@ -118,12 +108,22 @@ public class JsonComponentParser {
                     '}';
         }
 
+        public Component export() throws LicenseExpressionException {
+            Log.d(LOG_TAG, name + " license string: " + license.trim());
+            //LicenseExpression le = new LicenseExpressionParser().parse(license);
+            return new Component(name, license, null);
+        }
 
-        public List<Component> export() {
+
+/*
+        public List<Component> export() throws LicenseExpressionException {
             if (license.contains("|") ||
                     license.contains("&")) {
                 boolean dualLicensed = license.contains("|");
                 Log.d(LOG_TAG, name + " license string: " + license.trim() );
+
+                LicenseExpression le = new LicenseExpressionParser().parse(license);
+
                 List<License> licenses = licensesToList(license.trim());
                 List<Component> components = new ArrayList<>();
 
@@ -151,6 +151,7 @@ public class JsonComponentParser {
         }
 
     }
+*/
 
 
 /*  private Component readComponentHelper(JSONObject jo) throws IOException {
@@ -201,26 +202,28 @@ public class JsonComponentParser {
   }
 */
 
-    private static List<License> licensesToList(String licensefield) {
-        List<String> licenseList;
-        List<License> licenses = new ArrayList<>();
+        private static List<License> licensesToList(String licensefield) {
+            List<String> licenseList;
+            List<License> licenses = new ArrayList<>();
 
-        if (licensefield.contains("|")) {
-            licenseList = Arrays.asList(Pattern.compile("\\|").split(licensefield));
-        } else {
-            licenseList = Arrays.asList(Pattern.compile("&").split(licensefield));
-        }
+            if (licensefield.contains("|")) {
+                licenseList = Arrays.asList(Pattern.compile("\\|").split(licensefield));
+            } else {
+                licenseList = Arrays.asList(Pattern.compile("&").split(licensefield));
+            }
 
-        for (String l : licenseList) {
-            if (l.equals("")) { continue; }
-            License lic = LicenseStore.getInstance().license(l.trim());
-            Log.d(LOG_TAG, " * translate license: \"" + l.trim() + "\" => \"" + lic + "\"");
-            Log.d(LOG_TAG, " * translate license: \"" + l.trim() + "\" => \"" + lic.spdx() + "\"");
-            licenses.add(lic);
-            Log.d(LOG_TAG, " * translate license: \"" + licenses);
+            for (String l : licenseList) {
+                if (l.equals("")) {
+                    continue;
+                }
+                License lic = LicenseStore.getInstance().license(l.trim());
+                Log.d(LOG_TAG, " * translate license: \"" + l.trim() + "\" => \"" + lic + "\"");
+                Log.d(LOG_TAG, " * translate license: \"" + l.trim() + "\" => \"" + lic.spdx() + "\"");
+                licenses.add(lic);
+                Log.d(LOG_TAG, " * translate license: \"" + licenses);
+            }
+            return licenses;
         }
-        return licenses;
-    }
 
 /*
   public MetaData readMetaDate(String fileName) throws IOException {
@@ -232,6 +235,7 @@ public class JsonComponentParser {
   }
 */
 
+    }
 }
 
 

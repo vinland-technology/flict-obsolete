@@ -25,7 +25,7 @@ public class PolicyViolation {
 
         @Override
         public String toString() {
-            return component +  " " + component.licenses() ;
+            return component +  " violated ";
         }
     }
 

@@ -25,7 +25,7 @@ public class TestPolicy {
     return ret;
   }
 
-  public static void test() throws IOException {
+  public static void test() throws IOException, LicenseExpressionException, IllegalLicenseExpression {
     useAsserts=true;
     printTestStart("TestPolicy");
     test1();
@@ -34,12 +34,12 @@ public class TestPolicy {
     test4();
   }
 
-  public static void test2() throws IOException {
+  public static void test2() throws IOException, LicenseExpressionException, IllegalLicenseExpression {
     JsonPolicyParser pp = new JsonPolicyParser();
     LicensePolicy policy = pp.readLicensePolicy("com/sandklef/compliance/json/test/blacklist-apache.json");
 
     JsonComponentParser jp = new JsonComponentParser();
-    Component c = jp.readComponent("com/sandklef/compliance/json/test/simple-dual.json").get(0);
+    Component c = jp.readComponent("com/sandklef/compliance/json/test/simple-dual.json");
 
     printSubTestStart("Valid component and apache blacklisted (using JSON)");
 //    Log.level(Log.DEBUG);
@@ -51,7 +51,7 @@ public class TestPolicy {
 //    System.exit(0);
   }
 
-  public static void test1() {
+  public static void test1() throws LicenseExpressionException, IllegalLicenseExpression {
     /*
         policy.addWhiteLicense(apache2);
         policy.addGrayLicense(lgpl2);
@@ -116,7 +116,7 @@ public class TestPolicy {
 
     //Report invalidReport = LicenseArbiter.report(invalidComponent(), policy);
 
-  public static void test3() {
+  public static void test3() throws LicenseExpressionException, IllegalLicenseExpression {
 
     printSubTestStart("Valid but concerns and conclusions");
 
@@ -156,7 +156,7 @@ public class TestPolicy {
 
   }
 
-  public static void test4() {
+  public static void test4() throws LicenseExpressionException, IllegalLicenseExpression {
 
     printSubTestStart("Valid but concerns, conclusions and violation");
 
@@ -199,7 +199,7 @@ public class TestPolicy {
   }
 
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
     test();
   }
 }
