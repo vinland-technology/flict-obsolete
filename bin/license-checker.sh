@@ -25,29 +25,32 @@ do
     fi
 done
 
+
 ARGS=
 while [ "$1" != "" ]
 do
-    if [ "$1" = "--pdf" ]
-    then
-        PDF_FILE=$2
-        ARGS="$ARGS --markdown"
-        TMP_MD=tmp.md
-        rm $TMP_MD
-        shift
-    elif [ "$1" = "--connection-graph" ]
-    then
-        CONNECTION_GRAPH=true
-    else
-        ARGS="$ARGS $1"
-    fi
+    case "$1" in
+        "--pdf")
+            PDF_FILE=$2
+            ARGS="$ARGS --markdown"
+            TMP_MD=tmp.md
+            rm $TMP_MD
+            shift
+            ;;
+        "--connection-graph"|"-cg")
+            CONNECTION_GRAPH=true
+            ;;
+        *)
+            ARGS="$ARGS \"$1\""
+            ;;
+    esac
     shift
 done #<<<"$HENRIK"
 
 
 run()
 {
-    java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $*
+    echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $* | sh
 }
 
 
