@@ -170,7 +170,7 @@ public class LicenseArbiter {
 
 
 
-    public static List<InterimComponent> copies(Component c) {
+    public static List<InterimComponent> copies(Component c) throws LicenseExpressionException, IllegalLicenseExpression {
         int paths = c.paths();
         List<InterimComponent> components = new ArrayList<>();
         InterimComponent ic = new InterimComponent(c);
@@ -190,6 +190,8 @@ public class LicenseArbiter {
             InterimComponent c = components.get(i);
             // Using id, find component to change
             InterimComponent componentToChange = findById(component.id, c);
+
+            System.out.println("fillComponent(): " + component + "    license: " + component.license);
 
             // TODO:  FIX THIS - IT MUST BE THERE
             LicenseExpression le = componentToChange.component.licenseExpression();

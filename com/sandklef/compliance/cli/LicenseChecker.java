@@ -33,8 +33,9 @@ public class LicenseChecker {
     private static final String LOG_TAG = LicenseChecker.class.getSimpleName();
     private static PrintStream writer;
 
-    public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
+    public static void main(String[] args) throws IOException {
 
+      try {
         // Create and setup Options
         Options options = setupOptions();
 
@@ -105,12 +106,15 @@ public class LicenseChecker {
                 System.out.println("\nLicenseExpression:\n--------------------------------\n" + licenseExpression);
                 List<List<License>> licenes = licenseExpression.licenseList();
                 System.out.println("\nList of License Lists:\n--------------------------------\n" + LicenseExpression.licenseListToString(licenes));
-               //
-                // System.out.println("le: " + LicenseStore.getInstance().licenses());
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + em);
         }
+
+      } catch (LicenseExpressionException | IllegalLicenseExpression e) {
+        System.out.println("Uh oh, something wicked this way comes: " + e);
+      }
+        
 
     }
 
@@ -125,7 +129,7 @@ public class LicenseChecker {
         options.addOption(new Option("d", "debug", false, "Turn on debug."));
         options.addOption(new Option("dc", "debug-class", true, "Turn on debug for class only."));
         options.addOption(new Option("o", "output", true, "Output to file."));
-        options.addOption(new Option("e", "expression", true, "Parse and print a license expression"));
+        options.addOption(new Option("e", "expression", true, "Parse and print a license expression (for debug)"));
         options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
         options.addOption(new Option("l", "license-dir", true, "Directory with license files."));

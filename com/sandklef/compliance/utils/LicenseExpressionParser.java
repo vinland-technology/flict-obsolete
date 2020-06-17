@@ -5,18 +5,20 @@ import com.sandklef.compliance.domain.License;
 import com.sandklef.compliance.domain.LicenseExpression;
 import com.sandklef.compliance.domain.LicenseExpressionException;
 
-import javax.management.JMException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static com.sandklef.compliance.domain.License.GPL_2_0_LATER_SPDX;
 
 public class LicenseExpressionParser {
 
     private static final String LOG_TAG = LicenseExpressionParser.class.getSimpleName();
 
-    public boolean letterNext(String s) {
+    public boolean letterNextUC(String s) {
         return s.charAt(0) >= 'A' && s.charAt(0) <= 'Z';
+    }
+
+    public boolean letterNextLC(String s) {
+        return s.charAt(0) >= 'a' && s.charAt(0) <= 'z';
     }
 
     public boolean opNext(String s) {
@@ -100,7 +102,7 @@ public class LicenseExpressionParser {
             Log.d(LOG_TAG, "(  remaining    : \"" + expr + "\"");
 
             if (expr.length() == 1 && expr.equals(")")) {
-                if (letterNext(expr)) {
+                if (letterNextUC(expr)) {
                     Log.d(LOG_TAG, " discard () from : " + pExpr);
                     return fixLicenseExpression(pExpr);
                 } else {
@@ -117,11 +119,13 @@ public class LicenseExpressionParser {
             }
             Log.d(LOG_TAG, "(  remaining    : \"" + expr + "\"   after returns pExpr: " + pExpr);
             first = "(" + pExpr + ")" ;
-        } else if (letterNext(expr)) {
+        } else if (letterNextUC(expr)) {
             Log.d(LOG_TAG, "  NO ( found: ");
             String licenseString = readLicense(expr);
             expr = expr.substring(licenseString.length());
             first = licenseString;
+        } else if (letterNextLC(expr)) {
+          throw new LicenseExpressionException("Licenses must start with an upper case letter: \"" + expr + "\" is therefore invalid.");
         } else {
             throw new LicenseExpressionException("Invalid expression: " + first);
         }
@@ -164,7 +168,7 @@ public class LicenseExpressionParser {
                         Log.d(LOG_TAG, "  ( found inner:  " + innerExpr);
                         expr = expr.substring(innerExpr.length()+2);
                         Log.d(LOG_TAG, "  ( found expr :  " + expr);
-                    } else if (letterNext(expr)) {
+                    } else if (letterNextUC(expr)) {
                         String innerExpr = readLicense(expr);
                         sb.append(LicenseExpression.operatorToString(LicenseExpression.Operator.AND));
                         sb.append(innerExpr);
@@ -261,7 +265,7 @@ public class LicenseExpressionParser {
                 Log.d(LOG_TAG, "doParse parenth: firstExpr: \"" + firstExpr + "\"");
                 Log.d(LOG_TAG, "doParse parenth: \"" + expr + "\" ---");
                 le.addLicense(firstExpr);
-            } else if (letterNext(expr)) {
+            } else if (letterNextUC(expr)) {
                 LicenseExpression firstExpr = null;
                 Log.d(LOG_TAG, "doParse license: \"" + expr + "\"");
                 Log.d(LOG_TAG, "doParse license: \"" + expr + "\"");
@@ -361,7 +365,7 @@ public class LicenseExpressionParser {
             le.op(op);
             le.addLicense(doParse(expr));
             return le;
-        } else if (letterNext(expr)) {
+        } else if (letterNextUC(expr)) {
             // Begins with a letter, so LICENSE op ....
 
             String licenseString = readLicense(expr);
@@ -393,7 +397,7 @@ public class LicenseExpressionParser {
                 Log.d(LOG_TAG, "  reading rest: " + expr);
 
                 LicenseExpression leToAdd;
-                if (letterNext(expr)) {
+                if (letterNextUC(expr)) {
                     Log.d(LOG_TAG, "  reading rest: license found " + expr);
                     licenseString = readLicense(expr);
 

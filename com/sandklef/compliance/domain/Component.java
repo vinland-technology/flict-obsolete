@@ -200,7 +200,12 @@ public class Component {
     return licenseExpression.paths();
   }
 
-  public int paths() {
+  public int paths() throws LicenseExpressionException, IllegalLicenseExpression {
+    if (licenseExpression==null) {
+      expand();
+    }
+    System.out.println(" paths(): " + licenseString);
+
     if (dependencies.size()==0) {
       return licenseExpression.paths();
     }
