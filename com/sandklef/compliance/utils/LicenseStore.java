@@ -66,8 +66,12 @@ public class LicenseStore {
     this.licenses.putAll(licenses);
   }
   
-  public License license(String name) {
-    return licenses.get(name);
+  public License license(String name) throws LicenseExpressionException {
+    License license = licenses.get(name);
+    if ( license == null ) {
+      throw new LicenseExpressionException("Can't find a License match for \"" + name + "\"");
+    }
+    return license;
   }
 
   public Map<String, LicenseConnector> connectors() {
