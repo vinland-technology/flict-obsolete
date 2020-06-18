@@ -5,11 +5,11 @@
     },
     "component": {
         "name": "Main program",
-        "license": "GPL-2.0-only",
+        "license": "GPL-3.0-only",
         "dependencies": [
             {
                 "name": "LGPL-lib",
-                "license": "LGPL-2.1-only",
+                "license": "LGPL-3.0-only",
                 "dependencies": []
             },
             {
@@ -17,13 +17,13 @@
                 "license": "Apache-2.0",
                 "dependencies": [
                     {
-                        "name": "LGPL-lib2_1",
-                        "license": "LGPL-2.1-only | GPL-2.0-only",
+                        "name": "Beesdee or Gee PeL",
+                        "license": "BSD-3-Clause | GPL-2.0-only",
                         "dependencies": []
                     },
                     {
-                        "name": "LGPL-lib2_2",
-                        "license": "LGPL-2.1-only",
+                        "name": "M ajt",
+                        "license": "MIT",
                         "dependencies": []
                     }
                 ]

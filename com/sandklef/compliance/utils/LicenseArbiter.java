@@ -269,6 +269,7 @@ public class LicenseArbiter {
     }
 
     public static boolean compliant(InterimComponent ic, int indent) throws IllegalLicenseExpression {
+//        System.out.println("compliant()");
         debug("compliant:  " + ic.name() + " licenses: " + ic.licenses, indent);
 
         // For each license in ic
@@ -277,6 +278,7 @@ public class LicenseArbiter {
         for (License icLicense : ic.licenses) {
             for (InterimComponent d : ic.dependencies()) {
                 if (!aCanUseB(icLicense, d.licenses)) {
+                    System.out.println(" * " + icLicense + " cannot use " + d.licenses);
                     // TODO: thrown exception??
                     return false;
                 }
@@ -287,12 +289,14 @@ public class LicenseArbiter {
         // Check each dep against their deps
         for (InterimComponent d : ic.dependencies()) {
             if (!compliant(d, indent+2)) {
+                System.out.println(" * " + d + " is not compliant");
                 debug(" license violation: " + d.name() + "(" + d.licenses + ")", indent+2);
                 // TODO: thrown exception??
                 return false;
             }
         }
 
+  //      System.out.println(" * " + ic + " is working");
         return true;
     }
 
