@@ -7,6 +7,7 @@ package com.sandklef.compliance.json;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sandklef.compliance.domain.LicenseExpressionException;
 import com.sandklef.compliance.domain.LicensePolicy;
 import com.sandklef.compliance.domain.License;
 import com.sandklef.compliance.utils.LicenseStore;
@@ -24,12 +25,12 @@ public class JsonPolicyParser {
   
   public static final String LOG_TAG = JsonPolicyParser.class.getSimpleName();
 
-  public LicensePolicy readLicensePolicy(String fileName) throws IOException{
+  public LicensePolicy readLicensePolicy(String fileName) throws IOException, LicenseExpressionException {
     Log.d(LOG_TAG, " reading from file: " + fileName);
     Log.d(LOG_TAG, "content: " + new String(Files.readAllBytes(Paths.get(fileName))));
     return readLicensePolicyString(new String(Files.readAllBytes(Paths.get(fileName))));
   }
-  private LicensePolicy readLicensePolicyString(String str) {
+  private LicensePolicy readLicensePolicyString(String str) throws LicenseExpressionException {
     JsonObject jo = new JsonParser().parse(str).getAsJsonObject();
     JsonObject polocyJson = jo.get("policy").getAsJsonObject();
     Gson gson = new Gson();
@@ -66,7 +67,7 @@ public class JsonPolicyParser {
     private List<String> graylist;
     private List<String> blacklist;
 
-    private List<License> convert(List<String> stringLicenses) {
+    private List<License> convert(List<String> stringLicenses) throws LicenseExpressionException {
       List<License> licenses = new ArrayList<>();
       for (String s : stringLicenses) {
         licenses.add(LicenseStore.getInstance().license(s));
@@ -74,7 +75,7 @@ public class JsonPolicyParser {
       return licenses;
     }
 
-    public LicensePolicy export() {
+    public LicensePolicy export() throws LicenseExpressionException {
       return new LicensePolicy(name,
               convert(whitelist),
               convert(graylist),

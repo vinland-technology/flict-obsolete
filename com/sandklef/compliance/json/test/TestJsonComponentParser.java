@@ -18,12 +18,12 @@ public class TestJsonComponentParser {
 
   private static final String LOG_TAG = TestJsonComponentParser.class.getCanonicalName() ;
 
-  public static void test() throws IOException, LicenseExpressionException {
+  public static void test() throws IOException, LicenseExpressionException, IllegalLicenseExpression {
     test_dual();
     test_many();
   }
 
-  public static void test_dual() throws IOException, LicenseExpressionException {
+  public static void test_dual() throws IOException, LicenseExpressionException, IllegalLicenseExpression {
     int fileIndex=0;
     boolean compliant = true;
 
@@ -60,7 +60,7 @@ public class TestJsonComponentParser {
 
   }
 
-  public static void test_many() throws IOException, LicenseExpressionException {
+  public static void test_many() throws IOException, LicenseExpressionException, IllegalLicenseExpression {
     int fileIndex=0;
     boolean compliant = true;
     printSubTestStart("Many");
@@ -77,7 +77,7 @@ public class TestJsonComponentParser {
 
   }
 
-  public static void main(String[] args) throws IOException, LicenseExpressionException {
+  public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
 //    test();
     test_many();
   }

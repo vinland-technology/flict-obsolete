@@ -173,7 +173,7 @@ public class LicenseUtils {
                         // Component to add
                         Component c = entry2.getKey();
                         Log.d(LOG, " component: " + c.name() + " ");
-                        MiniComponent mc = new MiniComponent(c, license, ListType.WHITE_LIST);
+                        MiniComponent mc = new MiniComponent(c, license, ListType.ALLOWED_LIST);
 
                         if (parentMc==null) {
                             // Top component: add to list

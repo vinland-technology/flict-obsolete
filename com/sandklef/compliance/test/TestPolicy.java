@@ -20,7 +20,7 @@ public class TestPolicy {
 
   private static final String LOG_TAG = TestPolicy.class.getSimpleName();
 
-  private static boolean testCanAUseB(License user, License usee) {
+  private static boolean testCanAUseB(License user, License usee) throws IllegalLicenseExpression {
     boolean ret = LicenseArbiter.aCanUseB(user,usee);
     return ret;
   }
@@ -122,7 +122,7 @@ public class TestPolicy {
 
     LicensePolicy policy = new LicensePolicy();
     policy.addGrayLicense(gpl20);
-    policy.addBlackLicense(gpl30);
+    policy.addDeniedLicense(gpl30);
 
     Component a11 = new Component("a11", Utils.lgpl21, null);
     Component a12 = new Component("a12", apache20, null);
@@ -162,10 +162,10 @@ public class TestPolicy {
 
     LicensePolicy policy = new LicensePolicy();
     policy.addGrayLicense(Utils.lgpl21);
-    policy.addBlackLicense(gpl20);
+    policy.addDeniedLicense(gpl20);
 
     // a1
-    Component a11 = new Component("a11", gpl20, null); // violations since black +1
+    Component a11 = new Component("a11", gpl20, null); // violations since denied +1
     Component a12 = new Component("a12", apache20, null);
     ArrayList<Component> a1Deps = new ArrayList<>();
     a1Deps.add(a11);
@@ -180,12 +180,12 @@ public class TestPolicy {
     ArrayList<Component> a2Deps = new ArrayList<>();
     a2Deps.add(a21);
     a2Deps.add(a22);
-    Component a2 = new Component("a2", gpl20, a2Deps); // violation since black +1
+    Component a2 = new Component("a2", gpl20, a2Deps); // violation since Denied +1
 
     ArrayList<Component> aDeps = new ArrayList<>();
     aDeps.add(a1);
     aDeps.add(a2);
-    Component a = new Component("A", gpl20, aDeps); // violation since black +1
+    Component a = new Component("A", gpl20, aDeps); // violation since Denied +1
 
 
     // 0 concerns

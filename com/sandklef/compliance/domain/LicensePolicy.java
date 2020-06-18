@@ -10,28 +10,28 @@ import java.util.List;
 public class LicensePolicy {
 
     private String name;
-    private List<License> whiteList;
+    private List<License> allowedList;
     private List<License> grayList;
-    private List<License> blackList;
+    private List<License> deniedList;
 
-    public LicensePolicy(String name, List<License> whiteList, List<License> grayList, List<License> blackList) {
+    public LicensePolicy(String name, List<License> allowedList, List<License> grayList, List<License> deniedList) {
         this.name = name;
-        this.whiteList = whiteList;
+        this.allowedList = allowedList;
         this.grayList = grayList;
-        this.blackList = blackList;
+        this.deniedList = deniedList;
     }
 
     public LicensePolicy() {
-        whiteList = new ArrayList<>();
+        allowedList = new ArrayList<>();
         grayList = new ArrayList<>();
-        blackList = new ArrayList<>();
+        deniedList = new ArrayList<>();
     }
 
-    public void addWhiteLicense(License license) {
-        whiteList.add(license);
+    public void addAllowedLicense(License license) {
+        allowedList.add(license);
     }
-    public void whiteLicense(List<License> licenses) {
-        whiteList = licenses;
+    public void allowedLicense(List<License> licenses) {
+        allowedList = licenses;
     }
 
     public void addGrayLicense(License license) {
@@ -41,33 +41,33 @@ public class LicensePolicy {
         grayList = licenses;
     }
 
-    public void addBlackLicense(License license) {
-        blackList.add(license);
+    public void addDeniedLicense(License license) {
+        deniedList.add(license);
     }
-    public void blackLicense(List<License> licenses) {
-        blackList = licenses;
+    public void deniedLicense(List<License> licenses) {
+        deniedList = licenses;
     }
 
-    public List<License> whiteList() {
-        return whiteList;
+    public List<License> allowedList() {
+        return allowedList;
     }
 
     public List<License> grayList() {
         return grayList;
     }
 
-    public List<License> blackList() {
-        return blackList;
+    public List<License> deniedList() {
+        return deniedList;
     }
 
     public static String listType (ListType listType) {
         switch (listType) {
-            case WHITE_LIST:
-                return "Whitelist";
+            case ALLOWED_LIST:
+                return "allowedList";
             case GRAY_LIST:
                 return "Graylist";
-            case BLACK_LIST:
-                return "Blacklist";
+            case DENIED_LIST:
+                return "DeniedList";
         }
         return "undefined";
     }
@@ -80,14 +80,14 @@ public class LicensePolicy {
         sb.append("name: ");
         sb.append(name);
         sb.append("\n");
-        sb.append("whitelist: ");
-        sb.append(whiteList);
+        sb.append("allowedList: ");
+        sb.append(allowedList);
         sb.append("\n");
         sb.append("graylist: ");
         sb.append(grayList);
         sb.append("\n");
-        sb.append("blacklist: ");
-        sb.append(blackList);
+        sb.append("DeniedList: ");
+        sb.append(deniedList);
         sb.append("\n");
         return sb.toString();
     }

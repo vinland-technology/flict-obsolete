@@ -1,7 +1,5 @@
 package com.sandklef.compliance.domain;
 
-import com.sandklef.compliance.utils.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +104,7 @@ public class ComplianceAnswer {
         } else {
 //            sb.append(indents(indent));
 //            sb.append("  OK");
-            if (this.color() != ListType.WHITE_LIST) {
+            if (this.color() != ListType.ALLOWED_LIST) {
                 sb.append(" (");
                 sb.append(this.color());
                 sb.append(")");
@@ -124,7 +122,7 @@ public class ComplianceAnswer {
                 String key = entry.getKey();
                 Object value = entry.getValue();
                 if (((Map<Component, List<ComplianceAnswer>>) value).entrySet().size() > 0) {
-                    if (this.color() != ListType.WHITE_LIST) {
+                    if (this.color() != ListType.ALLOWED_LIST) {
                     }
                     for (Map.Entry<Component, List<ComplianceAnswer>> entry2 : ((Map<Component, List<ComplianceAnswer>>) value).entrySet()) {
                         if (entry2.getValue() != null) {
@@ -139,7 +137,7 @@ public class ComplianceAnswer {
             }
         } else {
             count++;
-            if (this.color() != ListType.WHITE_LIST) {
+            if (this.color() != ListType.ALLOWED_LIST) {
             }
         }
         return count;
@@ -161,7 +159,7 @@ public class ComplianceAnswer {
 
     public ComplianceAnswer() {
         answers = new HashMap<>();
-        color = ListType.WHITE_LIST;
+        color = ListType.ALLOWED_LIST;
     }
 
     public ComplianceAnswer(ListType color) {

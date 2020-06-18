@@ -235,7 +235,7 @@ public class LicenseChecker {
         writer.println(getInstance().licenseString());
     }
 
-    private static void componentPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException {
+    private static void componentPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
         Log.d(LOG_TAG, "printing component...");
         Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
         JsonComponentParser jp = new JsonComponentParser();

@@ -20,7 +20,7 @@ public class TestConcern {
 
         LicensePolicy policy = new LicensePolicy();
         policy.addGrayLicense(gpl20);
-        policy.addBlackLicense(gpl30);
+        policy.addDeniedLicense(gpl30);
 
         /*
                    Top

@@ -44,6 +44,7 @@ JAVA_SOURCES=\
   com/sandklef/compliance/domain/LicenseExpression.java \
   com/sandklef/compliance/utils/LicenseExpressionParser.java \
   com/sandklef/compliance/domain/LicenseConnector.java \
+  com/sandklef/compliance/domain/MetaData.java \
 
 
 TEST_SOURCES=\

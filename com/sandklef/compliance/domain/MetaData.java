@@ -1,8 +1,6 @@
 package com.sandklef.compliance.domain;
 
 import com.sandklef.compliance.utils.Version;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.*;
@@ -37,7 +35,12 @@ public class MetaData {
         StringBuffer sb = new StringBuffer();
         LocalDateTime tmpTime = LocalDateTime.from(start);
 
+        if (stop==null) {
+            finished();
+        }
+
         long years = tmpTime.until( stop, YEARS );
+        System.out.println(" tmpTime: " + years);
         tmpTime = tmpTime.plusYears( years );
         possiblyAdd(years, "year", sb);
 
@@ -58,10 +61,19 @@ public class MetaData {
         possiblyAdd(minutes, "minute", sb);
 
         long seconds = tmpTime.until( stop, SECONDS );
-        possiblyAdd(seconds, "second", sb);
+        sb.append( seconds);
+        sb.append(" seconds");
 
         return sb.toString();
     }
 
+    @Override
+    public String toString() {
+        return "[ " +
+                " producer='" + producer + '\'' +
+                " version='" + version + '\'' +
+                " duration: " + duration() +
+                ']';
+    }
 
 }

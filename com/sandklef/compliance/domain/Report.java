@@ -33,6 +33,15 @@ public class Report {
         public LicenseArbiter.InterimComponent component() {
             return component;
         }
+
+        @Override
+        public String toString() {
+            return "\n[" +
+                    "\n  color=" + color +
+                    "\n  component=" + component +
+                    "\n  compliant=" + compliant +
+                    "]\n\n";
+        }
     }
 
     private Component component;
@@ -75,5 +84,28 @@ public class Report {
         return metaData.duration();
     }
 
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
 
+        sb.append("Report");
+        sb.append("\n* component:");
+        sb.append(component);
+        sb.append("\n* policy:");
+        sb.append(policy==null?"-":policy);
+        sb.append("\n* metadata:");
+        sb.append(metaData);
+        sb.append("\n* ");
+        sb.append("Component results:");
+        for (ComponentResult cr : componentResults) {
+            sb.append("\n  * [ ");
+            sb.append(cr.compliant);
+            sb.append("  | ");
+            sb.append(cr.color);
+            sb.append("  | ");
+            sb.append(cr.component);
+            sb.append(" ]");
+        }
+        return sb.toString();
+    }
 }

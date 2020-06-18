@@ -13,9 +13,20 @@ import static com.sandklef.compliance.domain.License.*;
 
 public class TestPrintLicenses {
 
-  private static License lgpl2 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
-  private static License gpl2 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
-  private static License apache2 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
+  private static License lgpl2;
+  private static License gpl2;
+  private static License apache2;
+
+  static {
+    try {
+      lgpl2 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
+      gpl2 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
+      apache2 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
+    } catch (LicenseExpressionException e) {
+      e.printStackTrace();
+    }
+  }
+
 
   public static void main(String[] args) {
 

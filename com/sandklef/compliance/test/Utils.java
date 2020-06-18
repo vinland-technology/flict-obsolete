@@ -54,7 +54,7 @@ public class Utils {
             gpl31 = LicenseStore.getInstance().license(GPL_3_1_SPDX);
             apache20 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
             bsd3 = LicenseStore.getInstance().license(BSD_3_SPDX);
-        } catch (IOException e) {
+        } catch (IOException | LicenseExpressionException e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -62,7 +62,7 @@ public class Utils {
 
     public static LicensePolicy blackListApachePolicy() {
         LicensePolicy policy = new LicensePolicy();
-        policy.addBlackLicense(apache20);
+        policy.addDeniedLicense(apache20);
         return policy;
     }
 
@@ -78,19 +78,19 @@ public class Utils {
         return policy;
     }
 
-    public static LicensePolicy grayListApacheBlackBSDPolicy() {
+    public static LicensePolicy grayListApacheDeniedBSDPolicy() {
         LicensePolicy policy = new LicensePolicy();
         policy.addGrayLicense(apache20);
-        policy.addBlackLicense(bsd3);
+        policy.addDeniedLicense(bsd3);
         return policy;
     }
 
     public static LicensePolicy permissiveAndWeakPolicy() {
         LicensePolicy policy = new LicensePolicy();
 
-        policy.addWhiteLicense(apache20);
+        policy.addAllowedLicense(apache20);
         policy.addGrayLicense(lgpl21);
-        policy.addBlackLicense(gpl20);
+        policy.addDeniedLicense(gpl20);
 
         return policy;
     }
@@ -98,9 +98,9 @@ public class Utils {
     public static LicensePolicy copyleftAndWeakPolicy() {
         LicensePolicy policy = new LicensePolicy();
 
-        policy.addWhiteLicense(gpl20);
+        policy.addAllowedLicense(gpl20);
         policy.addGrayLicense(lgpl21);
-        policy.addBlackLicense(apache20);
+        policy.addDeniedLicense(apache20);
 
         return policy;
     }
@@ -125,6 +125,7 @@ public class Utils {
 
 
      */
+
 
 
         // left

@@ -30,7 +30,7 @@ public class JsonComponentParser {
 
     public static final String LOG_TAG = JsonComponentParser.class.getSimpleName();
 
-    public Component readComponent(String fileName) throws IOException, LicenseExpressionException {
+    public Component readComponent(String fileName) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
         if (fileName.equals("-")) {
             BufferedReader reader =
                     new BufferedReader(new InputStreamReader(System.in));
@@ -53,7 +53,7 @@ public class JsonComponentParser {
         return readComponentString(new String(Files.readAllBytes(Paths.get(fileName))));
     }
 
-    public Component readComponentString(String json) throws LicenseExpressionException {
+    public Component readComponentString(String json) throws LicenseExpressionException, IllegalLicenseExpression {
         JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
         //    Log.level(Log.DEBUG);
         Log.d(LOG_TAG, " n *** read co:   " + jo + " ****\n\n");
@@ -64,7 +64,7 @@ public class JsonComponentParser {
         return readComponentStringHelper(componentJson);
     }
 
-    public Component readComponentStringHelper(JsonObject componentJson) throws LicenseExpressionException {
+    public Component readComponentStringHelper(JsonObject componentJson) throws LicenseExpressionException, IllegalLicenseExpression {
         Gson gson = new Gson();
         ComponentIntermediate componentIntermediate = gson.fromJson(componentJson, ComponentIntermediate.class);
         Log.d(LOG_TAG, "  *** read comp: " + componentIntermediate + " ****\n\n");
@@ -108,7 +108,7 @@ public class JsonComponentParser {
                     '}';
         }
 
-        public Component export() throws LicenseExpressionException {
+        public Component export() throws LicenseExpressionException, IllegalLicenseExpression {
             Log.d(LOG_TAG, name + " license string: " + license.trim());
             //LicenseExpression le = new LicenseExpressionParser().parse(license);
             return new Component(name, license, null);
@@ -202,7 +202,7 @@ public class JsonComponentParser {
   }
 */
 
-        private static List<License> licensesToList(String licensefield) {
+        private static List<License> licensesToList(String licensefield) throws LicenseExpressionException {
             List<String> licenseList;
             List<License> licenses = new ArrayList<>();
 

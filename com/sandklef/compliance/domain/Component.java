@@ -56,6 +56,7 @@ public class Component {
   }
  */
 
+  // For test clasess
   public Component(String name, List<License> licenses, List<Component> dependencies) {
     this.name = name;
     this.name = name;
@@ -79,13 +80,31 @@ public class Component {
 
   }
 
-  public Component(String name, String license, List<Component> dependencies) {
+  // For test clasess
+  public Component(String name, License license, List<Component> dependencies) {
+    this.name = name;
+    this.name = name;
+    this.licenseString = license.spdx();
+    this.dependencies = dependencies;
+    if (dependencies==null) {
+      this.dependencies = new ArrayList<>();
+    }
+
+    this.dependencies = dependencies;
+    if (dependencies==null) {
+      this.dependencies = new ArrayList<>();
+    }
+
+  }
+
+  public Component(String name, String license, List<Component> dependencies) throws LicenseExpressionException, IllegalLicenseExpression {
     this.name = name;
     this.licenseString = license;
     this.dependencies = dependencies;
     if (dependencies==null) {
       this.dependencies = new ArrayList<>();
     }
+    expand();
 /*    if (licenses.size()==1) {
       concludedLicense = licenses.get(0);
     }
@@ -93,6 +112,8 @@ public class Component {
     Log.d(LOG_TAG, "new Component: " + name + "    license: " + license );
   }
 
+
+  /*
   public Component(String name, License license, List<Component> dependencies) {
     this.name = name;
     this.licenseString = license.spdx();
@@ -103,23 +124,24 @@ public class Component {
 /*    if (licenses.size()==1) {
       concludedLicense = licenses.get(0);
     }
-    */
     Log.d(LOG_TAG, "new Component: " + name + "    license: " + license );
   }
+    */
 
-  public Component(String name, String license) {
+  public Component(String name, String license) throws LicenseExpressionException, IllegalLicenseExpression {
     this.name = name;
     this.licenseString = license;
     this.dependencies = new ArrayList<>();
+    expand();
     Log.d(LOG_TAG, "new Component: " + name + "    license: " + license );
   }
-
+/*
   public Component(String name, License license) {
     this.name = name;
     this.licenseString = license.spdx();
     this.dependencies = new ArrayList<>();
     Log.d(LOG_TAG, "new Component: " + name + "    license: " + license );
-  }
+  }*/
 
   /*  public Component(String name, List<License> licenses, List<Component> dependencies, LicenseMeta meta) {
     this(name, licenses, dependencies);
@@ -143,16 +165,10 @@ public class Component {
 */
 
   public LicenseExpression licenseExpression() throws LicenseExpressionException, IllegalLicenseExpression {
-    if (licenseExpression==null) {
-      expand();
-    }
     return licenseExpression;
   }
 
   public List<List<License>> licenseList() throws IllegalLicenseExpression, LicenseExpressionException {
-    if (licenseList==null) {
-      expand();
-    }
     return licenseList;
   }
 
@@ -201,19 +217,16 @@ public class Component {
   }
 
   public int paths() throws LicenseExpressionException, IllegalLicenseExpression {
-    if (licenseExpression==null) {
-      expand();
-    }
-    System.out.println(" paths(): " + licenseString);
-
     if (dependencies.size()==0) {
+      Log.d(LOG_TAG, "paths: " + name + ": " + licenseExpression.paths());
       return licenseExpression.paths();
     }
-    int sum=0;
+    int sum = 1;
     for (Component d : dependencies) {
-      sum += d.paths();
+      sum *= d.paths();
     }
 
+    Log.d(LOG_TAG,"paths: " + name + ": " + sum);
     return sum;
   }
 

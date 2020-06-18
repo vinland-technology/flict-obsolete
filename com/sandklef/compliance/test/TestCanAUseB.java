@@ -12,13 +12,13 @@ import static com.sandklef.compliance.test.Utils.*;
 
 public class TestCanAUseB {
 
-  private static boolean testCanAUseB(License user, License usee) {
+  private static boolean testCanAUseB(License user, License usee) throws IllegalLicenseExpression {
     boolean ret = LicenseArbiter.aCanUseB(user,usee);
 //    System.out.println(user.spdxTag() + " using " + usee.spdxTag() + " :::  " + ret);
     return ret;
   }
 
-  public static void test() {
+  public static void test() throws IllegalLicenseExpression {
     printTestStart("TestCanAUseB");
     //Log.level(Log.DEBUG);
     assertHelper("gpl2 can NOT use apache2", !testCanAUseB(gpl20, apache20));
@@ -51,7 +51,7 @@ public class TestCanAUseB {
   }
 
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IllegalLicenseExpression {
         test();
   }
 }

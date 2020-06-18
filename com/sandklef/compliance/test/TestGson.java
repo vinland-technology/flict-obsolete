@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.sandklef.compliance.domain.License;
+import com.sandklef.compliance.domain.LicenseExpressionException;
 import com.sandklef.compliance.domain.LicensePolicy;
 import com.sandklef.compliance.domain.PolicyConcern;
 import com.sandklef.compliance.json.JsonLicenseParser;
@@ -23,7 +24,7 @@ public class TestGson {
         private List<String> graylist;
         private List<String> blacklist;
 
-        private List<License> convert(List<String> stringLicenses) {
+        private List<License> convert(List<String> stringLicenses) throws LicenseExpressionException {
             List<License> licenses = new ArrayList<>();
             for (String s : stringLicenses) {
                 licenses.add(LicenseStore.getInstance().license(s));
@@ -32,7 +33,7 @@ public class TestGson {
             return licenses;
         }
 
-        public LicensePolicy export() {
+        public LicensePolicy export() throws LicenseExpressionException {
              return new LicensePolicy(name,
                      convert(whitelist),
                      convert(graylist),
@@ -40,7 +41,7 @@ public class TestGson {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, LicenseExpressionException {
 
         String license = "{ \"meta\": { \"software\":\"License Policy Checker\", \"version\":\"0.1\" }, \"license\": { \"name\":\"GNU General Public License v2.0 or later\", \"spdx\":\"GPL-2.0-or-later\"} }";
         String license2 = "{ \"name\":\"GNU General Public License v2.0 or later\", \"spdx\":\"GPL-2.0-or-later\" }";
