@@ -4,14 +4,14 @@
         "version":"0.1"
     } ,
     "policy": {
-        "whitelist": [
+        "allowlist": [
             "Apache-2.0",
             "LGPL-2.1-only"
         ],
         "graylist": [
             "GPL-2.0-only"
         ],
-        "blacklist": [
+        "deniedlist": [
             "GPL-3.0-only",
             "GPL-3.0-or-later"
         ]

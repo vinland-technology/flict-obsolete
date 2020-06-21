@@ -31,6 +31,22 @@ public class MetaData {
         }
     }
 
+    public String producer() {
+        return producer;
+    }
+
+    public String version() {
+        return version;
+    }
+
+    public LocalDateTime start() {
+        return start;
+    }
+
+    public LocalDateTime stop() {
+        return stop;
+    }
+
     public String duration() {
         StringBuffer sb = new StringBuffer();
         LocalDateTime tmpTime = LocalDateTime.from(start);

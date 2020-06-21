@@ -16,7 +16,7 @@ import org.apache.commons.cli.*;
 import java.io.*;
 import java.util.*;
 
-import static com.sandklef.compliance.utils.LicenseStore.*;
+import com.sandklef.compliance.utils.LicenseStore;
 
 public class LicenseChecker {
 
@@ -28,93 +28,105 @@ public class LicenseChecker {
         CHECK_VIOLATION;
     }
 
-    ;
+    private static final String CONNECTOR_FILE_CLI = "connector-file";
+    private static final String COMPONENT_FILE_CLI = "component-file";
+    private static final String POLICY_FILE_CLI = "policy-file";
 
     private static final String LOG_TAG = LicenseChecker.class.getSimpleName();
     private static PrintStream writer;
 
     public static void main(String[] args) throws IOException {
 
-      try {
-        // Create and setup Options
-        Options options = setupOptions();
+        try {
+            // Create and setup Options
+            Options options = setupOptions();
 
-        // Create and setup default values
-        Map<String, Object> values = defaultValues();
+            // Create and setup default values
+            Map<String, Object> values = defaultValues();
 
-        // Parse arguments
-        parseArguments(args, options, values);
+            // Parse arguments
+            parseArguments(args, options, values);
 
-        // Read all licenses
-        Log.d(LOG_TAG, "license dir: " + values.get("licenseDir"));
-        getInstance().addLicenses(new JsonLicenseParser().readLicenseDir((String) values.get("licenseDir")));
-        // TODO: use file from command line
-        getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection("licenses/connections/dwheeler.json"));
-        Log.d(LOG_TAG, "licenses read: " + getInstance().licenses().size());
+            Session session = Session.getInstance();
+            session.lLicenseDir((String)values.get("licenseDir"));
+            session.connectorFile((String)values.get(CONNECTOR_FILE_CLI));
+            session.policyFile((String)values.get(POLICY_FILE_CLI));
+            session.componentFile((String)values.get(COMPONENT_FILE_CLI));
 
-        // If policy file provided - read it
-        if (values.get("policyFile") != null) {
-            JsonPolicyParser jp = new JsonPolicyParser();
-            values.put("policy", jp.readLicensePolicy((String) values.get("policyFile")));
-            System.out.println("   policy file: " + values.get("policyFile"));
-        }
 
-        String outFileName = (String) values.get("output");
-        if (outFileName != null) {
-            try {
-                writer = new PrintStream(
-                        new FileOutputStream(outFileName, true));
-                //TODO: handle properly
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            // Read all licenses
+            Log.d(LOG_TAG, "license dir: " + values.get("licenseDir"));
+            Log.d(LOG_TAG, "Connector file: " + session.connectorFile());
+            LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir(session.lLicenseDir()));
+            LicenseStore.getInstance().addLicenseGroups(new JsonLicenseParser().readLicenseGroupDir(session.lLicenseDir()));
+            LicenseStore.getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection(session.connectorFile()));
+            Log.d(LOG_TAG, "licenses read: " + LicenseStore.getInstance().licenses().size());
+
+            LicenseUtils.verifyLicenses();
+
+            // If policy file provided - read it
+            if (session.policyFile() != null) {
+                JsonPolicyParser jp = new JsonPolicyParser();
+                values.put("policy", jp.readLicensePolicy((String) values.get(POLICY_FILE_CLI)));
+                System.out.println("   policy file: " + values.get(POLICY_FILE_CLI));
             }
-        } else {
-            writer = System.out;
-        }
 
-        execMode em = (execMode) values.get("mode");
-        //        System.out.println(("  mode: " + values.get("mode")));
-        // Take action
-        switch (em) {
-            case PRINT_LICENSES:
-                licensePrint(writer);
-                break;
-            case PRINT_CONNECTIONS:
-                LicenseUtils.connectionsPrintDot(writer);
-                break;
-            case PRINT_COMPONENT:
+            String outFileName = (String) values.get("output");
+            if (outFileName != null) {
                 try {
-                    componentPrint(writer, values, options);
-                } catch (LicenseExpressionException e) {
+                    writer = new PrintStream(
+                            new FileOutputStream(outFileName, true));
+                    //TODO: handle properly
+                } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                break;
-            case CHECK_VIOLATION:
-                try {
-                    reportPrint(writer, values, options);
-                } catch (LicenseExpressionException | IllegalLicenseExpression e) {
-                    e.printStackTrace();
-                }
-                break;
-            case PRINT_EXPRESSION:
-                String expr = (String) values.get("expression");
-                System.out.println("\nLicense expression:\n--------------------------------\n" + expr);
-                LicenseExpressionParser lep = new LicenseExpressionParser();
-                expr = lep.fixLicenseExpression(expr);
-                System.out.println("\nLicense expression with parenthesises:\n--------------------------------\n" + expr);
-                LicenseExpression licenseExpression = lep.parse(expr);
-                System.out.println("\nLicenseExpression:\n--------------------------------\n" + licenseExpression);
-                List<List<License>> licenes = licenseExpression.licenseList();
-                System.out.println("\nList of License Lists:\n--------------------------------\n" + LicenseExpression.licenseListToString(licenes));
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + em);
+            } else {
+                writer = System.out;
+            }
+
+            execMode em = (execMode) values.get("mode");
+            //        System.out.println(("  mode: " + values.get("mode")));
+            // Take action
+            switch (em) {
+                case PRINT_LICENSES:
+                    licensePrint(writer);
+                    break;
+                case PRINT_CONNECTIONS:
+                    LicenseUtils.connectionsPrintDot(writer);
+                    break;
+                case PRINT_COMPONENT:
+                    try {
+                        componentPrint(writer, values, options);
+                    } catch (LicenseExpressionException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case CHECK_VIOLATION:
+                    try {
+                        reportPrint(writer, values, options);
+                    } catch (LicenseExpressionException | IllegalLicenseExpression e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case PRINT_EXPRESSION:
+                    String expr = (String) values.get("expression");
+                    System.out.println("\nLicense expression:\n--------------------------------\n" + expr);
+                    LicenseExpressionParser lep = new LicenseExpressionParser();
+                    expr = lep.fixLicenseExpression(expr);
+                    System.out.println("\nLicense expression with parenthesises:\n--------------------------------\n" + expr);
+                    LicenseExpression licenseExpression = lep.parse(expr);
+                    System.out.println("\nLicenseExpression:\n--------------------------------\n" + licenseExpression);
+                    List<List<License>> licenes = licenseExpression.licenseList();
+                    System.out.println("\nList of License Lists:\n--------------------------------\n" + LicenseExpression.licenseListToString(licenes));
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + em);
+            }
+
+        } catch (LicenseExpressionException | IllegalLicenseExpression | LicenseConnector.LicenseConnectorException e) {
+            System.out.println("Uh oh, something wicked this way comes: " + e);
         }
 
-      } catch (LicenseExpressionException | IllegalLicenseExpression e) {
-        System.out.println("Uh oh, something wicked this way comes: " + e);
-      }
-        
 
     }
 
@@ -131,11 +143,12 @@ public class LicenseChecker {
         options.addOption(new Option("o", "output", true, "Output to file."));
         options.addOption(new Option("e", "expression", true, "Parse and print a license expression (for debug)"));
         options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
+        options.addOption(new Option("cf", CONNECTOR_FILE_CLI, true, "File with license connectors."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
         options.addOption(new Option("l", "license-dir", true, "Directory with license files."));
-        options.addOption(new Option("p", "policy-file", true, "Path to policy file."));
+        options.addOption(new Option("p", POLICY_FILE_CLI, true, "Path to policy file."));
         options.addOption(new Option("pl", "print-licenses", false, "Output list of licenses as found in the files in the provided license directory"));
-        options.addOption(new Option("c", "component", true, "Component file to check"));
+        options.addOption(new Option("c", COMPONENT_FILE_CLI, true, "Component file to check"));
         options.addOption(new Option("pc", "print-component", false, "Print component"));
         options.addOption(new Option("h", "help", false, "Print help text"));
         options.addOption(new Option("j", "json", false, "Output result in JSON format"));
@@ -147,10 +160,11 @@ public class LicenseChecker {
     private static Map<String, Object> defaultValues() {
         // Prepare map wth default values
         Map<String, Object> values = new HashMap<>();
-        values.put("componentFile", null);
+        values.put(COMPONENT_FILE_CLI, null);
+        values.put(CONNECTOR_FILE_CLI, "licenses/connections/dwheeler.json");
         values.put("output", null);
         values.put("licenseDir", "licenses/json");
-        values.put("policyFile", null);
+        values.put(POLICY_FILE_CLI, null);
         values.put("policy", null);
         values.put("expression", null);
         values.put("mode", execMode.PRINT_LICENSES);
@@ -177,13 +191,17 @@ public class LicenseChecker {
             if (line.hasOption("connection-graph")) {
                 values.put("mode", execMode.PRINT_CONNECTIONS);
             }
+            if (line.hasOption(CONNECTOR_FILE_CLI)) {
+                Log.d(LOG_TAG, "Connector file: " + line.getOptionValue(CONNECTOR_FILE_CLI));
+                values.put(CONNECTOR_FILE_CLI, line.getOptionValue(CONNECTOR_FILE_CLI));
+            }
             if (line.hasOption("violation")) {
                 Log.d(LOG_TAG, " Checking violations");
                 values.put("mode", execMode.CHECK_VIOLATION);
             }
-            if (line.hasOption("component")) {
-                values.put("componentFile", line.getOptionValue("component"));
-                Log.d(LOG_TAG, " Component file: " + values.get("componentFile"));
+            if (line.hasOption(COMPONENT_FILE_CLI)) {
+                values.put(COMPONENT_FILE_CLI, line.getOptionValue(COMPONENT_FILE_CLI));
+                Log.d(LOG_TAG, " Component file: " + values.get(COMPONENT_FILE_CLI));
             }
             if (line.hasOption("expression")) {
                 values.put("expression", line.getOptionValue("expression"));
@@ -198,9 +216,9 @@ public class LicenseChecker {
                 values.put("licenseDir", line.getOptionValue("license-dir"));
                 Log.d(LOG_TAG, " License dir: " + values.get("licenseDir"));
             }
-            if (line.hasOption("policy-file")) {
-                values.put("policyFile", line.getOptionValue("policy-file"));
-                Log.d(LOG_TAG, " Policy file: " + values.get("policyFile"));
+            if (line.hasOption(POLICY_FILE_CLI)) {
+                values.put(POLICY_FILE_CLI, line.getOptionValue(POLICY_FILE_CLI));
+                Log.d(LOG_TAG, " Policy file: " + values.get(POLICY_FILE_CLI));
             }
             if (line.hasOption("print-license")) {
                 values.put("mode", execMode.PRINT_LICENSES);
@@ -232,21 +250,21 @@ public class LicenseChecker {
 
     private static void licensePrint(PrintStream writer) {
         Log.d(LOG_TAG, "printing licenses...");
-        writer.println(getInstance().licenseString());
+        writer.println(LicenseStore.getInstance().licenseString());
     }
 
     private static void componentPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
         Log.d(LOG_TAG, "printing component...");
-        Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
+        Log.d(LOG_TAG, "component file: " + values.get(COMPONENT_FILE_CLI));
         JsonComponentParser jp = new JsonComponentParser();
 
-        Component c = jp.readComponent((String) values.get("componentFile"));
+        Component c = jp.readComponent((String) values.get(COMPONENT_FILE_CLI));
         writer.println(c.toStringLong());
     }
 
 
     private static void reportPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
-        if (values.get("componentFile") == null) {
+        if (values.get(COMPONENT_FILE_CLI) == null) {
             System.err.println("\n*** Error: missing component file! ***\n\n");
             help(options);
             System.err.println("\n\n.... cowardly bailing out.\n");
@@ -256,15 +274,20 @@ public class LicenseChecker {
         //   System.out.println("json: " + values.get("format"));
 
         // Read component
-        Log.d(LOG_TAG, "component file: " + values.get("componentFile"));
+        Log.d(LOG_TAG, "component file: " + values.get(COMPONENT_FILE_CLI));
         JsonComponentParser jp = new JsonComponentParser();
         // TODO: remove get(0)
-        Component c = jp.readComponent((String) values.get("componentFile"));
+        Component c = jp.readComponent((String) values.get(COMPONENT_FILE_CLI));
         Log.d(LOG_TAG, "Component read: " + c.name());
         Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 
-        Report report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
-        writer.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report) + "\n");
+        Report report = null;
+        try {
+            report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
+            writer.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report) + "\n");
+        } catch (LicenseConnector.LicenseConnectorException e) {
+            e.printStackTrace();
+        }
 
     }
 

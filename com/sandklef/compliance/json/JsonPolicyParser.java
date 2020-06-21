@@ -37,49 +37,28 @@ public class JsonPolicyParser {
     LicensePolicyIntermediate policyGson = gson.fromJson(polocyJson, LicensePolicyIntermediate.class);
     return policyGson.export();
   }
-/*  private LicensePolicy readLicensePolicy(JSONObject jo) {
-    Log.d(LOG_TAG,"readPolicy");
-    List<License> whiteList = readLicenses(jo.getJSONArray("whitelist"));
-    List<License> grayList = readLicenses(jo.getJSONArray("graylist"));
-    List<License> blackList = readLicenses(jo.getJSONArray("blacklist"));
 
-    return new LicensePolicy(whiteList, grayList, blackList);
-  }
-
-  private List<License> readLicenses(JSONArray jArray) {
-    Log.d(LOG_TAG, " readLicenes(): " + jArray);
-    List<License> licenses = new ArrayList<>();
-    for (int i = 0; i < jArray.length(); i++) {
-//      JSONObject licenseJson = jArray.getJSONObject(i);
-  //    String licenseName = licenseJson.getString("license");
-      Log.d(LOG_TAG, " object: " + jArray.get(i));
-      String licenseName = jArray.get(i).toString();
-      Log.d(LOG_TAG, " licenseName: " + licenseName);
-      License license = LicenseStore.getInstance().license(licenseName.trim());
-      licenses.add(license);
-    }
-    return licenses;
-  }
-*/
   private static class LicensePolicyIntermediate {
     private String name;
-    private List<String> whitelist;
+    private List<String> allowlist;
     private List<String> graylist;
-    private List<String> blacklist;
+    private List<String> deniedlist;
 
     private List<License> convert(List<String> stringLicenses) throws LicenseExpressionException {
       List<License> licenses = new ArrayList<>();
-      for (String s : stringLicenses) {
-        licenses.add(LicenseStore.getInstance().license(s));
+      if (stringLicenses != null) {
+        for (String s : stringLicenses) {
+          licenses.add(LicenseStore.getInstance().license(s));
+        }
       }
       return licenses;
     }
 
     public LicensePolicy export() throws LicenseExpressionException {
       return new LicensePolicy(name,
-              convert(whitelist),
+              convert(allowlist),
               convert(graylist),
-              convert(blacklist));
+              convert(deniedlist));
     }
   }
 

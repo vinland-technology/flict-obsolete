@@ -5,22 +5,6 @@
     },
     "license": {
         "name":"BSD 3-Clause \"New\" or \"Revised\" License",
-        "spdx":"BSD-3-Clause",
-        "obligations": {
-            "linking_copylefted":"false",
-            "modification_allowed":"true",
-            "modification_copylefted":"false",
-            "sublicensing_allowed":"true",
-            "distribution_allowed":"true",
-            "distribution_copylefted":"false",
-            "disclose_source":"false",
-            "include_original":"false",
-            "state_changes":"true",
-            "include_copyright":"true",
-            "include_license":"true",
-            "include_install_instructions":"false",
-            "include_notice_file":"false",
-            "include_notice_about_license":"false"
-        }
+        "spdx":"BSD-3-Clause"
     }
 }

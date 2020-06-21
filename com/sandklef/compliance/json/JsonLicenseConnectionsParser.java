@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.sandklef.compliance.domain.License;
 import com.sandklef.compliance.domain.LicenseConnector;
+import com.sandklef.compliance.domain.LicenseGroup;
 import com.sandklef.compliance.domain.LicensePolicy;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
@@ -49,9 +50,16 @@ public class JsonLicenseConnectionsParser {
 
         // connections - collect spdx and create connectors
         for (LicenseConnectorIntermediate lci : connectors) {
-            Log.d(LOG_TAG, " lc: " + lci.spdx + " >>>> " +  lci.used_by + " \n");
-            LicenseConnector lc = new LicenseConnector(new License(lci.spdx));
-            connectorMap.put(lci.spdx, lc);
+            Log.d(LOG_TAG, " lci:: " + lci);
+            if (lci.spdx!=null) {
+                Log.d(LOG_TAG, " lc: license  " + lci.spdx + " >>>> " + lci.used_by + " \n");
+                LicenseConnector lc = new LicenseConnector(new License(lci.spdx));
+                connectorMap.put(lci.spdx, lc);
+            } else if (lci.group_name!=null) {
+                Log.d(LOG_TAG, " lci: licensegroup            >>>> " + lci.group_name + " \n");
+                LicenseConnector lc = new LicenseConnector(new LicenseGroup(lci.group_name));
+                connectorMap.put(lci.group_name, lc);
+            }
         }
 
         // connections - collect name and add connections
@@ -59,12 +67,18 @@ public class JsonLicenseConnectionsParser {
         for (LicenseConnectorIntermediate lci : connectors) {
             Log.d(LOG_TAG, " lc: " + lci);
             for (String used_by : lci.used_by) {
-                LicenseConnector lc = connectorMap.get(lci.spdx);
-                LicenseConnector lcToAdd = connectorMap.get(used_by);
-                Log.d(LOG_TAG, "    add to: " + lc + "  " +  lcToAdd + " \n");
-                lc.canBeUsedBy(lcToAdd);
+                if (lci.spdx!=null) {
+                    LicenseConnector lc = connectorMap.get(lci.spdx);
+                    LicenseConnector lcToAdd = connectorMap.get(used_by);
+                    Log.d(LOG_TAG, "    add to: " + lc + "  " + lcToAdd + " \n   map: " + connectorMap);
+                    lc.canBeUsedBy(lcToAdd);
+                } else {
+                    LicenseConnector lc = connectorMap.get(lci.group_name);
+                    LicenseConnector lcToAdd = connectorMap.get(used_by);
+                    Log.d(LOG_TAG, "    add to: " + lc + "  " + lcToAdd + "   group_name: " + lci.group_name +  "\n");
+                    lc.canBeUsedBy(lcToAdd);
+                }
             }
-
         }
         Log.d(LOG_TAG, " return map: " + connectorMap);
         return connectorMap;
@@ -72,12 +86,15 @@ public class JsonLicenseConnectionsParser {
 
     private static class LicenseConnectorIntermediate {
         private String spdx;
+        private String group_name;
         private List<String> used_by;
 
         @Override
         public String toString() {
             return "LicenseConnectorIntermediate{" +
                     "spdx='" + spdx + '\'' +
+                    "group_name='" + group_name + '\'' +
+                    ", used_by=" + used_by +
                     '}';
         }
     }

@@ -40,7 +40,11 @@ public class Log {
         //    System.err.println("COMPARE : " + level + " with " + currentLevel);
         //System.out.println("  LOG: " + level +  "  " +  tag + "  filter: " + filter);
         if (doPrint(level, tag, message)) {
-            System.err.println("[" + tag + "]: " + message);
+            if (tag!=null) {
+                System.err.println("[" + tag + "]: " + message);
+            } else {
+                System.err.println(message);
+            }
         }
     }
 

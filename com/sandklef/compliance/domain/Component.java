@@ -4,12 +4,9 @@
 
 package com.sandklef.compliance.domain;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import com.sandklef.compliance.utils.*;
-
-import javax.swing.*;
 
 public class Component {
 
@@ -217,9 +214,10 @@ public class Component {
   }
 
   public int paths() throws LicenseExpressionException, IllegalLicenseExpression {
+    int paths = licenseExpression.paths();
     if (dependencies.size()==0) {
       Log.d(LOG_TAG, "paths: " + name + ": " + licenseExpression.paths());
-      return licenseExpression.paths();
+      return paths;
     }
     int sum = 1;
     for (Component d : dependencies) {
@@ -227,8 +225,62 @@ public class Component {
     }
 
     Log.d(LOG_TAG,"paths: " + name + ": " + sum);
+    return sum*paths;
+  }
+
+  public int nrDependencies() {
+    if (dependencies.size()==0) {
+      return 0;
+    }
+    int sum = dependencies.size();
+    for (Component d : dependencies) {
+      sum += d.nrDependencies();
+    }
     return sum;
   }
+
+  public List<Component> allDependenciesImpl() {
+    List<Component> components = new ArrayList<>();
+    for (Component d : dependencies) {
+      components.add(d);
+      components.addAll(d.allDependenciesImpl());
+    }
+    return components;
+  }
+
+  private String allLicensesImpl() {
+    if (dependencies.size()==0) {
+      return license();
+    }
+    StringBuilder sb = new StringBuilder();
+
+    sb.append(license());
+
+    for (Component d : dependencies) {
+      sb.append(" ");
+      sb.append(d.allLicensesImpl());
+    }
+    return sb.toString();
+  }
+
+  public Set<String> allLicenses() {
+    Log.d(LOG_TAG, "allLicenses: " + allLicensesImpl());
+    String spacedLicenses = allLicensesImpl().
+            replace('&', ' ').
+            replace('|', ' ').
+            replace('(', ' ').
+            replace(')',' ');
+    Log.d(LOG_TAG, "allLicenses: " + spacedLicenses);
+    Set<String> licenses = new HashSet<>();
+    for (String s : spacedLicenses.split(" ")) {
+      if (s.replaceAll(" ", "").length()>0) {
+        Log.d(LOG_TAG, "allLicenses:  * " + s);
+        licenses.add(s);
+      }
+    }
+    return licenses;
+  }
+
 
   public String toStringLong() {
     StringBuffer sb = new StringBuffer();
@@ -269,34 +321,7 @@ public class Component {
   
   @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.append(" #" + name + "# ");
-/*    sb.append(" (");
-    if (concludedLicense()!=null) {
-      sb.append(concludedLicense().spdx());
-    }
-    Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses().size());
-    Log.d(LOG_TAG, "   toString c:" + name + "   licenses: " + licenses());
-   if (licenses().size()>1 && concludedLicense()==null) {
-      sb.append(" (");
-      for (License l : licenses()) {
-        //        Log.level(Log.DEBUG);
-        Log.d(LOG_TAG, "   toString c: " + name + "   license: " + l);
-        sb.append(l.spdx());
-        sb.append(",");
-      }
-      sb.append(") ");
-    }
-
-    sb.append("   [" );
-    for (Component c : dependencies) {
-      sb.append( " " + c.name() );
-    }
-    sb.append("]" );
-    sb.append(" )");
-
- */
-    return sb.toString();
+    return name;
   }
   
 }

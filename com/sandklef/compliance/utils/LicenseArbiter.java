@@ -12,23 +12,10 @@ import java.util.Map;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
 
-import static com.sandklef.compliance.utils.Log.debug;
-
 
 public class LicenseArbiter {
 
     public static String LOG_TAG = LicenseArbiter.class.getSimpleName();
-
-    static {
-        JsonLicenseConnectionsParser jcp = new JsonLicenseConnectionsParser();
-        try {
-            // TODO: the connector file to use should be given as an arg somehow
-            Map<String, LicenseConnector> licenseConnectors = jcp.readLicenseConnection("licenses/connections/dwheeler.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public static void debug(String msg, int indent) {
         Log.d(LOG_TAG,indent(indent)+msg);
@@ -151,13 +138,19 @@ public class LicenseArbiter {
 
         ListType color = ListType.ALLOWED_LIST;
 
+        Log.d(LOG_TAG, " color check: " + c.component().name() );
+
         // If we find a denied license directly, return denied
         // if gray remember, it
         for (License l : c.licenses) {
+            Log.d(LOG_TAG, " color check:   * " + l.spdx() + " in " + policy.deniedList() + " :: " +
+                    policy.deniedList().contains(l));
             // if black, return now
-            if (policy != null && policy.deniedList().contains(l.spdx())) {
+            if (policy != null && policy.deniedList().contains(l)) {
+                Log.d(LOG_TAG, " color check:   * denied");
                 return ListType.DENIED_LIST;
-            } else if (policy != null && policy.grayList().contains(l.spdx())) {
+            } else if (policy != null && policy.grayList().contains(l)) {
+                Log.d(LOG_TAG, " color check:   * gray");
                 return ListType.GRAY_LIST;
             }
         }
@@ -166,9 +159,11 @@ public class LicenseArbiter {
         for (InterimComponent d : c.dependencies()) {
             if (color(d, policy) == ListType.DENIED_LIST) {
                 // if black, return now
+                Log.d(LOG_TAG, " color check:   * deniged");
                 return ListType.DENIED_LIST;
             } else if (color(d, policy) == ListType.GRAY_LIST) {
                 // if gray, store - may be black so continue looking
+                Log.d(LOG_TAG, " color check:   * gray");
                 color = ListType.GRAY_LIST;
             }
         }
@@ -252,7 +247,8 @@ public class LicenseArbiter {
             int timesPerLicense = components.size() / componentToChange.component.licenseList().size();
             int leIndex = i / timesPerLicense;
 
-            Log.d(LOG_TAG," name: " + c.name() + "("  + components.size() + ")  leIndex: " + leIndex + "  from " + components.size() + " / " + componentToChange.component.licenseList().size() + "  and i: " + i);
+            Log.d(LOG_TAG," name: " + c.name() + "("  + components.size() + ")  leIndex: " + leIndex +
+                    "  from " + components.size() + " / le:" + componentToChange.component.licenseList().size() + "  and i: " + i + " " + componentToChange.component.licenseList());
 
             componentToChange.licenses = componentToChange.component.licenseList().get(leIndex);
             Log.d(LOG_TAG,"fillComponent()  component: " + component);
@@ -268,7 +264,7 @@ public class LicenseArbiter {
         }
     }
 
-    public static boolean compliant(InterimComponent ic, int indent) throws IllegalLicenseExpression {
+    public static boolean compliant(InterimComponent ic, int indent) throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
 //        System.out.println("compliant()");
         debug("compliant:  " + ic.name() + " licenses: " + ic.licenses, indent);
 
@@ -301,7 +297,7 @@ public class LicenseArbiter {
     }
 
 
-    public static boolean aCanUseB(License a, List<License> bLicenses) throws IllegalLicenseExpression {
+    public static boolean aCanUseB(License a, List<License> bLicenses) throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
         //Log.level(Log.DEBUG);
         Log.d(LOG_TAG, "aCanUseB " + a + " " + bLicenses);
         if (a==null || bLicenses == null ) {
@@ -317,25 +313,40 @@ public class LicenseArbiter {
     }
 
 
-    public static boolean aCanUseB(License a, License b) throws IllegalLicenseExpression {
+    public static boolean aCanUseB(License a, License b) throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
         //Log.level(Log.DEBUG);
         Log.d(LOG_TAG, "aCanUseB " + a + " " + b);
         if (a == null || b == null) {
             throw new IllegalLicenseExpression("Illegal (null) license found");
         }
+
         Log.d(LOG_TAG, "aCanUseB spdx: " + a.spdx() + " " + b.spdx());
         Log.d(LOG_TAG, "aCanUseB conns " + LicenseStore.getInstance().connectors());
         Log.d(LOG_TAG, "aCanUseB a " + LicenseStore.getInstance().connectors().get(a.spdx()));
         Log.d(LOG_TAG, "aCanUseB b " + LicenseStore.getInstance().connectors().get(b.spdx()));
-        return aCanUseB(LicenseStore.getInstance().connectors().get(a.spdx()),
-                LicenseStore.getInstance().connectors().get((b.spdx())));
+        return aCanUseB(LicenseStore.getInstance().connector(a),
+                LicenseStore.getInstance().connector(b));
     }
 
-    private static boolean aCanUseBImpl(LicenseConnector a, LicenseConnector b, List<LicenseConnector> visited) {
+    private static boolean directMatch(LicenseConnector a, LicenseConnector b) throws LicenseConnector.LicenseConnectorException {
+        // a contains a license
+        if (a.hasLicense() ) {
+            // b contains a license
+            // - both contains licenses, check if same license
+            if (b.hasLicense()) {
+                if (a.license().spdx().equals(b.license().spdx())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean aCanUseBImpl(LicenseConnector a, LicenseConnector b, List<LicenseConnector> visited) throws LicenseConnector.LicenseConnectorException {
         Log.d(LOG_TAG, "   ---> check lic: " + a + " and " + b + "    { " + visited + " }");
 
         // Check if we've visited this connector already. If so, false
-        Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b.license() + " ******** " + visited.contains(b));
+   //     Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b + " ******** " + visited.contains(b));
         if (visited.contains(b)) {
             // already checked b
             //           Log.d(LOG_TAG, "\n\n ***************** ALREADY BEEN IN " + b.license().spdx() + " ********\n\n\n");
@@ -348,10 +359,9 @@ public class LicenseArbiter {
             visited.add(b);
         }
 
-        if (a.license().spdx().equals(b.license().spdx())) {
+        if (directMatch(a,b)) {
             return true;
         }
-
 
         if (a.canUse().contains(b)) {
             return true;
@@ -361,7 +371,7 @@ public class LicenseArbiter {
         // Loop through all b's canBeUsed licenses
         for (LicenseConnector l : b.canBeUsedBy()) {
 
-            if (l.license().spdx().equals(a.license().spdx())) {
+            if (directMatch(a,b)) {
                 return true;
             }
 
@@ -371,14 +381,15 @@ public class LicenseArbiter {
             }
         }
 
+        Log.d(LOG_TAG, "aCanUseBImpl: <--- false: "  + a + "  " + b);
         return false;
     }
 
-    private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) {
+    private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) throws LicenseConnector.LicenseConnectorException {
         return aCanUseBImpl(a, b, new ArrayList<>());
     }
 
-    public static Report reportConcludeAllPaths(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression {
+    public static Report reportConcludeAllPaths(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
         Report report = new Report(c,policy);
 
         Log.d(LOG_TAG," reportConcludeAllPaths: " + c);
@@ -403,7 +414,7 @@ public class LicenseArbiter {
         return report;
     }
 
-    public static Report report(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression {
+    public static Report report(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
         Log.d(LOG_TAG, "reportViolations()    c: " + c.name());
         Report report = reportConcludeAllPaths(c, policy);
 

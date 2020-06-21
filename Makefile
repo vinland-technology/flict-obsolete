@@ -12,6 +12,7 @@ JAVA_SOURCES=\
   com/sandklef/compliance/domain/Report.java \
   com/sandklef/compliance/domain/LicenseViolationException.java \
   com/sandklef/compliance/domain/License.java \
+  com/sandklef/compliance/domain/LicenseGroup.java \
   com/sandklef/compliance/domain/Obligation.java \
   com/sandklef/compliance/domain/Concern.java \
   com/sandklef/compliance/domain/LicenseViolation.java \

@@ -16,6 +16,7 @@ public class License {
 
   private String name;
   private String spdx;
+  private String license_group;
 
   public String name() {
     return name;
@@ -25,7 +26,6 @@ public class License {
   public String toString() {
     return spdx;
   }
-
 
   public License(String name, String spdx) {
     this.name = name;
@@ -40,6 +40,9 @@ public class License {
     this.spdx = spdx;
   }
 
+  public String info() {
+    return name + " / " + spdx + " / " + license_group;
+  }
 
   //  private Map<String, LicenseObligation> obligations;
 //  private LicenseType type;
@@ -73,8 +76,12 @@ public class License {
   public String spdx() {
     return spdx;
   }
-  
-//  public LicenseType type() {
+
+  public String licenseGroup() {
+    return license_group;
+  }
+
+  //  public LicenseType type() {
 //    return type;
 //  }
 //

@@ -8,6 +8,7 @@ import com.sandklef.compliance.utils.LicenseArbiter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Report {
 
@@ -83,6 +84,39 @@ public class Report {
     public String duration() {
         return metaData.duration();
     }
+
+    public List<ComponentResult> compliantPaths() {
+        return componentResults.stream().
+                filter(c -> c.compliant).
+                filter(c -> c.color!=ListType.DENIED_LIST).
+                collect(Collectors.toList());
+    }
+
+    public List<ComponentResult> compliantGrayPaths() {
+        return componentResults.stream().
+                filter(c -> c.compliant()).
+                filter(c -> c.color!=ListType.GRAY_LIST).
+                collect(Collectors.toList());
+    }
+
+    public List<ComponentResult> compliantDeniedPaths() {
+        return componentResults.stream().
+                filter(c -> c.compliant()).
+                filter(c -> c.color==ListType.DENIED_LIST).
+                collect(Collectors.toList());
+    }
+
+    public List<ComponentResult> nonCompliantPaths() {
+        return componentResults.stream().
+                filter(c -> !c.compliant() || c.color==ListType.DENIED_LIST).
+                collect(Collectors.toList());
+    }
+
+    public int compliantCount() {
+        return compliantPaths().size();
+    }
+
+
 
     @Override
     public String toString() {

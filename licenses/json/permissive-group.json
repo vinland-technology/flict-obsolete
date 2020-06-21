@@ -3,9 +3,7 @@
         "software":"License Policy Checker",
         "version":"0.1"
     },
-    "license": {
-        "name":"LGPLv2.0 only",
-        "spdx":"LGPL-2.0-only"
+    "group_name": {
+        "name":"permissive"
     }
 }
-
