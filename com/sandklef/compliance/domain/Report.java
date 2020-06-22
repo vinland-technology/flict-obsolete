@@ -85,6 +85,13 @@ public class Report {
         return metaData.duration();
     }
 
+    public List<ComponentResult> complianAllowedtPaths() {
+        return componentResults.stream().
+                filter(c -> c.compliant).
+                filter(c -> c.color==ListType.ALLOWED_LIST).
+                collect(Collectors.toList());
+    }
+
     public List<ComponentResult> compliantPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant).
