@@ -40,6 +40,14 @@ public class LicenseArbiter {
         List<InterimComponent> dependencies;
         int id;
 
+        public List<License> licenses() {
+            return licenses;
+        }
+
+        public void lLicenses(List<License> licenses) {
+            this.licenses = licenses;
+        }
+
         public InterimComponent(Component component) {
             this.component = component;
             this.id = nextId();
@@ -79,6 +87,16 @@ public class LicenseArbiter {
 
         public String name() {
             return component.name();
+        }
+
+
+        public List<InterimComponent> allDependenciesImpl() {
+            List<InterimComponent> components = new ArrayList<>();
+            for (InterimComponent ic : dependencies) {
+                components.add(ic);
+                components.addAll(ic.allDependenciesImpl());
+            }
+            return components;
         }
 
         @Override
@@ -143,8 +161,11 @@ public class LicenseArbiter {
         // If we find a denied license directly, return denied
         // if gray remember, it
         for (License l : c.licenses) {
-            Log.d(LOG_TAG, " color check:   * " + l.spdx() + " in " + policy.deniedList() + " :: " +
+
+            /*Log.d(LOG_TAG, " color check:   * " + l.spdx() + " in " + policy.deniedList() + " :: " +
                     policy.deniedList().contains(l));
+
+             */
             // if black, return now
             if (policy != null && policy.deniedList().contains(l)) {
                 Log.d(LOG_TAG, " color check:   * denied");
