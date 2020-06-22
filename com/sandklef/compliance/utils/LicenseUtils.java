@@ -145,6 +145,23 @@ public class LicenseUtils {
         }
     }
 
+    public static ListType licenseColor(String licenseSPDX, LicensePolicy policy) throws LicenseExpressionException {
+        if (policy != null) {
+            License license = LicenseStore.getInstance().license(licenseSPDX);
+            if (policy.allowedList().contains(license)) {
+                return ListType.ALLOWED_LIST;
+            } else if (policy.grayList().contains(license)) {
+                return ListType.GRAY_LIST;
+            } else if (policy.deniedList().contains(license)) {
+                return ListType.DENIED_LIST;
+            }
+        }
+        // default to allowed
+        return ListType.ALLOWED_LIST;
+    }
+
+
+
     public static void stupidifier(Component c,
                                    Map<String, Map<Component, List<ComplianceAnswer>>> answers) {
         ArrayList<MiniComponent> components = new ArrayList<>();
