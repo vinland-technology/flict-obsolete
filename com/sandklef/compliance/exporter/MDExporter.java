@@ -2,6 +2,7 @@ package com.sandklef.compliance.exporter;
 
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.LicenseArbiter;
+import com.sandklef.compliance.utils.LicenseUtils;
 import com.sandklef.compliance.utils.Log;
 
 import java.net.InetAddress;
@@ -55,13 +56,23 @@ public class MDExporter implements ReportExporter {
         // DETAILED REPORT
         detailedReport(sb);
 
-
-
-
         return sb.toString();
     }
 
-    private void detailedReport(StringBuilder sb) {
+    private String licenseTypeComment(String license) throws LicenseExpressionException {
+        ListType color = LicenseUtils.licenseColor(license,report.policy());
+        switch (color) {
+            case ALLOWED_LIST:
+                return "";
+            case GRAY_LIST:
+                return " (gray listed)";
+            case DENIED_LIST:
+                return " (denied)";
+        }
+        return "";
+    }
+
+    private void detailedReport(StringBuilder sb)  {
         sb.append("# Detailed report");
         sb.append("\n\n");
 
@@ -78,7 +89,11 @@ public class MDExporter implements ReportExporter {
         sb.append("\n\n");
         for (String s : licenseSet) {
             sb.append(" * ");
-            sb.append(s);
+            try {
+                sb.append(s + licenseTypeComment(s));
+            } catch (LicenseExpressionException e) {
+                sb.append(s);
+            }
             sb.append("\n");
         }
         sb.append("\n\n");
@@ -105,12 +120,9 @@ public class MDExporter implements ReportExporter {
 
         sb.append(BOLD_START + "Compliant allowed license choices per component: " + BOLD_END);
         for (Report.ComponentResult cr : report.complianAllowedtPaths()) {
-            sb.append(" component: " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
-            boolean first = true;
+            sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
             for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
-                if (!first) {
-                    sb.append(", ");
-                }
+                sb.append(", ");
                 sb.append(ic.name() + " (" +
                         beautifyLicense(ic.licenses().toString()) + ")");
             }
@@ -119,7 +131,7 @@ public class MDExporter implements ReportExporter {
 
         sb.append(BOLD_START + "Compliant gray license choices per component: " + BOLD_END);
         for (Report.ComponentResult cr : report.compliantGrayPaths()) {
-            sb.append(cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
+            sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
             for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
                 sb.append(", ");
                 sb.append(ic.name() + " (" +
@@ -146,8 +158,23 @@ public class MDExporter implements ReportExporter {
         sb.append(report.componentResults().size());
         sb.append("\n\n");
 
-        sb.append(BOLD_START + "Compliant: " + BOLD_END);
+        sb.append(BOLD_START + "Compliant (allowed licenses only): " + BOLD_END);
         int pathCount = report.compliantCount();
+        switch (pathCount) {
+            case 0:
+                sb.append("No");
+                break;
+            case 1:
+                sb.append("Yes, 1 path");
+                break;
+            default:
+                sb.append("Yes, " + pathCount + " paths");
+                break;
+        }
+        sb.append("\n\n");
+
+        sb.append(BOLD_START + "Compliant (gray licenses only): " + BOLD_END);
+        pathCount = report.compliantGrayPaths().size();
         switch (pathCount) {
             case 0:
                 sb.append("No");

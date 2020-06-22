@@ -102,7 +102,7 @@ public class Report {
     public List<ComponentResult> compliantGrayPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant()).
-                filter(c -> c.color!=ListType.GRAY_LIST).
+                filter(c -> c.color==ListType.GRAY_LIST).
                 collect(Collectors.toList());
     }
 
