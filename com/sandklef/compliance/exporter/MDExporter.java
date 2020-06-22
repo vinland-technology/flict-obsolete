@@ -1,6 +1,7 @@
 package com.sandklef.compliance.exporter;
 
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.utils.LicenseArbiter;
 import com.sandklef.compliance.utils.Log;
 
 import java.net.InetAddress;
@@ -23,16 +24,116 @@ public class MDExporter implements ReportExporter {
     private static final String NEWLINE = "\n";
     private static final String LOG_TAG = MDExporter.class.getSimpleName();
 
+    private Report report;
+    private Component c;
+    private Set<String> licenseSet;
+
+    private void init(Report report) {
+        this.report = report;
+        if (c==null) {
+            c = report.component();
+        }
+        if (licenseSet==null) {
+            licenseSet = c.allLicenses();
+        }
+    }
 
     @Override
     public String exportReport(Report report) {
+        init(report);
         StringBuilder sb = new StringBuilder();
-        Component c = report.component();
-        Set<String> licenseSet = c.allLicenses();
 
         sb.append("# Report ");
         sb.append(c.name());
         sb.append("\n");
+
+        summaryReport(sb);
+
+        // About check
+        aboutReport(sb);
+
+        // DETAILED REPORT
+        detailedReport(sb);
+
+
+
+
+        return sb.toString();
+    }
+
+    private void detailedReport(StringBuilder sb) {
+        sb.append("# Detailed report");
+        sb.append("\n\n");
+
+        sb.append(BOLD_START + "Dependency components: " + BOLD_END);
+        sb.append("\n\n");
+        for (Component d : c.allDependenciesImpl()) {
+            sb.append(" * ");
+            sb.append(d);
+            sb.append("\n");
+        }
+        sb.append("\n\n");
+
+        sb.append(BOLD_START + "Liceneses: " + BOLD_END);
+        sb.append("\n\n");
+        for (String s : licenseSet) {
+            sb.append(" * ");
+            sb.append(s);
+            sb.append("\n");
+        }
+        sb.append("\n\n");
+
+        sb.append("## Compliance information");
+        sb.append("\n\n");
+
+        sb.append(BOLD_START + "Compliant license combinations: " + BOLD_END);
+        sb.append(report.compliantCount());
+        sb.append("\n\n");
+
+        sb.append(BOLD_START + "Compliant gray license combinations: " + BOLD_END);
+        sb.append(report.compliantGrayPaths().size());
+        sb.append("\n\n");
+
+        sb.append(BOLD_START + "Compliant denied license combinations: " + BOLD_END);
+        sb.append(report.compliantDeniedPaths().size());
+        sb.append("\n\n");
+
+        sb.append(BOLD_START + "Non compliant license combinations: " + BOLD_END);
+        sb.append(report.nonCompliantPaths().size());
+        sb.append("\n\n");
+
+
+        sb.append(BOLD_START + "Compliant allowed license choices per component: " + BOLD_END);
+        for (Report.ComponentResult cr : report.complianAllowedtPaths()) {
+            sb.append(" component: " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
+            boolean first = true;
+            for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
+                if (!first) {
+                    sb.append(", ");
+                }
+                sb.append(ic.name() + " (" +
+                        beautifyLicense(ic.licenses().toString()) + ")");
+            }
+        }
+        sb.append("\n\n");
+
+        sb.append(BOLD_START + "Compliant gray license choices per component: " + BOLD_END);
+        for (Report.ComponentResult cr : report.compliantGrayPaths()) {
+            sb.append(cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
+            for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
+                sb.append(", ");
+                sb.append(ic.name() + " (" +
+                        beautifyLicense(ic.licenses().toString()) + ")");
+            }
+        }
+        sb.append("\n\n");
+    }
+
+    private String beautifyLicense(String license) {
+        return license.replace(",", " & ").replace("[", "").replace("]", "");
+    }
+
+    private void summaryReport(StringBuilder sb) {
 
         sb.append("# Summary");
         sb.append("\n\n");
@@ -71,42 +172,9 @@ public class MDExporter implements ReportExporter {
         sb.append(BOLD_START + "Numbers of licenses: " + BOLD_END);
         sb.append(licenseSet.size());
         sb.append("\n\n");
-
-        // About check
-        aboutReport(sb, report);
-
-        // DETAILED REPORT
-        sb.append("# Detailed report");
-        sb.append("\n\n");
-
-        sb.append(BOLD_START + "Dependency components: " + BOLD_END);
-        sb.append("\n\n");
-        for (Component d : c.allDependenciesImpl()) {
-            sb.append(" * ");
-            sb.append(d);
-            sb.append("\n");
-        }
-        sb.append("\n\n");
-
-        sb.append(BOLD_START + "Liceneses: " + BOLD_END);
-        sb.append("\n\n");
-        for (String s : licenseSet) {
-            sb.append(" * ");
-            sb.append(s);
-            sb.append("\n");
-        }
-        sb.append("\n\n");
-
-        Log.d(LOG_TAG, "Compliance lists:");
-        Log.d(LOG_TAG, " * compliant:     " + report.compliantCount());
-        Log.d(LOG_TAG, " * gray:          " + report.compliantGrayPaths().size());
-        Log.d(LOG_TAG, " * denied:        " + report.compliantDeniedPaths().size());
-        Log.d(LOG_TAG, " * non compliant: " + report.nonCompliantPaths().size());
-
-        return sb.toString();
     }
 
-    private void aboutReport(StringBuilder sb, Report report) {
+    private void aboutReport(StringBuilder sb) {
         sb.append("# About license compliance check");
         sb.append("\n");
         sb.append(BOLD_START + "Tool: " + BOLD_END);
