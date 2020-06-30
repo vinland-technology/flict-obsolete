@@ -24,6 +24,7 @@ public class LicenseChecker {
         PRINT_LICENSES,
         PRINT_CONNECTIONS,
         PRINT_COMPONENT,
+        PRINT_COMPONENT_LICENSES,
         PRINT_EXPRESSION,
         CHECK_VIOLATION
     }
@@ -67,8 +68,8 @@ public class LicenseChecker {
             // If policy file provided - read it
             if (session.policyFile() != null) {
                 JsonPolicyParser jp = new JsonPolicyParser();
-                values.put("policy", jp.readLicensePolicy((String) values.get(POLICY_FILE_CLI)));
-                System.out.println("   policy file: " + values.get(POLICY_FILE_CLI));
+                values.put("policy", jp.readLicensePolicy(session.policyFile()));
+                System.out.println("   policy file: " + session.policyFile());
             }
 
             String outFileName = (String) values.get("output");
@@ -107,6 +108,9 @@ public class LicenseChecker {
                     } catch (LicenseExpressionException | IllegalLicenseExpression e) {
                         e.printStackTrace();
                     }
+                    break;
+                case PRINT_COMPONENT_LICENSES:
+                    printComponentWithLicenses(values, options);
                     break;
                 case PRINT_EXPRESSION:
                     String expr = (String) values.get("expression");
@@ -153,6 +157,7 @@ public class LicenseChecker {
         options.addOption(new Option("h", "help", false, "Print help text"));
         options.addOption(new Option("j", "json", false, "Output result in JSON format"));
         options.addOption(new Option("md", "markdown", false, "Output result in Markdown format"));
+        options.addOption(new Option("dcl", "debug-component-licenses", false, "Output component with deps and license combinations"));
         return options;
     }
 
@@ -190,6 +195,9 @@ public class LicenseChecker {
             }
             if (line.hasOption("connection-graph")) {
                 values.put("mode", execMode.PRINT_CONNECTIONS);
+            }
+            if (line.hasOption("debug-component-licenses")) {
+                values.put("mode", execMode.PRINT_COMPONENT_LICENSES);
             }
             if (line.hasOption(CONNECTOR_FILE_CLI)) {
                 Log.d(LOG_TAG, "Connector file: " + line.getOptionValue(CONNECTOR_FILE_CLI));
@@ -262,6 +270,32 @@ public class LicenseChecker {
         writer.println(c.toStringLong());
     }
 
+    private static void printComponentWithLicenses(Map<String, Object> values, Options options) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
+        if (values.get(COMPONENT_FILE_CLI) == null) {
+            System.err.println("\n*** Error: missing component file! ***\n\n");
+            help(options);
+            System.err.println("\n\n.... cowardly bailing out.\n");
+            System.exit(1);
+        }
+
+        // Read component
+        Log.d(LOG_TAG, "component file: " + values.get(COMPONENT_FILE_CLI));
+        JsonComponentParser jp = new JsonComponentParser();
+        // TODO: remove get(0)
+        Component c = jp.readComponent((String) values.get(COMPONENT_FILE_CLI));
+        Log.d(LOG_TAG, "Component read: " + c.name());
+        Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
+
+        System.out.println(c.toStringWithLicenses());
+
+        try {
+            String str = LicenseArbiter.componentsWithLicenses(c, null);
+            System.out.println(str);
+        } catch (LicenseConnector.LicenseConnectorException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     private static void reportPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
         if (values.get(COMPONENT_FILE_CLI) == null) {

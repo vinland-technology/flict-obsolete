@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
@@ -112,6 +113,15 @@ public class LicenseArbiter {
         }
     }
 
+    public static String componentWithLicenseList(List<InterimComponent> components) {
+        StringBuffer sb = new StringBuffer();
+        for (InterimComponent c : components) {
+            sb.append(c);
+            sb.append("\n\n");
+        }
+        return sb.toString();
+    }
+
     public static InterimComponent findById(int id, InterimComponent component) {
         if (id ==component.id) {
             return component;
@@ -183,7 +193,7 @@ public class LicenseArbiter {
     }
 
 
-    public static void fillComponent(InterimComponent component, List<InterimComponent> components, int indent)
+    public static void fillComponent(InterimComponent component, List<InterimComponent> components, AtomicInteger splitCount)
             throws LicenseExpressionException, IllegalLicenseExpression {
 
         // We know how many interim components we have in the list (components.size())
@@ -225,13 +235,19 @@ public class LicenseArbiter {
 
          */
 
-        debug("fill " + component.name() + "  license: " + component.component.license(), indent);
+        debug("fill " + component.name() + "  license: " + component.component.license(), splitCount.get());
 
+        int licenseCount = 0;
+
+        int splitIndex = 0;
+        int licenseIndex = 1;
+        boolean splitIndexIncreased = false;
 
         // For each component in the list of (same) component
         for (int i=0 ; i<components.size(); i++) {
             // Fetch the corresponding interim
             InterimComponent c = components.get(i);
+
             // Using id, find component to change
             InterimComponent componentToChange = findById(component.id, c);
 
@@ -240,13 +256,28 @@ public class LicenseArbiter {
 
             // If 12 components and 2 license expressions; 6 by 6 (12/2)
             // If 12 components and 3 license expressions; 4 by 4 (12/3)
-            int timesPerLicense = components.size() / componentToChange.component.licenseList().size();
+            int nrOfComponents = components.size();
+            int thisComponentLicenseCount = componentToChange.component.licenseList().size();
+            int timesPerLicense = nrOfComponents / thisComponentLicenseCount  ;
+            // index as spread out evenly on all components
             int leIndex = i / timesPerLicense;
+            // index as spread out evenly on all components with previous components in mind
+            int realIndex = leIndex ;//+ indexSplitOffset  ;
 
-            Log.d(LOG_TAG," name: " + c.name() + "("  + components.size() + ")  leIndex: " + leIndex +
-                    "  from " + components.size() + " / le:" + componentToChange.component.licenseList().size() + "  and i: " + i + " " + componentToChange.component.licenseList());
+
+//            int steps = (int)( Math.pow(2, splitCount.get()));
+            int steps = splitCount.get();
+
+            int roma = thisComponentLicenseCount * steps;
+
+            System.out.format(" i: %2d (%2d)    tpl: %d  steps: %2d   licenseIndex: %d   splitIndex: %2d    realIndex %2d => %s\n" ,
+                    i, nrOfComponents, thisComponentLicenseCount, steps, licenseIndex,
+                    splitIndex,
+                    roma,
+                    componentToChange.component.licenseList().get(realIndex));
 
             componentToChange.licenses = componentToChange.component.licenseList().get(leIndex);
+//            componentToChange.licenses = componentToChange.component.licenseList().get(licenseIndex%thisComponentLicenseCount);
             Log.d(LOG_TAG,"fillComponent()  component: " + component);
             Log.d(LOG_TAG,"fillComponent(): licenses:  " + component.component.license());
             Log.d(LOG_TAG,"fillComponent(): iLicense:   " + componentToChange.licenses);
@@ -254,9 +285,17 @@ public class LicenseArbiter {
 //            List<InterimComponent> componentsToAdd = componentsFromLicenseExpression(le);
 
             debug("recurse: " + c.id + " == " + component.id, 0);
+
+            // Keep licenseCount to see if we should split more times next round
+            licenseCount = component.component().licenseList().size();
         }
+
+        splitCount.set(splitCount.get()+licenseCount-1);
+        System.out.println("  licenseCount: " + splitCount.get() + " since: " + component.component().licenseList().size());
+
+        // Do the same for all sub components (recursively)
         for (InterimComponent ic : component.dependencies()) {
-            fillComponent(ic, components, indent+2);
+            fillComponent(ic, components, splitCount);
         }
     }
 
@@ -383,6 +422,20 @@ public class LicenseArbiter {
         return aCanUseBImpl(a, b, new ArrayList<>());
     }
 
+    public static String componentsWithLicenses(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+        Report report = new Report(c, policy);
+
+        Log.d(LOG_TAG, " reportConcludeAllPaths: " + c);
+        Log.d(LOG_TAG, " reportConcludeAllPaths: " + c.license());
+
+        // Create a list of Components (out of c) with all combinations of licenses
+        List<InterimComponent> components = copies(c);
+        // Fill the licenses of the Component
+        fillComponent(components.get(0), components, new AtomicInteger(1));
+
+        return componentWithLicenseList(components);
+    }
+
     public static Report reportConcludeAllPaths(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
         Report report = new Report(c,policy);
 
@@ -392,7 +445,7 @@ public class LicenseArbiter {
         // Create a list of Components (out of c) with all combinations of licenses
         List<InterimComponent> components = copies(c);
         // Fill the licenses of the Component
-        fillComponent(components.get(0), components, 0);
+        fillComponent(components.get(0), components, new AtomicInteger(1));
 
         printComponents(components, 2);
 

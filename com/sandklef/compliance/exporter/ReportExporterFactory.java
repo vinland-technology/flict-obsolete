@@ -30,7 +30,7 @@ public class ReportExporterFactory {
             return new MDExporter();
         }
         // default to TEXT (for now)
-        return new TextComponentExporter();
+        return new TextReportExporter();
     }
 
 }

@@ -18,17 +18,18 @@
                 "dependencies": [
                     {
                         "name": "ABA",
-                        "license": "LGPL-3.0-only | GPL-3.0-only | Apache-2.0 | BSD-3-Clause ",
+                        "license": "LGPL-3.0-only | GPL-3.0-only | Apache-2.0  ",
                         "dependencies": [
                         ]
                     },
                     {
                         "name": "ABB",
-                        "license": "LGPL-3.0-only | Apache-2.0 | BSD-3-Clause",
+                        "license": "LGPL-3.0-only | Apache-2.0 & BSD-3-Clause",
                         "dependencies": []
                     }
                 ]
             }
         ]
+
     }
 }

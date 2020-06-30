@@ -105,7 +105,6 @@ public class Component {
     return name;
   }
 
-
   public String license() {
     return licenseString;
   }
@@ -196,6 +195,8 @@ public class Component {
     sb.append("{ ");
     sb.append(name);
     sb.append("(");
+    sb.append(licenseString);
+    sb.append(")");
 
     sb.append(" [");
     for (Component c : dependencies) {
@@ -204,7 +205,42 @@ public class Component {
     sb.append(" ] }" );
     return sb.toString();
   }
-  
+
+  // TODO: Move the method elsewhere - really not part of Component's concern
+  public String toStringWithLicenses() {
+    StringBuffer sb = new StringBuffer();
+    sb.append(name);
+    sb.append("\n------------------------------");
+    sb.append("\n plain:               ");
+    sb.append(licenseString);
+    sb.append("\n paths:               ");
+    sb.append(licensePaths());
+    try {
+      sb.append(" / ");
+      sb.append(paths());
+      LicenseExpressionParser lep = new LicenseExpressionParser() ;
+      String fixed = lep.fixLicenseExpression(licenseString);
+      sb.append("\n fixed:               ");
+      sb.append(fixed);
+      sb.append("\n license expresssion: ");
+      LicenseExpression le = lep.parse(fixed);
+      sb.append(licenseExpression);
+      sb.append("\n license list       : ");
+      sb.append(licenseList);
+    } catch (LicenseExpressionException e) {
+      e.printStackTrace();
+    } catch (IllegalLicenseExpression illegalLicenseExpression) {
+      illegalLicenseExpression.printStackTrace();
+    }
+    sb.append("\n");
+    sb.append("\n");
+
+    for (Component c : dependencies) {
+      sb.append(c.toStringWithLicenses()  );
+    }
+    return sb.toString();
+  }
+
   @Override
   public String toString() {
     return name;

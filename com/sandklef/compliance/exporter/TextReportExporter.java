@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
-public class TextComponentExporter implements ReportExporter {
+public class TextReportExporter implements ReportExporter {
 
   private Report report;
     private Component c;
@@ -40,9 +40,6 @@ public class TextComponentExporter implements ReportExporter {
         sb.append("\n===========================================\n");
 
         summaryReport(sb);
-
-        // About check
-        aboutReport(sb);
 
         // DETAILED REPORT
         detailedReport(sb);
@@ -109,6 +106,7 @@ public class TextComponentExporter implements ReportExporter {
         sb.append(report.nonCompliantPaths().size());
         sb.append("\n\n");
 
+        System.out.println("results:  " + report.complianAllowedtPaths());
 
         sb.append("Compliant allowed license choices per component: ");
         List<Report.ComponentResult> results = report.complianAllowedtPaths();
@@ -123,6 +121,7 @@ public class TextComponentExporter implements ReportExporter {
                     sb.append(ic.name() + " (" +
                             beautifyLicense(ic.licenses().toString()) + ")");
                 }
+                sb.append("\n");
             }
         }
         sb.append("\n\n");
@@ -140,6 +139,7 @@ public class TextComponentExporter implements ReportExporter {
                     sb.append(ic.name() + " (" +
                             beautifyLicense(ic.licenses().toString()) + ")");
                 }
+                sb.append("\n");
             }
         }
         sb.append("\n\n");
@@ -194,57 +194,7 @@ public class TextComponentExporter implements ReportExporter {
         }
     }
 
-    private void aboutReport(StringBuilder sb) {
-        sb.append("# About license compliance check");
-        sb.append("\n");
-        sb.append("Tool: ");
-        sb.append(report.metaData().producer());
-        sb.append(", version ");
-        sb.append(report.metaData().version());
-        sb.append("\n\n");
-        sb.append("Check duration: ");
-        sb.append(report.metaData().duration());
-        sb.append("\n\n");
-        try {
-            Enumeration ifaceEnum = NetworkInterface.getNetworkInterfaces();
-            while(ifaceEnum.hasMoreElements())
-            {
-                NetworkInterface iface = (NetworkInterface) ifaceEnum.nextElement();
-                Enumeration addressEnum = iface.getInetAddresses();
-                while (addressEnum.hasMoreElements())
-                {
-                    sb.append(" * ");
-                    InetAddress i = (InetAddress) addressEnum.nextElement();
-                    sb.append(i);
-                    sb.append("\n\n");
-                }
-            }
-        } catch (SocketException e) {
-            sb.append("* unknown");
-        }
-        sb.append("\n\n");
 
-        sb.append("Current directory: ");
-        sb.append(System.getProperty("user.dir"));
-        sb.append("\n\n");
-        Session session = Session.getInstance();
-
-        sb.append("Component file: ");
-        sb.append(session.componentFile());
-        sb.append("\n\n");
-
-        sb.append("License dir: ");
-        sb.append(session.lLicenseDir());
-        sb.append("\n\n");
-
-        sb.append("Connector file: ");
-        sb.append(session.connectorFile());
-        sb.append("\n\n");
-
-        sb.append("Policy file: ");
-        sb.append(session.policyFile());
-        sb.append("\n\n");
-    }
 
   
 
