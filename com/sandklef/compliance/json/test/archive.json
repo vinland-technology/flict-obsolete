@@ -1,0 +1,47 @@
+{
+  "component": {
+    "name": "archive",
+    "license": "BSD-3-Clause",
+    "dependencies": [
+      {
+        "name": "acl (libacl1)",
+        "license": "LGPL-2.1-or-later & GPL-2.0-or-later",
+        "dependencies": [
+          {
+            "name": "attr (libattr1)",
+            "license": "GPL-2.0-or-later",
+            "dependencies": [
+            ]
+          }
+        ]
+      },
+      {
+        "name": "bzip2",
+        "license": "bzip2",
+        "dependencies": []
+      },
+      {
+        "name": "lzma",
+        "license": "PD & LGPL-2.1-only",
+        "dependencies": [
+        ]
+      },
+      {
+        "name": "lzo (liblzo2-2)",
+        "license": "GPL-2.0-or-later",
+        "dependencies": [
+        ]
+      },
+      {
+        "name": "libxml2",
+        "license": "MIT",
+        "dependencies": []
+      },
+      {
+        "name": "zlib",
+        "license": "Zlib",
+        "dependencies": []
+      }
+    ]
+  }
+}
