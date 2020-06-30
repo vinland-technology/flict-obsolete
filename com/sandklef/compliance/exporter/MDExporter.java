@@ -6,21 +6,19 @@ import com.sandklef.compliance.utils.LicenseUtils;
 import com.sandklef.compliance.utils.Log;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
 public class MDExporter implements ReportExporter {
 
-    private static final String HEADER_1 = "#";
-    private static final String HEADER_2 = "##";
-    private static final String HEADER_3 = "###";
     private static final String BOLD_START = "***";
     private static final String BOLD_END = "***";
     private static final String BULLET_ITEM = "*";
     private static final String HEADER_TAG = "#";
-    private static final String LICENSE = "Concluded license";
-    private static final String LICENSES = "Licenses";
 
     private static final String NEWLINE = "\n";
     private static final String LOG_TAG = MDExporter.class.getSimpleName();
@@ -119,23 +117,35 @@ public class MDExporter implements ReportExporter {
 
 
         sb.append(BOLD_START + "Compliant allowed license choices per component: " + BOLD_END);
-        for (Report.ComponentResult cr : report.complianAllowedtPaths()) {
-            sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
-            for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
-                sb.append(", ");
-                sb.append(ic.name() + " (" +
-                        beautifyLicense(ic.licenses().toString()) + ")");
+        List<Report.ComponentResult> results = report.complianAllowedtPaths();
+        sb.append("\n\n");
+        if (results.size()==0) {
+            sb.append(" none found");
+        } else {
+            for (Report.ComponentResult cr : results) {
+                sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
+                for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
+                    sb.append(", ");
+                    sb.append(ic.name() + " (" +
+                            beautifyLicense(ic.licenses().toString()) + ")");
+                }
             }
         }
         sb.append("\n\n");
 
         sb.append(BOLD_START + "Compliant gray license choices per component: " + BOLD_END);
-        for (Report.ComponentResult cr : report.compliantGrayPaths()) {
-            sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
-            for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
-                sb.append(", ");
-                sb.append(ic.name() + " (" +
-                        beautifyLicense(ic.licenses().toString()) + ")");
+        results = report.compliantGrayPaths();
+        sb.append("\n\n");
+        if (results.size()==0) {
+            sb.append(" none found");
+        } else {
+            for (Report.ComponentResult cr : report.compliantGrayPaths()) {
+                sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
+                for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
+                    sb.append(", ");
+                    sb.append(ic.name() + " (" +
+                            beautifyLicense(ic.licenses().toString()) + ")");
+                }
             }
         }
         sb.append("\n\n");
@@ -159,33 +169,11 @@ public class MDExporter implements ReportExporter {
         sb.append("\n\n");
 
         sb.append(BOLD_START + "Compliant (allowed licenses only): " + BOLD_END);
-        int pathCount = report.compliantCount();
-        switch (pathCount) {
-            case 0:
-                sb.append("No");
-                break;
-            case 1:
-                sb.append("Yes, 1 path");
-                break;
-            default:
-                sb.append("Yes, " + pathCount + " paths");
-                break;
-        }
+        sb.append(pathComment(report.compliantCount()));
         sb.append("\n\n");
 
-        sb.append(BOLD_START + "Compliant (gray licenses only): " + BOLD_END);
-        pathCount = report.compliantGrayPaths().size();
-        switch (pathCount) {
-            case 0:
-                sb.append("No");
-                break;
-            case 1:
-                sb.append("Yes, 1 path");
-                break;
-            default:
-                sb.append("Yes, " + pathCount + " paths");
-                break;
-        }
+        sb.append(BOLD_START + "Compliant (with gray licenses): " + BOLD_END);
+        sb.append(pathComment(report.compliantGrayPaths().size()));
         sb.append("\n\n");
 
         sb.append(BOLD_START + "Policy: " + BOLD_END);
@@ -199,6 +187,17 @@ public class MDExporter implements ReportExporter {
         sb.append(BOLD_START + "Numbers of licenses: " + BOLD_END);
         sb.append(licenseSet.size());
         sb.append("\n\n");
+    }
+
+    private String pathComment(int pathCount) {
+        switch (pathCount) {
+            case 0:
+                return "No";
+            case 1:
+                return "Yes, 1 path";
+            default:
+                return "Yes, " + pathCount + " paths";
+        }
     }
 
     private void aboutReport(StringBuilder sb) {
@@ -222,12 +221,26 @@ public class MDExporter implements ReportExporter {
         sb.append(System.getProperty("user.name"));
         sb.append("\n\n");
         sb.append(BOLD_START + "Host: " + BOLD_END);
+        sb.append("\n\n");
         try {
-            sb.append(InetAddress.getLocalHost().getHostName() + " (" + InetAddress.getLocalHost().getHostAddress() + ")");
-        } catch (UnknownHostException e) {
-            sb.append("unknown");
+            Enumeration ifaceEnum = NetworkInterface.getNetworkInterfaces();
+            while(ifaceEnum.hasMoreElements())
+            {
+                NetworkInterface iface = (NetworkInterface) ifaceEnum.nextElement();
+                Enumeration addressEnum = iface.getInetAddresses();
+                while (addressEnum.hasMoreElements())
+                {
+                    sb.append(" * ");
+                    InetAddress i = (InetAddress) addressEnum.nextElement();
+                    sb.append(i);
+                    sb.append("\n\n");
+                }
+            }
+        } catch (SocketException e) {
+            sb.append("* unknown");
         }
         sb.append("\n\n");
+
         sb.append(BOLD_START + "Current directory: " + BOLD_END);
         sb.append(System.getProperty("user.dir"));
         sb.append("\n\n");
