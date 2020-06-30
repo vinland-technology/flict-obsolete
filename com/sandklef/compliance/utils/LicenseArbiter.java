@@ -272,11 +272,6 @@ public class LicenseArbiter {
                 licenseIndex = (licenseIndex + 1 )% thisComponentLicenseCount;
             }
 
-            System.out.format(" i: %2d (%2d)    tpl: %d  steps: %2d   licenseIndex: %d   splitIndex: %2d    realIndex %2d => %s\n",
-                    i, nrOfComponents, thisComponentLicenseCount, steps, licenseIndex,
-                    stepLimit,
-                    licenseIndex,
-                    componentToChange.component.licenseList().get(licenseIndex));
 
             componentToChange.licenses = componentToChange.component.licenseList().get(licenseIndex);
 //            componentToChange.licenses = componentToChange.component.licenseList().get(licenseIndex%thisComponentLicenseCount);
@@ -293,7 +288,6 @@ public class LicenseArbiter {
         }
 
         splitCount.set(splitCount.get() * licenseCount);
-        System.out.println("  licenseCount: " + splitCount.get() + " since: " + component.component().licenseList().size());
 
         // Do the same for all sub components (recursively)
         for (InterimComponent ic : component.dependencies()) {

@@ -34,6 +34,8 @@ public class TestJsonComponentParser {
     Component component = jp.readComponent("com/sandklef/compliance/json/test/simple.json");
 
     Component c = component;
+
+
     printTestStart("TestJsonComponentParser");
     printSubTestStart("Dual");
 

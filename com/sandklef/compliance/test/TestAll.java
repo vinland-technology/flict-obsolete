@@ -135,8 +135,6 @@ public class TestAll {
         }
 
 //        LicenseArbiter.report(Utils.bigComponent(), null);
-        System.out.println(" END <----\n");
-        System.exit(1);
 
         System.out.println("\n");
         TestComponents.test();

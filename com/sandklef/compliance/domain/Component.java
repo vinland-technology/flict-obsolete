@@ -97,8 +97,12 @@ public class Component {
   }
 
   public void expand() throws LicenseExpressionException, IllegalLicenseExpression {
-    licenseExpression = (new LicenseExpressionParser()).parse(this.licenseString);
-    licenseList = licenseExpression.licenseList();
+    if (licenseExpression==null) {
+      licenseExpression = (new LicenseExpressionParser()).parse(this.licenseString);
+    }
+    if (licenseList == null ) {
+      licenseList = licenseExpression.licenseList();
+    }
   }
 
   public String name() {
@@ -122,6 +126,7 @@ public class Component {
   }
 
   public int paths() throws LicenseExpressionException, IllegalLicenseExpression {
+    expand();
     int paths = licenseExpression.paths();
     if (dependencies.size()==0) {
       Log.d(LOG_TAG, "paths: " + name + ": " + licenseExpression.paths());

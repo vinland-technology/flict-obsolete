@@ -1,0 +1,11 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "license": {
+        "name":"bzip2 and libbzip2 License v1.0.6",
+        "spdx":"bzip2-1.0.6",
+        "license_group": "permissive"
+    }
+}

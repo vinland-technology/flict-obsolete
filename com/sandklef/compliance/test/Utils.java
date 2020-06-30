@@ -38,14 +38,12 @@ public class Utils {
     public final static String GPL_2_0_SPDX = "GPL-2.0-only";
     public final static String GPL_3_0_SPDX = "GPL-3.0-only";
     public final static String GPL_3_0_LATER_SPDX = "GPL-3.0-or-later";
-    public final static String GPL_3_1_SPDX = "GPL-3.1-only";
     public final static String LGPL_3_0_SPDX = "LGPL-3.0-only";
     public final static String LGPL_2_0_SPDX = "LGPL-2.0-only";
     public final static String GPL_2_0_LATER_SPDX = "GPL-2.0-or-later";
     public final static String LGPL_2_1_SPDX = "LGPL-2.1-only";
     public final static String LGPL_2_1_LATER_SPDX = "LGPL-2.1-or-later";
     public final static String LGPL_2_1_ONLY_SPDX = "LGPL-2.1-only";
-    public final static String LGPL_3_1_SPDX = "LGPL-3.1-or-later";
     public final static String APACHE_2_0_SPDX = "Apache-2.0";
     public final static String BSD_3_SPDX = "BSD-3-Clause";
 
@@ -60,7 +58,6 @@ public class Utils {
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("licenses/json"));
             LicenseStore.getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection("licenses/connections/dwheeler.json"));
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
-            lgpl31 = LicenseStore.getInstance().license(LGPL_3_1_SPDX);
             lgpl30 = LicenseStore.getInstance().license(LGPL_3_0_SPDX);
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_1_SPDX);
             gpl20 = LicenseStore.getInstance().license(GPL_2_0_SPDX);
@@ -69,7 +66,6 @@ public class Utils {
             lgpl21_only = LicenseStore.getInstance().license(LGPL_2_1_ONLY_SPDX);
             gpl30 = LicenseStore.getInstance().license(GPL_3_0_SPDX);
             gpl30_later = LicenseStore.getInstance().license(GPL_3_0_LATER_SPDX);
-            gpl31 = LicenseStore.getInstance().license(GPL_3_1_SPDX);
             apache20 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
             bsd3 = LicenseStore.getInstance().license(BSD_3_SPDX);
         } catch (IOException | LicenseExpressionException e) {

@@ -125,7 +125,10 @@ public class LicenseExpressionParser {
             expr = expr.substring(licenseString.length());
             first = licenseString;
         } else if (letterNextLC(expr)) {
-          throw new LicenseExpressionException("Licenses must start with an upper case letter: \"" + expr + "\" is therefore invalid.");
+            Log.d(LOG_TAG, "Licenses should perhaps start with an upper case letter: \"" + expr + "\" is therefore suspected to be invalid... but ok");
+            String licenseString = readLicense(expr);
+            expr = expr.substring(licenseString.length());
+            first = licenseString;
         } else {
             throw new LicenseExpressionException("Invalid expression: " + first);
         }
