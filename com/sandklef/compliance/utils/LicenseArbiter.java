@@ -290,7 +290,7 @@ public class LicenseArbiter {
             licenseCount = component.component().licenseList().size();
         }
 
-        splitCount.set(splitCount.get()+licenseCount-1);
+        splitCount.set(splitCount.get()*licenseCount);
         System.out.println("  licenseCount: " + splitCount.get() + " since: " + component.component().licenseList().size());
 
         // Do the same for all sub components (recursively)
