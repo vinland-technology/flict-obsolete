@@ -30,7 +30,7 @@ JAVA_SOURCES=\
   com/sandklef/compliance/utils/LicenseArbiter.java \
   com/sandklef/compliance/json/JsonLicenseParser.java \
   com/sandklef/compliance/json/JsonPolicyParser.java \
-  com/sandklef/compliance/exporter/TextExporter.java \
+  com/sandklef/compliance/exporter/TextReportExporter.java \
   com/sandklef/compliance/exporter/TestExporterFactory.java \
   com/sandklef/compliance/json/JsonUtils.java \
   com/sandklef/compliance/json/JsonComponentParser.java \
@@ -40,7 +40,6 @@ JAVA_SOURCES=\
   com/sandklef/compliance/exporter/ReportExporterFactory.java \
   com/sandklef/compliance/exporter/JsonExporter.java \
   com/sandklef/compliance/exporter/MDExporter.java \
-  com/sandklef/compliance/exporter/TextComponentExporter.java \
   com/sandklef/compliance/utils/VirtualLicenseBuilder.java \
   com/sandklef/compliance/domain/LicenseExpression.java \
   com/sandklef/compliance/utils/LicenseExpressionParser.java \
