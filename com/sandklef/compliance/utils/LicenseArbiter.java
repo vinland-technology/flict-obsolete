@@ -19,23 +19,25 @@ public class LicenseArbiter {
     public static String LOG_TAG = LicenseArbiter.class.getSimpleName();
 
     public static void debug(String msg, int indent) {
-        Log.d(LOG_TAG,indent(indent)+msg);
+        Log.d(LOG_TAG, indent(indent) + msg);
     }
+
     public static String indent(int indents) {
         StringBuilder sb = new StringBuilder();
-        for (int i=0; i<indents; i++) {
+        for (int i = 0; i < indents; i++) {
             sb.append(" ");
         }
         return sb.toString();
     }
 
     private static int counter = 200;
+
     public static int nextId() {
         counter++;
         return counter;
     }
 
-    public static class InterimComponent  {
+    public static class InterimComponent {
         Component component;
         List<License> licenses; // one of the Component's List of licenses, so they should be AND:ed
         List<InterimComponent> dependencies;
@@ -109,7 +111,7 @@ public class LicenseArbiter {
 
     public static void printComponents(List<InterimComponent> components, int indent) {
         for (InterimComponent c : components) {
-            debug(""+c, indent);
+            debug("" + c, indent);
         }
     }
 
@@ -123,12 +125,12 @@ public class LicenseArbiter {
     }
 
     public static InterimComponent findById(int id, InterimComponent component) {
-        if (id ==component.id) {
+        if (id == component.id) {
             return component;
         }
         for (InterimComponent d : component.dependencies()) {
             InterimComponent ic = findById(id, d);
-            if (ic!=null) {
+            if (ic != null) {
                 return ic;
             }
         }
@@ -136,12 +138,11 @@ public class LicenseArbiter {
     }
 
 
-
     public static ListType color(InterimComponent c, LicensePolicy policy) {
 
         ListType color = ListType.ALLOWED_LIST;
 
-        Log.d(LOG_TAG, " color check: " + c.component().name() );
+        Log.d(LOG_TAG, " color check: " + c.component().name());
 
         // If we find a denied license directly, return denied
         // if gray remember, it
@@ -180,15 +181,15 @@ public class LicenseArbiter {
 
     public static List<InterimComponent> copies(Component c) throws LicenseExpressionException, IllegalLicenseExpression {
         int paths = c.paths();
-        Log.d(LOG_TAG,"copies() " + c + "  paths: " + paths);
-        Log.d(LOG_TAG,"copies() " + c);
+        Log.d(LOG_TAG, "copies() " + c + "  paths: " + paths);
+        Log.d(LOG_TAG, "copies() " + c);
         List<InterimComponent> components = new ArrayList<>();
         InterimComponent ic = new InterimComponent(c);
-        for (int i=0; i<paths; i++) {
-            Log.d(LOG_TAG," * copies() " + c.license() + "   interim: " + ic.component.license());
+        for (int i = 0; i < paths; i++) {
+            Log.d(LOG_TAG, " * copies() " + c.license() + "   interim: " + ic.component.license());
             components.add(ic.clone());
         }
-        Log.d(LOG_TAG,"copies() " + components);
+        Log.d(LOG_TAG, "copies() " + components);
         return components;
     }
 
@@ -239,48 +240,49 @@ public class LicenseArbiter {
 
         int licenseCount = 0;
 
-        int splitIndex = 0;
-        int licenseIndex = 1;
+        int licenseIndex = 0;
         boolean splitIndexIncreased = false;
 
         // For each component in the list of (same) component
-        for (int i=0 ; i<components.size(); i++) {
+        for (int i = 0; i < components.size(); i++) {
             // Fetch the corresponding interim
             InterimComponent c = components.get(i);
 
             // Using id, find component to change
             InterimComponent componentToChange = findById(component.id, c);
 
-            Log.d(LOG_TAG,"fillComponent(): " + component);
-            Log.d(LOG_TAG,"fillComponent(): component license: " + component.component.license());
+            Log.d(LOG_TAG, "fillComponent(): " + component);
+            Log.d(LOG_TAG, "fillComponent(): component license: " + component.component.license());
 
             // If 12 components and 2 license expressions; 6 by 6 (12/2)
             // If 12 components and 3 license expressions; 4 by 4 (12/3)
             int nrOfComponents = components.size();
             int thisComponentLicenseCount = componentToChange.component.licenseList().size();
-            int timesPerLicense = nrOfComponents / thisComponentLicenseCount  ;
+            int timesPerLicense = nrOfComponents / thisComponentLicenseCount;
             // index as spread out evenly on all components
             int leIndex = i / timesPerLicense;
             // index as spread out evenly on all components with previous components in mind
-            int realIndex = leIndex ;//+ indexSplitOffset  ;
-
+            int realIndex = leIndex;//+ indexSplitOffset  ;
 
 //            int steps = (int)( Math.pow(2, splitCount.get()));
             int steps = splitCount.get();
 
-            int roma = thisComponentLicenseCount * steps;
+            int stepLimit = nrOfComponents / (thisComponentLicenseCount * steps);
+            if (i % stepLimit == 0) {
+                licenseIndex = (licenseIndex + 1 )% thisComponentLicenseCount;
+            }
 
-            System.out.format(" i: %2d (%2d)    tpl: %d  steps: %2d   licenseIndex: %d   splitIndex: %2d    realIndex %2d => %s\n" ,
+            System.out.format(" i: %2d (%2d)    tpl: %d  steps: %2d   licenseIndex: %d   splitIndex: %2d    realIndex %2d => %s\n",
                     i, nrOfComponents, thisComponentLicenseCount, steps, licenseIndex,
-                    splitIndex,
-                    roma,
-                    componentToChange.component.licenseList().get(realIndex));
+                    stepLimit,
+                    licenseIndex,
+                    componentToChange.component.licenseList().get(licenseIndex));
 
-            componentToChange.licenses = componentToChange.component.licenseList().get(leIndex);
+            componentToChange.licenses = componentToChange.component.licenseList().get(licenseIndex);
 //            componentToChange.licenses = componentToChange.component.licenseList().get(licenseIndex%thisComponentLicenseCount);
-            Log.d(LOG_TAG,"fillComponent()  component: " + component);
-            Log.d(LOG_TAG,"fillComponent(): licenses:  " + component.component.license());
-            Log.d(LOG_TAG,"fillComponent(): iLicense:   " + componentToChange.licenses);
+            Log.d(LOG_TAG, "fillComponent()  component: " + component);
+            Log.d(LOG_TAG, "fillComponent(): licenses:  " + component.component.license());
+            Log.d(LOG_TAG, "fillComponent(): iLicense:   " + componentToChange.licenses);
 
 //            List<InterimComponent> componentsToAdd = componentsFromLicenseExpression(le);
 
@@ -290,7 +292,7 @@ public class LicenseArbiter {
             licenseCount = component.component().licenseList().size();
         }
 
-        splitCount.set(splitCount.get()*licenseCount);
+        splitCount.set(splitCount.get() * licenseCount);
         System.out.println("  licenseCount: " + splitCount.get() + " since: " + component.component().licenseList().size());
 
         // Do the same for all sub components (recursively)
@@ -319,15 +321,15 @@ public class LicenseArbiter {
 
         // Check each dep against their deps
         for (InterimComponent d : ic.dependencies()) {
-            if (!compliant(d, indent+2)) {
+            if (!compliant(d, indent + 2)) {
                 System.out.println(" * " + d + " is not compliant");
-                debug(" license violation: " + d.name() + "(" + d.licenses + ")", indent+2);
+                debug(" license violation: " + d.name() + "(" + d.licenses + ")", indent + 2);
                 // TODO: thrown exception??
                 return false;
             }
         }
 
-  //      System.out.println(" * " + ic + " is working");
+        //      System.out.println(" * " + ic + " is working");
         return true;
     }
 
@@ -335,7 +337,7 @@ public class LicenseArbiter {
     public static boolean aCanUseB(License a, List<License> bLicenses) throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
         //Log.level(Log.DEBUG);
         Log.d(LOG_TAG, "aCanUseB " + a + " " + bLicenses);
-        if (a==null || bLicenses == null ) {
+        if (a == null || bLicenses == null) {
             throw new IllegalLicenseExpression("Illegal (null) licenses found");
         }
 
@@ -365,7 +367,7 @@ public class LicenseArbiter {
 
     private static boolean directMatch(LicenseConnector a, LicenseConnector b) throws LicenseConnector.LicenseConnectorException {
         // a contains a license
-        if (a.hasLicense() ) {
+        if (a.hasLicense()) {
             // b contains a license
             // - both contains licenses, check if same license
             if (b.hasLicense()) {
@@ -379,7 +381,7 @@ public class LicenseArbiter {
         Log.d(LOG_TAG, "   ---> check lic: " + a + " and " + b + "    { " + visited + " }");
 
         // Check if we've visited this connector already. If so, false
-   //     Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b + " ******** " + visited.contains(b));
+        //     Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b + " ******** " + visited.contains(b));
         if (visited.contains(b)) {
             // already checked b
             //           Log.d(LOG_TAG, "\n\n ***************** ALREADY BEEN IN " + b.license().spdx() + " ********\n\n\n");
@@ -392,7 +394,7 @@ public class LicenseArbiter {
             visited.add(b);
         }
 
-        if (directMatch(a,b)) {
+        if (directMatch(a, b)) {
             return true;
         }
 
@@ -404,7 +406,7 @@ public class LicenseArbiter {
         // Loop through all b's canBeUsed licenses
         for (LicenseConnector l : b.canBeUsedBy()) {
 
-            if (directMatch(a,b)) {
+            if (directMatch(a, b)) {
                 return true;
             }
 
@@ -414,7 +416,7 @@ public class LicenseArbiter {
             }
         }
 
-        Log.d(LOG_TAG, "aCanUseBImpl: <--- false: "  + a + "  " + b);
+        Log.d(LOG_TAG, "aCanUseBImpl: <--- false: " + a + "  " + b);
         return false;
     }
 
@@ -437,10 +439,10 @@ public class LicenseArbiter {
     }
 
     public static Report reportConcludeAllPaths(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
-        Report report = new Report(c,policy);
+        Report report = new Report(c, policy);
 
-        Log.d(LOG_TAG," reportConcludeAllPaths: " + c);
-        Log.d(LOG_TAG," reportConcludeAllPaths: " + c.license());
+        Log.d(LOG_TAG, " reportConcludeAllPaths: " + c);
+        Log.d(LOG_TAG, " reportConcludeAllPaths: " + c.license());
 
         // Create a list of Components (out of c) with all combinations of licenses
         List<InterimComponent> components = copies(c);
@@ -452,7 +454,7 @@ public class LicenseArbiter {
         // for each InterimComponent
         // - check if it (with its licenses) is compliant with dependency components
         for (InterimComponent ic : components) {
-            boolean compliant = compliant(ic,2);
+            boolean compliant = compliant(ic, 2);
             debug("compliant:  " + ic.name() + " => " + compliant, 2);
             ListType color = color(ic, policy);
             report.addComponentResult(new Report.ComponentResult(color, ic, compliant));
