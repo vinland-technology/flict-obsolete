@@ -129,23 +129,23 @@ public class Utils {
 
 
         // left
-        Component AABA = new Component("AABA", Arrays.asList(new License[]{apache20, bsd3, lgpl30}), null);
-        Component AABB = new Component("AABB", Arrays.asList(new License[]{bsd3, apache20, gpl30}), null);
-        Component AAB = new Component("AAB", Arrays.asList(new License[]{apache20, lgpl30}), Arrays.asList(new Component[]{AABA, AABB}));
+        Component AABA = new Component("AABA", Arrays.asList(apache20, bsd3, lgpl30), null);
+        Component AABB = new Component("AABB", Arrays.asList(bsd3, apache20, gpl30), null);
+        Component AAB = new Component("AAB", Arrays.asList(apache20, lgpl30), Arrays.asList(AABA, AABB));
 
-        Component AAA = new Component("AAA", Arrays.asList(new License[]{apache20, gpl30}), null);
-        Component AAA2 = new Component("AAA2", Arrays.asList(new License[]{apache20}), null);
+        Component AAA = new Component("AAA", Arrays.asList(apache20, gpl30), null);
+        Component AAA2 = new Component("AAA2", Arrays.asList(apache20), null);
 
-        Component AA = new Component("AA", Arrays.asList(new License[]{apache20, bsd3}), Arrays.asList(new Component[]{AAA, AAB}));
+        Component AA = new Component("AA", Arrays.asList(apache20, bsd3), Arrays.asList(AAA, AAB));
 
         // Right
-        Component ABBA = new Component("ABBA", Arrays.asList(new License[]{bsd3, apache20}), Arrays.asList(new Component[]{AAA2}));
-        Component ABA = new Component("ABA", Arrays.asList(new License[]{apache20, bsd3}), null);
-        Component ABB = new Component("ABB", Arrays.asList(new License[]{gpl30, bsd3, apache20}), Arrays.asList(new Component[]{ABBA}));
-        Component AB = new Component("AB", Arrays.asList(new License[]{gpl20, gpl30, apache20, lgpl30}), Arrays.asList(new Component[]{ABA, ABB}));
+        Component ABBA = new Component("ABBA", Arrays.asList(bsd3, apache20), Arrays.asList(AAA2));
+        Component ABA = new Component("ABA", Arrays.asList(apache20, bsd3), null);
+        Component ABB = new Component("ABB", Arrays.asList(gpl30, bsd3, apache20), Arrays.asList(ABBA));
+        Component AB = new Component("AB", Arrays.asList(gpl20, gpl30, apache20, lgpl30), Arrays.asList(ABA, ABB));
 
         // A
-        Component A = new Component("A", Arrays.asList(new License[]{bsd3 , gpl20, lgpl21, gpl20, gpl30/*, gpl20*/}), Arrays.asList(new Component[]{AA, AB}));
+        Component A = new Component("A", Arrays.asList(bsd3, gpl20, lgpl21, gpl20, gpl30/*, gpl20*/), Arrays.asList(AA, AB));
 
         return A;
     }
@@ -254,14 +254,14 @@ public class Utils {
 
 
         // Left
-        Component AAA = new Component("AAA", Arrays.asList(new License[]{bsd3, lgpl30, apache20}), null);
-        Component AA = new Component("AA", Arrays.asList(new License[]{gpl30, lgpl30}), Arrays.asList(new Component[]{AAA}));
+        Component AAA = new Component("AAA", Arrays.asList(bsd3, lgpl30, apache20), null);
+        Component AA = new Component("AA", Arrays.asList(gpl30, lgpl30), Arrays.asList(AAA));
    //     Component AA = new Component("AA", Arrays.asList(new License[]{gpl30, bsd3, apache20}), null);
         // Right
-        Component AB = new Component("AB", Arrays.asList(new License[]{gpl30,lgpl30}), null);
+        Component AB = new Component("AB", Arrays.asList(gpl30,lgpl30), null);
 
         // A
-        Component A = new Component("A", Arrays.asList(new License[]{apache20, bsd3, lgpl30}), Arrays.asList(new Component[]{AA, AB}));
+        Component A = new Component("A", Arrays.asList(apache20, bsd3, lgpl30), Arrays.asList(AA, AB));
 
         return A;
     }
@@ -386,9 +386,7 @@ public class Utils {
 //        println("  ====  value: " + value);
         counter++;
         print("  * Verify " + before +": ");
-        if (useAsserts ) {
-            assert(value);
-        }
+        assert !useAsserts || (value);
         if (value) {
             successCounter++;
             println("OK");

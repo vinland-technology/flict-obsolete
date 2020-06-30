@@ -32,7 +32,7 @@ public class TestAll {
   }
 
   
-    public static void main(String args[]) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
+    public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
 
         System.out.println("\n");
         Log.level(Log.DEBUG);

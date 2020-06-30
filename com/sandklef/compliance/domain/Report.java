@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 public class Report {
 
     public static class ComponentResult {
-        private ListType color;
-        private LicenseArbiter.InterimComponent component;
+        private final ListType color;
+        private final LicenseArbiter.InterimComponent component;
         boolean compliant ;
 
         public ComponentResult(ListType color, LicenseArbiter.InterimComponent component, boolean compliant) {
@@ -45,10 +45,10 @@ public class Report {
         }
     }
 
-    private Component component;
-    private LicensePolicy policy;
-    private MetaData metaData;
-    private List<ComponentResult> componentResults;
+    private final Component component;
+    private final LicensePolicy policy;
+    private final MetaData metaData;
+    private final List<ComponentResult> componentResults;
 
     public Report(Component component, LicensePolicy policy) {
         this.component = component;

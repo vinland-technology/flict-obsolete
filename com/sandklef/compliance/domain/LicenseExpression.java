@@ -27,8 +27,6 @@ public class LicenseExpression {
         OR
     }
 
-    ;
-
     public static Operator stringToOperator(String op) {
         if (op.equals("&")) {
             return AND;

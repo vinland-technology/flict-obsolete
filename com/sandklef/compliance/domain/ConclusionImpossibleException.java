@@ -2,7 +2,7 @@ package com.sandklef.compliance.domain;
 
 public class ConclusionImpossibleException extends Exception {
 
-    private Component component;
+    private final Component component;
 
     public ConclusionImpossibleException(String msg, Component c) {
         super(msg);

@@ -111,7 +111,7 @@ public class TestLicenseConnector {
 
     public static void test_read_json() throws IOException {
         JsonLicenseConnectionsParser jcp = new JsonLicenseConnectionsParser();
-        Map<String, LicenseConnector> licenseConnectors = jcp.readLicenseConnection("licenses/connections/dwheeler.json");
+        Map<String, LicenseConnector> licenseConnectors = JsonLicenseConnectionsParser.readLicenseConnection("licenses/connections/dwheeler.json");
 
         for (Map.Entry<String, LicenseConnector> entry : licenseConnectors.entrySet()) {
             String key = entry.getKey();

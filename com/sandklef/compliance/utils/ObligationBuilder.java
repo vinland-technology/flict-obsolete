@@ -12,7 +12,7 @@ import com.sandklef.compliance.domain.*;
 
 public class ObligationBuilder{
 
-  private Map<String, LicenseObligation> obligations;
+  private final Map<String, LicenseObligation> obligations;
 
   public ObligationBuilder() {
     obligations = new HashMap<>();

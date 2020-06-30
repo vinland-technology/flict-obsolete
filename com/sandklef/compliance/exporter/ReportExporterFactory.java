@@ -7,10 +7,10 @@ package com.sandklef.compliance.exporter;
 public class ReportExporterFactory {
 
 
-    public static enum OutputFormat {
+    public enum OutputFormat {
         TEXT,
         JSON,
-        MARKDOWN;
+        MARKDOWN
     }
 
 

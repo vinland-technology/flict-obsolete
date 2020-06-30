@@ -7,8 +7,8 @@ package com.sandklef.compliance.domain;
 public class LicenseObligation {
 
 //  private Component component;
-  private Obligation obligation;
-  private ObligationState state;
+  private final Obligation obligation;
+  private final ObligationState state;
 
   public LicenseObligation(/*Component component,*/ Obligation obligation, ObligationState state) {
 //     this.component = component;

@@ -5,8 +5,8 @@ import java.util.List;
 
 public class LicenseGroup {
 
-    private String name;
-    private List<License> memberLicenses;
+    private final String name;
+    private final List<License> memberLicenses;
 
     public LicenseGroup(String name) {
         this.name = name;

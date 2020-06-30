@@ -7,8 +7,8 @@ package com.sandklef.compliance.domain;
 //public class Concern {
 
 public class PolicyViolation {
-        private License license;
-        private Component component;
+        private final License license;
+        private final Component component;
 
         public Component component() {
             return component;

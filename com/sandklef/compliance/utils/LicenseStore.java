@@ -19,8 +19,8 @@ public class LicenseStore {
   }
   
   //TODO: add support for Private use, Patent claims, Trademark, Notice
-  private Map<String, License> licenses;
-  private Map<String, LicenseGroup> licenseGroups;
+  private final Map<String, License> licenses;
+  private final Map<String, LicenseGroup> licenseGroups;
   private Map<String, LicenseConnector> connectors;
 
   private static LicenseStore store;

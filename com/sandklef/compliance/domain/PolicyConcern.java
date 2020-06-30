@@ -10,8 +10,8 @@ import java.util.List;
 //public class Concern {
 
 public class PolicyConcern {
-        private License license;
-        private Component component;
+        private final License license;
+        private final Component component;
 
         public Component component() {
             return component;

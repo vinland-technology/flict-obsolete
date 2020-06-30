@@ -12,7 +12,7 @@ public class ComplianceAnswer {
 
     private static final String LOG = ComplianceAnswer.class.getCanonicalName() ;
     // License.spdx
-    private Map<String, Map<Component, List<ComplianceAnswer>>> answers;
+    private final Map<String, Map<Component, List<ComplianceAnswer>>> answers;
     private ListType color;
 
     @Override
@@ -69,7 +69,6 @@ public class ComplianceAnswer {
                         System.out.println("TOSTRING: class: " + entry2.getKey());
                         System.out.println("TOSTRING: size:  " + entry2.getValue().size());
                         System.out.println("TOSTRING: ");
-                        ;
 
                         sb.append(indents(indent));
                         sb.append("  +-- ");

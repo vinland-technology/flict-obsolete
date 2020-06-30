@@ -15,7 +15,7 @@ public class License {
   public static String LOG_TAG = License.class.getSimpleName();
 
   private String name;
-  private String spdx;
+  private final String spdx;
   private String license_group;
 
   public String name() {

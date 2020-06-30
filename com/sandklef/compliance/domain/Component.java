@@ -13,7 +13,7 @@ public class Component {
   public static String LOG_TAG = Component.class.getSimpleName();
 
   private String name;
-  private String licenseString;
+  private final String licenseString;
   private LicenseExpression licenseExpression;
   private List<List<License>> licenseList;
 

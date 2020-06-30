@@ -9,5 +9,5 @@ import com.sandklef.compliance.domain.*;
 import java.util.List;
 
 public interface ReportExporter {
-    public String exportReport(Report report);
+    String exportReport(Report report);
 }

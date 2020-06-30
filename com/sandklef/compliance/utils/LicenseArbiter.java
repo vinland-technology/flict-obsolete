@@ -355,9 +355,7 @@ public class LicenseArbiter {
             // b contains a license
             // - both contains licenses, check if same license
             if (b.hasLicense()) {
-                if (a.license().spdx().equals(b.license().spdx())) {
-                    return true;
-                }
+                return a.license().spdx().equals(b.license().spdx());
             }
         }
         return false;

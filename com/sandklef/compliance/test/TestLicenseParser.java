@@ -141,7 +141,7 @@ public class TestLicenseParser {
 
 
 
-    public static void main(String args[]) throws LicenseExpressionException, IllegalLicenseExpression {
+    public static void main(String[] args) throws LicenseExpressionException, IllegalLicenseExpression {
         test();
     }
 

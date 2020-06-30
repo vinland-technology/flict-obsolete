@@ -9,8 +9,8 @@ public enum LicenseType {
   COPYLEFT_WEAK(1),
   PERMISSIVE(2);
   
-  private int value;
-  private LicenseType(int value) {
+  private final int value;
+  LicenseType(int value) {
     this.value = value;
   }
   public int value() {

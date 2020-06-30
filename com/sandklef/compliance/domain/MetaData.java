@@ -7,9 +7,9 @@ import static java.time.temporal.ChronoUnit.*;
 
 public class MetaData {
 
-    private String producer;
-    private String version;
-    private LocalDateTime start;
+    private final String producer;
+    private final String version;
+    private final LocalDateTime start;
     private LocalDateTime stop;
 
     public MetaData() {

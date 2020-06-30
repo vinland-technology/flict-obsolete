@@ -25,7 +25,7 @@ public class LicenseChecker {
         PRINT_CONNECTIONS,
         PRINT_COMPONENT,
         PRINT_EXPRESSION,
-        CHECK_VIOLATION;
+        CHECK_VIOLATION
     }
 
     private static final String CONNECTOR_FILE_CLI = "connector-file";

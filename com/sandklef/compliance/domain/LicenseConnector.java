@@ -11,8 +11,8 @@ public class LicenseConnector {
 
     private License license;
     private LicenseGroup licenseGroup;
-    private Set<LicenseConnector> canUse;
-    private Set<LicenseConnector> canBeUsedBy;
+    private final Set<LicenseConnector> canUse;
+    private final Set<LicenseConnector> canBeUsedBy;
 
     public static class LicenseConnectorException extends Exception {
         public LicenseConnectorException(String msg) {

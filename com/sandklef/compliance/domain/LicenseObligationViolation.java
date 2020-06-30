@@ -9,7 +9,7 @@ import java.util.List;
 
 public class LicenseObligationViolation {
 
-    private Component user;
+    private final Component user;
 /*    private Component used;
     private License violatedLicense;
 */

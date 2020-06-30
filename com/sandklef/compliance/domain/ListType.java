@@ -7,6 +7,6 @@ package com.sandklef.compliance.domain;
 public enum ListType {
     ALLOWED_LIST,
     GRAY_LIST,
-    DENIED_LIST;
+    DENIED_LIST
 
 }
