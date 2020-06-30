@@ -14,7 +14,6 @@ public class LicenseExpression {
 
 
     /*
-
     LicenseExpression :=
         License
         ( License )
@@ -295,88 +294,7 @@ public class LicenseExpression {
         return licenseList;
     }
 
-    private List<List<License>> licenseList2(List<List<License>> licenseList) {
-        Log.d(LOG_TAG, " -------------> licenselist()");
 
-        if (license != null) {
-            Log.d(LOG_TAG, "license found: " + license);
-            // Create list from license, and add to licenseList
-            licenseList.add(Arrays.asList(license));
-            Log.d(LOG_TAG, " <------------- licenselist() license found, list: " + licenseList);
-            return licenseList;
-        }
-
-        if (op == AND) {
-            Log.d(LOG_TAG, "AND orig size: " + licenseList.size());
-
-            // Since AND we only need to copy to the list
-            for (LicenseExpression le : licenses) {
-                Log.d(LOG_TAG, " * AND add license expression:" + le + " of type: " + le.op());
-                // get the list of licenses from the expresssions
-                for (List<License> leList : le.licenseList2()) {
-                    Log.d(LOG_TAG, "   * AND add license list:" + leList);
-                    // ... and add them to the "top" lists (licenseList)
-                    for (License l : leList) {
-                        Log.d(LOG_TAG, "     * AND add license:" + l + "   licenseList:  " + licenseList);
-                        if (licenseList.size() == 0) {
-                            licenseList.add(new ArrayList<>());
-                        }
-                        for (List<License> listToAddTo : licenseList) {
-                            if (le.op() == AND) {
-                                Log.d(LOG_TAG, "     * AND add AND license:  " + l + "  to " + listToAddTo + " <-------- 00");
-                                listToAddTo.add(l);
-                                Log.d(LOG_TAG, "     * AND added AND license:" + l + "  to " + listToAddTo + " <--------");
-                            } else {
-                                Log.d(LOG_TAG, "     * AND add OR license:  " + l + "  to " + listToAddTo);
-                                listToAddTo.add(l);
-                                Log.d(LOG_TAG, "     * AND add OR license:  " + l + "  to " + licenseList + " bailing out...");
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            // Since OR we need to copy to the list one time per license expression
-            // First, prepare space
-
-            int licenseCount = licenses.size();
-//                int origSize = licenseList.size();
-            Log.d(LOG_TAG, "OR old size 0: " + licenseList.size());
-            licenseList = copyList(licenseList, licenseCount);
-
-
-            Log.d(LOG_TAG, "OR new size 1: " + licenseList.size());
-            Log.d(LOG_TAG, "OR new size 2: " + licenses.size());
-            int listIndex = 0;
-            Log.d(LOG_TAG, "OR with index: " + listIndex + " and licenses count to: " + licenseCount + " from :" + licenses);
-
-            for (LicenseExpression le : licenses) {
-                Log.d(LOG_TAG, " * OR add license expression:" + le + " to " + licenseList + "  ??");
-                // get the list of licenses from the expresssions
-                for (List<License> leList : le.licenseList2()) {
-                    Log.d(LOG_TAG, "   * OR add license list:" + leList + "  <----------- ");
-                    // ... and add them to the "top" lists (licenseList)
-                    Log.d(LOG_TAG, "OR new size: " + licenseList.size());
-                    for (License l : leList) {
-                        if (le.op() == OR) {
-                            Log.d(LOG_TAG, "OR add to index:   " + listIndex + "  " + l + "  " + licenseList.get(listIndex) + " with index: " + listIndex + "  of size: " + licenseList.size());
-                            licenseList.get(listIndex).add(l);
-                            Log.d(LOG_TAG, "OR added to index: " + listIndex + "  " + licenseList + "  <----");
-                        } else {
-                            Log.d(LOG_TAG, "     * OR add AND license:  " + l + " bailing out");
-                            System.exit(1);
-                        }
-                    }
-                    listIndex++;
-                }
-            }
-            Log.d(LOG_TAG, "OR ended with index: " + listIndex);
-        }
-
-        Log.d(LOG_TAG, " RETURNING: " + licenseList + "  op: " + op);
-        Log.d(LOG_TAG, " <------------- licenselist()");
-        return licenseList;
-    }
 
     public static String licenseListToString(List<List<License>> licenseList) {
         StringBuffer sb = new StringBuffer();
@@ -398,34 +316,6 @@ public class LicenseExpression {
 
 
 
-  /*  
-  // How many paths does this expression cause/generate
-  public int paths() {
-    // If single license: 1
-    if (license!=null) {
-      Log.d(LOG_TAG, " paths: " + 1 + "  <---- " + license.spdx());
-      return 1;
-    }
-
-    int pathCount = (op==Operator.AND?1:0);
-    // If license expression(s)
-    for (LicenseExpression le : licenses ) {
-
-      int subPaths = le.paths();
-      Log.d(LOG_TAG, " paths:          " + subPaths);
-      
-      if (op==Operator.AND) {
-        pathCount *= subPaths;
-      } else if (op==Operator.OR) {
-        pathCount += subPaths;
-      }
-      Log.d(LOG_TAG, " paths:          => " + pathCount +  " (" + subPaths + ") " +  "  " + op);
-    }
-    Log.d(LOG_TAG, " paths: " + pathCount);
-    return pathCount;
-  }
-  */
-  
     @Override
     public String toString() {
         //System.out.println("Lice: " + license + "  op: " + op);

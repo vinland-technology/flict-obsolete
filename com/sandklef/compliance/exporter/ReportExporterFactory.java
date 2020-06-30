@@ -8,7 +8,7 @@ public class ReportExporterFactory {
 
 
     public enum OutputFormat {
-        TEXT,
+        SHORT,
         JSON,
         MARKDOWN
     }

@@ -125,32 +125,7 @@ public class LicenseArbiter {
         return null;
     }
 
-/*
-    public static int countNodes(Component c) {
-        if (c.dependencies().size()==0) {
-            debug(" count: " + c.name(), 0);
-            return 1;
-        }
-        int sum = 0;
-        for (Component d : c.dependencies()) {
-            sum += countNodes(d);
-        }
-        return sum;
-    }
 
-    public static int countPaths(Component c) {
-        if (c.dependencies().size()==0) {
-            debug(" count: " + c.name(), 0);
-            return c.licenses().size();
-        }
-        int sum = 1;
-        for (Component d : c.dependencies()) {
-            sum *= countPaths(d);
-        }
-        return sum*c.licenses().size();
-    }
-
-*/
 
     public static ListType color(InterimComponent c, LicensePolicy policy) {
 

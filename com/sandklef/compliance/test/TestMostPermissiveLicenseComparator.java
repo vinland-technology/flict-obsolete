@@ -4,15 +4,6 @@
 
 package com.sandklef.compliance.test;
 
-import com.sandklef.compliance.domain.License;
-import com.sandklef.compliance.utils.LeastPermissiveLicenseComparator;
-import com.sandklef.compliance.utils.MostPermissiveLicenseComparator;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.sandklef.compliance.test.Utils.*;
-
 public class TestMostPermissiveLicenseComparator {
 
 

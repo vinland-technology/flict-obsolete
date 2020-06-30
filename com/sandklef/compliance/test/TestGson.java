@@ -1,18 +1,13 @@
 package com.sandklef.compliance.test;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
 import com.sandklef.compliance.domain.License;
 import com.sandklef.compliance.domain.LicenseExpressionException;
 import com.sandklef.compliance.domain.LicensePolicy;
-import com.sandklef.compliance.domain.PolicyConcern;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.utils.LicenseStore;
 
 import java.io.IOException;
-import java.security.Policy;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,12 +1,5 @@
 package com.sandklef.compliance.test;
 
-import com.sandklef.compliance.domain.License;
-import com.sandklef.compliance.domain.ObligationState;
-import com.sandklef.compliance.utils.VirtualLicenseBuilder;
-
-import static com.sandklef.compliance.domain.Obligation.SUBLICENSING_ALLOWED_NAME;
-import static com.sandklef.compliance.test.Utils.*;
-
 public class VirtualLicenseBuilderTest {
 /*
     public static void test() {

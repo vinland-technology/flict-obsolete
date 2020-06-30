@@ -24,34 +24,7 @@ public class Component {
 //  private LicenseMeta licenseMeta = LicenseMeta.UNKNOWN_LICENSED ;
   private List<Component> dependencies;
 
-/*
-  public static enum LicenseMeta {
-    UNKNOWN_LICENSED,
-    DUAL_LICENSED,
-    MANY_LICENSED,
-    SINGLE_LICENSED;
-  }
 
-
-  public boolean dualLicensed() {
-    if (singleLicensed()) {
-      return false;
-    }
-    return LicenseMeta.DUAL_LICENSED == licenseMeta;
-  }
-
-  public boolean manyLicensed() {
-    if (singleLicensed()) {
-      return false;
-    }
-    return LicenseMeta.MANY_LICENSED == licenseMeta;
-  }
-
-  public boolean singleLicensed() {
-    // TODO: what id licenses.size()<2???
-    return LicenseMeta.SINGLE_LICENSED == licenseMeta;
-  }
- */
 
   // For test clasess
   public Component(String name, List<License> licenses, List<Component> dependencies) {
@@ -102,28 +75,10 @@ public class Component {
       this.dependencies = new ArrayList<>();
     }
     expand();
-/*    if (licenses.size()==1) {
-      concludedLicense = licenses.get(0);
-    }
-    */
+
     Log.d(LOG_TAG, "new Component: " + name + "    license: " + license );
   }
 
-
-  /*
-  public Component(String name, License license, List<Component> dependencies) {
-    this.name = name;
-    this.licenseString = license.spdx();
-    this.dependencies = dependencies;
-    if (dependencies==null) {
-      this.dependencies = new ArrayList<>();
-    }
-/*    if (licenses.size()==1) {
-      concludedLicense = licenses.get(0);
-    }
-    Log.d(LOG_TAG, "new Component: " + name + "    license: " + license );
-  }
-    */
 
   public Component(String name, String license) throws LicenseExpressionException, IllegalLicenseExpression {
     this.name = name;
@@ -132,34 +87,6 @@ public class Component {
     expand();
     Log.d(LOG_TAG, "new Component: " + name + "    license: " + license );
   }
-/*
-  public Component(String name, License license) {
-    this.name = name;
-    this.licenseString = license.spdx();
-    this.dependencies = new ArrayList<>();
-    Log.d(LOG_TAG, "new Component: " + name + "    license: " + license );
-  }*/
-
-  /*  public Component(String name, List<License> licenses, List<Component> dependencies, LicenseMeta meta) {
-    this(name, licenses, dependencies);
-    this.licenseMeta = meta;
-  }
-*/
-
-  /*
-  public Component(String name, License license, List<Component> dependencies) {
-    this.name = name;
-    this.dependencies = dependencies;
-   // this.concludedLicense = null;
-    if (dependencies==null) {
-      this.dependencies = new ArrayList<>();
-    }
-//    licenses = new ArrayList<>();
-  //  licenses.add(license);
- //   concludedLicense = license;
-    Log.d(LOG_TAG, "new Component: " + name + "    license: " + concludedLicense()+ "    licenses: " + licenses());
-  }
-*/
 
   public LicenseExpression licenseExpression() throws LicenseExpressionException, IllegalLicenseExpression {
     return licenseExpression;
@@ -177,25 +104,7 @@ public class Component {
   public String name() {
     return name;
   }
-  /*
-  public License concludedLicense() {
-    return concludedLicense;
-  }
-  
-  public List<License> licenses() {
-    return licenses;
-  }
 
-  public void concludedLicense(License license) {
-    Log.d(LOG_TAG, "\n ======== UPDATING LICENSE on \"" + name +  "\" to \"" +
-            (license!=null?""+license.spdx():license) + "\" ==========\n");
-    concludedLicense = license;
-  }
-
-  public void invalidateConcludedLicense() {
-    concludedLicense = null;
-  }
-  */
 
   public String license() {
     return licenseString;
@@ -287,29 +196,6 @@ public class Component {
     sb.append("{ ");
     sb.append(name);
     sb.append("(");
-/*    if (concludedLicense()!=null) {
-      sb.append("{ " + name + " (" + concludedLicense().spdx() + ") [");
-    }
-    switch(licenseMeta) {
-    case UNKNOWN_LICENSED:
-      sb.append("Unknown license");
-      break;
-    case DUAL_LICENSED:
-      sb.append("Dual licensed");
-      break;
-    case MANY_LICENSED:
-      sb.append("Many licensed");
-      break;
-    case SINGLE_LICENSED:
-      sb.append("Single licensed");
-      break;
-    }
-    sb.append(") [");
-    for (License l : licenses) {
-      sb.append( "  " + l.spdx()  );
-    }
-    sb.append(" ],  ");
- */
 
     sb.append(" [");
     for (Component c : dependencies) {

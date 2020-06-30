@@ -12,7 +12,7 @@ import static com.sandklef.compliance.test.Utils.*;
 
 public class TestCanAUseB {
 
-  private static boolean testCanAUseB(License user, License usee) throws IllegalLicenseExpression {
+  private static boolean testCanAUseB(License user, License usee) throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
     boolean ret = LicenseArbiter.aCanUseB(user,usee);
 //    System.out.println(user.spdxTag() + " using " + usee.spdxTag() + " :::  " + ret);
     return ret;
