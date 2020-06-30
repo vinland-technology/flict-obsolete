@@ -15,7 +15,7 @@ public class TestLicenseConnector {
 
     private static final String LOG_TAG = TestLicenseConnector.class.getSimpleName();
 
-    private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) {
+    private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) throws LicenseConnector.LicenseConnectorException {
 /*        System.out.println(" a0 : " + a.license() );
         System.out.println(" a1 : " + a.license().spdxTag() );
         System.out.println(" a2 : " + a.license().spdxTag() + " " + a.canBeUsedBy() );
@@ -57,12 +57,12 @@ public class TestLicenseConnector {
   //      System.out.println("<-- aCanUseB : " + a.license().spdxTag() + " CAN NOT " + b.license().spdxTag());
         return false;
     }
-    public static void test() throws IOException {
+    public static void test() throws IOException, LicenseConnector.LicenseConnectorException {
         test_simple();
         test_read_json();
     }
 
-    public static void test_simple() {
+    public static void test_simple() throws LicenseConnector.LicenseConnectorException {
         printTestStart("TestLicenseConnector");
 
         LicenseConnector bsd3Conn = new LicenseConnector(bsd3);
@@ -109,7 +109,7 @@ public class TestLicenseConnector {
     }
 
 
-    public static void test_read_json() throws IOException {
+    public static void test_read_json() throws IOException, LicenseConnector.LicenseConnectorException {
         JsonLicenseConnectionsParser jcp = new JsonLicenseConnectionsParser();
         Map<String, LicenseConnector> licenseConnectors = JsonLicenseConnectionsParser.readLicenseConnection("licenses/connections/dwheeler.json");
 
@@ -148,7 +148,7 @@ public class TestLicenseConnector {
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, LicenseConnector.LicenseConnectorException {
         test();
     }
 

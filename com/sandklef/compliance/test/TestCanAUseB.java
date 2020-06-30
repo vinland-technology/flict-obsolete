@@ -18,7 +18,7 @@ public class TestCanAUseB {
     return ret;
   }
 
-  public static void test() throws IllegalLicenseExpression {
+  public static void test() throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
     printTestStart("TestCanAUseB");
     //Log.level(Log.DEBUG);
     assertHelper("gpl2 can NOT use apache2", !testCanAUseB(gpl20, apache20));
@@ -51,7 +51,7 @@ public class TestCanAUseB {
   }
 
 
-  public static void main(String[] args) throws IllegalLicenseExpression {
+  public static void main(String[] args) throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
         test();
   }
 }

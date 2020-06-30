@@ -32,7 +32,7 @@ public class TestAll {
   }
 
   
-    public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
+    public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
 
         System.out.println("\n");
         Log.level(Log.DEBUG);
@@ -82,8 +82,6 @@ public class TestAll {
           testAndPrint(" LGPL-2.1-or-later | GPL-2.0-or-later & BSD-3-Clause  & MIT  & MIT");
           testAndPrint(" LGPL-2.1-or-later & GPL-2.0-or-later | BSD-3-Clause  ");
           testAndPrint(" LGPL-2.1-or-later & GPL-2.0-or-later | LGPL-2.1-only | BSD-3-Clause & MIT   ");
-          System.exit(1);
-
 
 
           testAndPrint(" LGPL-2.1-or-later | GPL-2.0-or-later & BSD-3-Clause  ");
@@ -108,7 +106,6 @@ public class TestAll {
         }
 
         System.out.println("\n");
-        System.exit(1);
 
         TestJsonComponentParser.test();
         System.out.println("\n");
@@ -143,8 +140,6 @@ public class TestAll {
 
         System.out.println("\n");
         TestComponents.test();
-        System.out.println("\n");
-        TestConcern.test();
         System.out.println("\n");
         TestCanAUseB.test();
         System.out.println("\n");

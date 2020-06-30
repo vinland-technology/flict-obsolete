@@ -14,7 +14,6 @@ JAVA_SOURCES=\
   com/sandklef/compliance/domain/License.java \
   com/sandklef/compliance/domain/LicenseGroup.java \
   com/sandklef/compliance/domain/Obligation.java \
-  com/sandklef/compliance/domain/Concern.java \
   com/sandklef/compliance/domain/LicenseViolation.java \
   com/sandklef/compliance/domain/ObligationState.java \
   com/sandklef/compliance/domain/LicenseType.java \
@@ -51,14 +50,11 @@ TEST_SOURCES=\
   com/sandklef/compliance/test/TestAll.java\
   com/sandklef/compliance/test/Utils.java\
   com/sandklef/compliance/test/TestComponents.java \
-  com/sandklef/compliance/test/TestConcern.java \
   com/sandklef/compliance/test/TestCanAUseB.java \
   com/sandklef/compliance/test/TestPolicy.java \
   com/sandklef/compliance/test/TestDualLicenses.java \
-  com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.java \
   com/sandklef/compliance/json/test/TestLicenseParser.java \
   com/sandklef/compliance/test/TestLicenseConnector.java \
-  com/sandklef/compliance/test/VirtualLicenseBuilderTest.java \
   com/sandklef/compliance/json/test/TestJsonComponentParser.java \
 
 
