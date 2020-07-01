@@ -75,6 +75,10 @@ public class Log {
         println(VERBOSE, tag, message);
     }
 
+    public static void i(String tag, String message) {
+        println(INFO, tag, message);
+    }
+
     public static void e(String tag, String message) {
         println(ERROR, tag, message);
     }
