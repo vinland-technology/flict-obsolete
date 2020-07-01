@@ -305,7 +305,7 @@ public class LicenseArbiter {
         for (License icLicense : ic.licenses) {
             for (InterimComponent d : ic.dependencies()) {
                 if (!aCanUseB(icLicense, d.licenses)) {
-                    System.out.println(" * " + icLicense + " cannot use " + d.licenses);
+                    Log.i(LOG_TAG, " * " + icLicense + " cannot use " + d.licenses);
                     // TODO: thrown exception??
                     return false;
                 }
@@ -316,7 +316,7 @@ public class LicenseArbiter {
         // Check each dep against their deps
         for (InterimComponent d : ic.dependencies()) {
             if (!compliant(d, indent + 2)) {
-                System.out.println(" * " + d + " is not compliant");
+                Log.i(LOG_TAG, " * " + d + " is not compliant");
                 debug(" license violation: " + d.name() + "(" + d.licenses + ")", indent + 2);
                 // TODO: thrown exception??
                 return false;
@@ -461,7 +461,7 @@ public class LicenseArbiter {
         Log.d(LOG_TAG, "reportViolations()    c: " + c.name());
         Report report = reportConcludeAllPaths(c, policy);
 
-        System.out.println("report: " + report);
+        //System.out.println("report: " + report);
 
         return report;
     }
