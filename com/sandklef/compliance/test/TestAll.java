@@ -19,27 +19,27 @@ public class TestAll {
   private static void testAndPrint(String expr) throws LicenseExpressionException, IllegalLicenseExpression {
     LicenseExpressionParser lep = new LicenseExpressionParser();
     LicenseExpression le = lep.parse(expr);
-    System.out.println("expr: " + expr + "\n  ==>  " + le + " (" + le.paths() + ")\n");
+//    System.out.println("expr: " + expr + "\n  ==>  " + le + " (" + le.paths() + ")\n");
   }
 
   
   private static void testAndPrintFixed(String expr) throws LicenseExpressionException  {
-    Log.level(Log.DEBUG);
+ //   Log.level(Log.DEBUG);
     expr = expr.replaceAll("\\s", "");
     LicenseExpressionParser lep = new LicenseExpressionParser();
     String fixed = lep.fixLicenseExpression(expr);
-    System.out.println("expr: " + expr + "\n  ==>  " + fixed);
+//    System.out.println("expr: " + expr + "\n  ==>  " + fixed);
   }
 
   
     public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
 
-        System.out.println("\n");
-        Log.level(Log.DEBUG);
+      //  System.out.println("\n");
+      //  Log.level(Log.DEBUG);
         Map<String, License> licenses1 = new JsonLicenseParser().readLicenseDir("licenses/json");
         LicenseStore.getInstance().addLicenses(licenses1);
 
-        System.out.println(" licenses: " + licenses1);
+      //  System.out.println(" licenses: " + licenses1);
 
         try {
 
@@ -118,34 +118,20 @@ public class TestAll {
         System.out.println(" END\n");
        */
         System.out.println("\n");
-        System.out.println(" BEGIN\n");
+
+        // TODO: move to separate test
         JsonComponentParser jp = new JsonComponentParser();
         Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
         LicenseStore.getInstance().addLicenses(licenses);
         Component component = jp.readComponent("com/sandklef/compliance/json/test/archive.json");
-
-
         Report report = LicenseArbiter.report(component, null);
-        System.out.println(report.component());
-        for (Report.ComponentResult cr : report.componentResults()) {
-            System.out.println(" * " +
-                    cr.compliant() + " " +
-                    cr.color() + " " +
-                    cr.component() + "\n");
-        }
-
-//        LicenseArbiter.report(Utils.bigComponent(), null);
 
         System.out.println("\n");
         TestComponents.test();
         System.out.println("\n");
-        TestCanAUseB.test();
-        System.out.println("\n");
         TestPolicy.test();
         System.out.println("\n");
         TestDualLicenses.test();
-        System.out.println("\n");
-        TestMostPermissiveLicenseComparator.test();
         System.out.println("\n");
         TestJsonComponentParser.test();
         System.out.println("\n");
