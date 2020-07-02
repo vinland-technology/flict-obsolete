@@ -7,6 +7,7 @@ package com.sandklef.compliance.json;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sandklef.compliance.domain.IllegalLicenseExpression;
 import com.sandklef.compliance.domain.License;
 import com.sandklef.compliance.domain.LicenseGroup;
 import com.sandklef.compliance.utils.Log;
@@ -26,7 +27,7 @@ public class JsonLicenseParser {
   
   public static final String LOG_TAG = JsonLicenseParser.class.getSimpleName();
 
-  public Map<String, License> readLicenseDir(String dirName) throws IOException {
+  public Map<String, License> readLicenseDir(String dirName) throws IOException, IllegalLicenseExpression {
     Map<String, License> licenses = new HashMap<>();
     File file = new File(dirName);
     Log.d(LOG_TAG,"file: " + dirName);
@@ -37,6 +38,9 @@ public class JsonLicenseParser {
         return name.toLowerCase().endsWith(".json");
       }
     });
+    if (files==null) {
+      throw new IllegalLicenseExpression("No licenses found in: \"" + dirName + "\"");
+    }
     for(File f : files){
       if (f.toString().contains("-group.json")) {
         continue;

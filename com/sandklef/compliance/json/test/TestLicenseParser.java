@@ -15,7 +15,7 @@ import static com.sandklef.compliance.test.Utils.*;
 
 public class TestLicenseParser {
 
-  public static void test() throws IOException {
+  public static void test() throws IOException, IllegalLicenseExpression {
     String dirName = "com/sandklef/compliance/json/test/licenses/";
 
     JsonLicenseParser jp = new JsonLicenseParser();
@@ -41,7 +41,7 @@ public class TestLicenseParser {
 
   }
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, IllegalLicenseExpression {
     test();
   }
 }
