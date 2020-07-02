@@ -31,7 +31,7 @@ test_combination_count()
                                  --debug-component-license \
                                  -cf "${INSTALL_DIR}/licenses/connections/sgl.json" \
                                  -l "${INSTALL_DIR}/licenses/json" \
-                                 -c "${COMPONENT_DIR}/var/test/components/${COMPONENT}"  | \
+                                 -c "${COMPONENT_DIR}/var/test/combination-components/${COMPONENT}"  | \
                        grep "^{" | sort -u | uniq | wc -l)
     if [ $ACTUAL_COUNT -ne $EXPECTED_COUNT ]
     then
