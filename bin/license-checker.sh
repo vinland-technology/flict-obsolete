@@ -15,13 +15,16 @@ JSON_FILES=$(echo $* | tr ' ' '\n' | grep json )
 for FILE in $JSON_FILES
 do
  #   echo check file $FILE
-#    wc -l $FILE
-    jq '.' $FILE >/dev/null 2>&1
-    RET=$?
-    if [ $RET -ne 0 ]
-    then
-        echo "$LINE does not seem to be a valid JSON file"
-        exit 1
+    #    wc -l $FILE
+    if [ -f $FILE ]
+       then
+           jq '.' $FILE >/dev/null 2>&1
+           RET=$?
+           if [ $RET -ne 0 ]
+           then
+               echo "$LINE does not seem to be a valid JSON file"
+               exit 1
+           fi
     fi
 done
 
