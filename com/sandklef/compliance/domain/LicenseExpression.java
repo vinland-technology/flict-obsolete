@@ -176,7 +176,7 @@ public class LicenseExpression {
         if (license != null) {
             Log.d(LOG_TAG, "license found: " + license);
             // Create list from license, and add to licenseList
-            licenseList.add(new ArrayList(Arrays.asList(license)));
+            licenseList.add(new ArrayList<License>(Arrays.asList(license)));
         } else {
 
             // Transform all LicenseExpressions in to on List List
