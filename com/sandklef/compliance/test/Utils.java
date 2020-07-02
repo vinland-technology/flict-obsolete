@@ -68,7 +68,7 @@ public class Utils {
             gpl30_later = LicenseStore.getInstance().license(GPL_3_0_LATER_SPDX);
             apache20 = LicenseStore.getInstance().license(APACHE_2_0_SPDX);
             bsd3 = LicenseStore.getInstance().license(BSD_3_SPDX);
-        } catch (IOException | LicenseExpressionException e) {
+        } catch (IOException | LicenseExpressionException | IllegalLicenseExpression e) {
             e.printStackTrace();
             System.exit(1);
         }
