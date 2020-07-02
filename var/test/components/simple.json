@@ -1,0 +1,11 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "A-only",
+        "license": "GPL-2.0-only",
+        "dependencies": []
+    }
+}
