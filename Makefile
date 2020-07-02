@@ -135,6 +135,8 @@ clean:
 
 test: all $(TEST_CLASSES) Makefile
 	java -ea -cp $(CLASSPATH) com/sandklef/compliance/test/TestAll
+	var/test/test_combinations.sh
+	var/test/test_expressions.sh
 
 cg: connector-grahp
 
