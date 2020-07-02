@@ -32,6 +32,7 @@ public class LicenseChecker {
     private static final String CONNECTOR_FILE_CLI = "connector-file";
     private static final String COMPONENT_FILE_CLI = "component-file";
     private static final String POLICY_FILE_CLI = "policy-file";
+    private static final String LICENSE_DIR = "license-dir";
 
     private static final String LOG_TAG = LicenseChecker.class.getSimpleName();
     private static PrintStream writer;
@@ -49,7 +50,7 @@ public class LicenseChecker {
             parseArguments(args, options, values);
 
             Session session = Session.getInstance();
-            session.lLicenseDir((String)values.get("licenseDir"));
+            session.lLicenseDir((String)values.get(LICENSE_DIR));
             session.connectorFile((String)values.get(CONNECTOR_FILE_CLI));
             session.policyFile((String)values.get(POLICY_FILE_CLI));
             session.componentFile((String)values.get(COMPONENT_FILE_CLI));
@@ -149,7 +150,7 @@ public class LicenseChecker {
         options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
         options.addOption(new Option("cf", CONNECTOR_FILE_CLI, true, "File with license connectors."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
-        options.addOption(new Option("l", "license-dir", true, "Directory with license files."));
+        options.addOption(new Option("l", LICENSE_DIR, true, "Directory with license files."));
         options.addOption(new Option("p", POLICY_FILE_CLI, true, "Path to policy file."));
         options.addOption(new Option("pl", "print-licenses", false, "Output list of licenses as found in the files in the provided license directory"));
         options.addOption(new Option("c", COMPONENT_FILE_CLI, true, "Component file to check"));
@@ -168,7 +169,7 @@ public class LicenseChecker {
         values.put(COMPONENT_FILE_CLI, null);
         values.put(CONNECTOR_FILE_CLI, "licenses/connections/dwheeler.json");
         values.put("output", null);
-        values.put("licenseDir", "licenses/json");
+        values.put(LICENSE_DIR, "licenses/json");
         values.put(POLICY_FILE_CLI, null);
         values.put("policy", null);
         values.put("expression", null);
@@ -220,9 +221,11 @@ public class LicenseChecker {
                 values.put("mode", execMode.PRINT_LICENSES);
                 Log.d(LOG_TAG, " licenses mode choosend");
             }
-            if (line.hasOption("license-dir")) {
-                values.put("licenseDir", line.getOptionValue("license-dir"));
-                Log.d(LOG_TAG, " License dir: " + values.get("licenseDir"));
+            if (line.hasOption(LICENSE_DIR)) {
+                values.put(LICENSE_DIR, line.getOptionValue(LICENSE_DIR));
+                Log.d(LOG_TAG, " License dir: " + values.get(LICENSE_DIR));
+                System.out.println("LICENSE_DIR: " + line.getOptionValue(LICENSE_DIR));
+                System.out.println("LICENSE_DIR: " + values.get(LICENSE_DIR));
             }
             if (line.hasOption(POLICY_FILE_CLI)) {
                 values.put(POLICY_FILE_CLI, line.getOptionValue(POLICY_FILE_CLI));
