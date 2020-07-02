@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+#
+# Script to test that components with license expressions are parsed correctly
+# - uses the print debug component feature (--debug-component-license) in license checker 
+# 
+
 INSTALL_DIR=$(dirname $(realpath $(which $0)) | sed 's,\/var\/test,,g')
 COMPONENT_DIR="${INSTALL_DIR/var/test/components}"
 
@@ -7,6 +16,11 @@ FAILS=0
 SUCCS=0
 TESTS=
 
+#
+# test_combination_count
+# - argument 1: the component files
+# - argument 2: how many (uniq!) component expressions are expected
+#
 test_combination_count()
 {
     TESTS=$(( $TESTS + 1 ))

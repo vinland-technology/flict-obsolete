@@ -1,15 +1,30 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+#
+# Script to test that license expressions are parsed correctly
+# - uses the print expression feature (-e) in license checker 
+# 
+
 INSTALL_DIR=$(dirname $(realpath $(which $0)) | sed 's,\/var\/test,,g')
 
 FAILS=0
 SUCCS=0
 TESTS=
 
+#
+# test_expression
+# - argument 1: the expression to test
+# - argument 2: how the expression is expected to be printed (after parsing)
+#
+# 
 test_expression()
 {
     TESTS=$(( $TESTS + 1 ))
-    EXPR="$1"
+    EXPR="$1" 
     EXPECTED_EXPR=$2
 
     printf " * %-50s" $(echo "$EXPR:" | sed 's, ,,g')
