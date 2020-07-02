@@ -7,7 +7,7 @@
 INSTALL_DIR=$(dirname $(realpath $(which $0)) | sed 's,\/bin,,g')
 
 CLASSPATH="$INSTALL_DIR:$INSTALL_DIR/lib/gson-2.2.2.jar:$INSTALL_DIR/lib/commons-cli-1.4.jar"
-DEFAULT_ARGS=" --license-dir licenses/json "
+DEFAULT_ARGS=" --license-dir ${INSTALL_DIR}/licenses/json "
 CLASS="com.sandklef.compliance.cli.LicenseChecker"
 
 # basic verification of json files
@@ -43,6 +43,10 @@ do
         "--connection-graph"|"-cg")
             CONNECTION_GRAPH=true
             ;;
+        "--license-dir"|"-l")
+            LICENSE_DIR=true
+            ARGS="$ARGS \"$1\""
+            ;;
         *)
             ARGS="$ARGS \"$1\""
             ;;
@@ -50,9 +54,16 @@ do
     shift
 done #<<<"$HENRIK"
 
+echo "LICENSE_DIR: $LICENSE_DIR"
+if [ "$LICENSE_DIR" = "true" ]
+then
+    DEFAULT_ARGS=""
+fi
+echo "DEFAULT_ARGS: $DEFAULT_ARGS"
 
 run()
 {
+#    echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $*
     echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $* | sh
 }
 
