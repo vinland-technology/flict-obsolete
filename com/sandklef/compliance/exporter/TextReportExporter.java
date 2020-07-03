@@ -35,14 +35,13 @@ public class TextReportExporter implements ReportExporter {
         init(report);
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Report for ");
+        sb.append("Report ");
         sb.append(c.name());
-        sb.append("\n===========================================\n");
 
         summaryReport(sb);
 
         // DETAILED REPORT
-        detailedReport(sb);
+//        detailedReport(sb);
 
         return sb.toString();
     }
@@ -60,22 +59,40 @@ public class TextReportExporter implements ReportExporter {
         return "";
     }
 
-    private void detailedReport(StringBuilder sb)  {
-        sb.append("Detailed report");
-        sb.append("\n--------------------------------------------\n");
-        sb.append("\n\n");
+    private String beautifyLicense(String license) {
+        return license.replace(",", " & ").replace("[", "").replace("]", "");
+    }
 
-        sb.append("Dependency components: ");
-        sb.append("\n\n");
+    private void summaryReport(StringBuilder sb) {
+
+        sb.append("Total license combinations: ");
+        sb.append(report.componentResults().size());
+        sb.append("\n");
+
+        sb.append("Compliant (allowed licenses only): ");
+        sb.append(pathComment(report.compliantCount()));
+        sb.append("\n");
+
+        sb.append("Compliant (with gray licenses): ");
+        sb.append(pathComment(report.compliantGrayPaths().size()));
+        sb.append("\n");
+
+        sb.append("Policy: ");
+        sb.append(report.policy()==null?" none":" " + Session.getInstance().policyFile());
+        sb.append("\n");
+
+        sb.append("Numbers of dependency components: ");
+        sb.append(c.nrDependencies());
+        sb.append("\n");
         for (Component d : c.allDependenciesImpl()) {
             sb.append(" * ");
             sb.append(d);
             sb.append("\n");
         }
-        sb.append("\n\n");
 
-        sb.append("Liceneses: ");
-        sb.append("\n\n");
+        sb.append("Numbers of licenses: ");
+        sb.append(licenseSet.size());
+        sb.append("\n");
         for (String s : licenseSet) {
             sb.append(" * ");
             try {
@@ -85,102 +102,24 @@ public class TextReportExporter implements ReportExporter {
             }
             sb.append("\n");
         }
-        sb.append("\n\n");
-
-        sb.append("Compliance information");
-        sb.append("\n\n");
 
         sb.append("Compliant license combinations: ");
         sb.append(report.compliantCount());
-        sb.append("\n\n");
+        sb.append("\n");
 
         sb.append("Compliant gray license combinations: ");
         sb.append(report.compliantGrayPaths().size());
-        sb.append("\n\n");
+        sb.append("\n");
 
         sb.append("Compliant denied license combinations: ");
         sb.append(report.compliantDeniedPaths().size());
-        sb.append("\n\n");
+        sb.append("\n");
 
         sb.append("Non compliant license combinations: ");
         sb.append(report.nonCompliantPaths().size());
-        sb.append("\n\n");
+        sb.append("\n");
 
         System.out.println("results:  " + report.complianAllowedtPaths());
-
-        sb.append("Compliant allowed license choices per component: ");
-        List<Report.ComponentResult> results = report.complianAllowedtPaths();
-        sb.append("\n\n");
-        if (results.size()==0) {
-            sb.append(" none found");
-        } else {
-            for (Report.ComponentResult cr : results) {
-                sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
-                for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
-                    sb.append(", ");
-                    sb.append(ic.name() + " (" +
-                            beautifyLicense(ic.licenses().toString()) + ")");
-                }
-                sb.append("\n");
-            }
-        }
-        sb.append("\n\n");
-
-        sb.append("Compliant gray license choices per component: ");
-        results = report.compliantGrayPaths();
-        sb.append("\n\n");
-        if (results.size()==0) {
-            sb.append(" none found");
-        } else {
-            for (Report.ComponentResult cr : report.compliantGrayPaths()) {
-                sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
-                for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
-                    sb.append(", ");
-                    sb.append(ic.name() + " (" +
-                            beautifyLicense(ic.licenses().toString()) + ")");
-                }
-                sb.append("\n");
-            }
-        }
-        sb.append("\n\n");
-    }
-
-    private String beautifyLicense(String license) {
-        return license.replace(",", " & ").replace("[", "").replace("]", "");
-    }
-
-    private void summaryReport(StringBuilder sb) {
-
-        sb.append("# Summary");
-        sb.append("\n\n");
-
-        sb.append("Component: ");
-        sb.append(c.name());
-        sb.append("\n\n");
-
-        sb.append("Total license combinations: ");
-        sb.append(report.componentResults().size());
-        sb.append("\n\n");
-
-        sb.append("Compliant (allowed licenses only): ");
-        sb.append(pathComment(report.compliantCount()));
-        sb.append("\n\n");
-
-        sb.append("Compliant (with gray licenses): ");
-        sb.append(pathComment(report.compliantGrayPaths().size()));
-        sb.append("\n\n");
-
-        sb.append("Policy: ");
-        sb.append(report.policy()==null?" none":" " + Session.getInstance().policyFile());
-        sb.append("\n\n");
-
-        sb.append("Numbers of dependency components: ");
-        sb.append(c.nrDependencies());
-        sb.append("\n\n");
-
-        sb.append("Numbers of licenses: ");
-        sb.append(licenseSet.size());
-        sb.append("\n\n");
     }
 
     private String pathComment(int pathCount) {
