@@ -1,0 +1,17 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "A-semi",
+        "license": "GPL-2.0-only | MIT & BSD-3-Clause",
+        "dependencies": [
+            {
+                "name": "A-semi-sub",
+                "license": "GPL-2.0-only | MIT & BSD-3-Clause | MIT",
+                "dependencies": []
+            }
+        ]
+    }
+}
