@@ -224,8 +224,6 @@ public class LicenseChecker {
             if (line.hasOption(LICENSE_DIR)) {
                 values.put(LICENSE_DIR, line.getOptionValue(LICENSE_DIR));
                 Log.d(LOG_TAG, " License dir: " + values.get(LICENSE_DIR));
-                System.out.println("LICENSE_DIR: " + line.getOptionValue(LICENSE_DIR));
-                System.out.println("LICENSE_DIR: " + values.get(LICENSE_DIR));
             }
             if (line.hasOption(POLICY_FILE_CLI)) {
                 values.put(POLICY_FILE_CLI, line.getOptionValue(POLICY_FILE_CLI));
