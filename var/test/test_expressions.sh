@@ -71,7 +71,7 @@ test_expressions()
 test_expressions
 
 echo "Tests: $TESTS"
-echo " * succsess: $SUCCS"
+echo " * success:  $SUCCS"
 echo " * failures: $FAILS"
 
 exit $FAILS

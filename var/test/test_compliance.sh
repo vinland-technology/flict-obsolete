@@ -73,7 +73,7 @@ test_compliances
 rm $TMP_FILE
 
 echo "Tests: $TESTS"
-echo " * succsess: $SUCCS"
+echo " * success:  $SUCCS"
 echo " * failures: $FAILS"
 
 exit $FAILS

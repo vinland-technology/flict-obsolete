@@ -64,7 +64,7 @@ test_combination_counts()
 test_combination_counts
 
 echo "Tests: $TESTS"
-echo " * succsess: $SUCCS"
+echo " * success:  $SUCCS"
 echo " * failures: $FAILS"
 
 exit $FAILS
