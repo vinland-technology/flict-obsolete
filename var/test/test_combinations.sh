@@ -26,7 +26,7 @@ test_combination_count()
     TESTS=$(( $TESTS + 1 ))
     COMPONENT="$1"
     EXPECTED_COUNT=$2
-    echo -n " * $(basename $COMPONENT): "
+    printf " * %-50s" "$(basename $COMPONENT): "
     ACTUAL_COUNT=$(${INSTALL_DIR}/bin/license-checker.sh \
                                  --debug-component-license \
                                  -cf "${INSTALL_DIR}/licenses/connections/sgl.json" \
