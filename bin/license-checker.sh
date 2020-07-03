@@ -54,16 +54,13 @@ do
     shift
 done #<<<"$HENRIK"
 
-echo "LICENSE_DIR: $LICENSE_DIR"
 if [ "$LICENSE_DIR" = "true" ]
 then
     DEFAULT_ARGS=""
 fi
-echo "DEFAULT_ARGS: $DEFAULT_ARGS"
 
 run()
 {
-#    echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $*
     echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $* | sh
 }
 
