@@ -306,12 +306,14 @@ public class LicenseArbiter {
             for (InterimComponent d : ic.dependencies()) {
                 if (!aCanUseB(icLicense, d.licenses)) {
                     Log.i(LOG_TAG, " * " + icLicense + " cannot use " + d.licenses);
+                    debug("compliant:  " + ic.name() + " licenses: " + ic.licenses + "   incompliant since: " + d.licenses, indent);
                     // TODO: thrown exception??
                     return false;
                 }
             }
         }
         // Ok, still seems ok
+        debug("compliant:  " + ic.name() + " licenses: " + ic.licenses + "   coninue checking", indent);
 
         // Check each dep against their deps
         for (InterimComponent d : ic.dependencies()) {
