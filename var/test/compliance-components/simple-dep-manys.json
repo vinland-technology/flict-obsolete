@@ -9,7 +9,7 @@
         "dependencies": [
             {
                 "name": "A-sub",
-                "license": "GPL-2.0-or-later & BSD-3-Clause",
+                "license": "GPL-2.0-only & BSD-3-Clause",
                 "dependencies": []
             }
         ]

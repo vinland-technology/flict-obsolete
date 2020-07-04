@@ -30,7 +30,7 @@ test_compliance()
     ${INSTALL_DIR}/bin/license-checker.sh \
                            -v \
                            -cf "${INSTALL_DIR}/licenses/connections/sgl.json" \
-                           -l "${INSTALL_DIR}/licenses/json" \
+                           -ld "${INSTALL_DIR}/licenses/json" \
                            -c "${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}" \
                            > $TMP_FILE
     ACTUAL_COUNT=$(cat $TMP_FILE | grep "Compliant license combinations:" | cut -d":" -f 2)

@@ -7,6 +7,8 @@ public class Session {
     private String policyFile;
     private String connectorFile;
 
+    private String laterFile;
+
     private static Session instance;
     private Session() { }
 
@@ -48,4 +50,14 @@ public class Session {
     public void connectorFile(String connectorFile) {
         this.connectorFile = connectorFile;
     }
+
+    public String laterFile() {
+        return laterFile;
+    }
+
+    public void laterFile(String laterFile) {
+        this.laterFile = laterFile;
+    }
+
+
 }

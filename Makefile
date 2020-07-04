@@ -28,6 +28,7 @@ JAVA_SOURCES=\
   com/sandklef/compliance/utils/LicenseStore.java \
   com/sandklef/compliance/utils/LicenseArbiter.java \
   com/sandklef/compliance/json/JsonLicenseParser.java \
+  com/sandklef/compliance/json/JsonLaterDefinitionParser.java \
   com/sandklef/compliance/json/JsonPolicyParser.java \
   com/sandklef/compliance/exporter/TextReportExporter.java \
   com/sandklef/compliance/exporter/TestExporterFactory.java \
@@ -134,9 +135,14 @@ clean:
 	find -name "*.class" | xargs rm -f
 
 test: all $(TEST_CLASSES) Makefile
-	java -ea -cp $(CLASSPATH) com/sandklef/compliance/test/TestAll
-	var/test/test_combinations.sh
-	var/test/test_expressions.sh
+	@echo Unit tests
+	@java -ea -cp $(CLASSPATH) com/sandklef/compliance/test/TestAll
+	@echo 
+	@var/test/test_expressions.sh
+	@echo 
+	@var/test/test_combinations.sh
+	@echo 
+	@var/test/test_compliance.sh
 
 cg: connector-grahp
 

@@ -76,7 +76,7 @@
         },
         {
             "spdx": "GPL-2.0-or-later",
-            "used_by": [ "GPL-2.0-only" ,
+            "used_by": [ "GPL-2.0-only",
 			 "GPL-3.0-only",
 			 "GPL-3.0-or-later" ]
         },

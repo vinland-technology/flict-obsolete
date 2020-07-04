@@ -6,10 +6,7 @@ package com.sandklef.compliance.cli;
 
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.exporter.ReportExporterFactory;
-import com.sandklef.compliance.json.JsonComponentParser;
-import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
-import com.sandklef.compliance.json.JsonLicenseParser;
-import com.sandklef.compliance.json.JsonPolicyParser;
+import com.sandklef.compliance.json.*;
 import com.sandklef.compliance.utils.*;
 import org.apache.commons.cli.*;
 
@@ -33,6 +30,7 @@ public class LicenseChecker {
     private static final String COMPONENT_FILE_CLI = "component-file";
     private static final String POLICY_FILE_CLI = "policy-file";
     private static final String LICENSE_DIR = "license-dir";
+    private static final String LATER_FILE_CLI = "later-file";
 
     private static final String LOG_TAG = LicenseChecker.class.getSimpleName();
     private static PrintStream writer;
@@ -54,6 +52,7 @@ public class LicenseChecker {
             session.connectorFile((String)values.get(CONNECTOR_FILE_CLI));
             session.policyFile((String)values.get(POLICY_FILE_CLI));
             session.componentFile((String)values.get(COMPONENT_FILE_CLI));
+            session.laterFile((String)values.get(LATER_FILE_CLI));
 
 
             // Read all licenses
@@ -62,6 +61,7 @@ public class LicenseChecker {
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir(session.lLicenseDir()));
             LicenseStore.getInstance().addLicenseGroups(new JsonLicenseParser().readLicenseGroupDir(session.lLicenseDir()));
             LicenseStore.getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection(session.connectorFile()));
+            LicenseStore.getInstance().laterLicenses((new JsonLaterDefinitionParser()).readLaterDefinition(session.laterFile()));
             Log.d(LOG_TAG, "licenses read: " + LicenseStore.getInstance().licenses().size());
 
             LicenseUtils.verifyLicenses();
@@ -117,8 +117,8 @@ public class LicenseChecker {
                     String expr = (String) values.get("expression");
                     System.out.println("\nLicense expression:\n--------------------------------\n" + expr);
                     LicenseExpressionParser lep = new LicenseExpressionParser();
-                    expr = lep.fixLicenseExpression(expr);
-                    System.out.println("\nLicense expression with parenthesises:\n--------------------------------\n" + expr);
+                    String expr1 = lep.fixLicenseExpression(expr);
+                    System.out.println("\nLicense expression with parenthesises:\n--------------------------------\n" + expr1);
                     LicenseExpression licenseExpression = lep.parse(expr);
                     System.out.println("\nLicenseExpression:\n--------------------------------\n" + licenseExpression);
                     List<List<License>> licenes = licenseExpression.licenseList();
@@ -150,10 +150,11 @@ public class LicenseChecker {
         options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
         options.addOption(new Option("cf", CONNECTOR_FILE_CLI, true, "File with license connectors."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
-        options.addOption(new Option("l", LICENSE_DIR, true, "Directory with license files."));
+        options.addOption(new Option("ld", LICENSE_DIR, true, "Directory with license files."));
         options.addOption(new Option("p", POLICY_FILE_CLI, true, "Path to policy file."));
         options.addOption(new Option("pl", "print-licenses", false, "Output list of licenses as found in the files in the provided license directory"));
         options.addOption(new Option("c", COMPONENT_FILE_CLI, true, "Component file to check"));
+        options.addOption(new Option("lf", LATER_FILE_CLI, true, "Later license file"));
         options.addOption(new Option("pc", "print-component", false, "Print component"));
         options.addOption(new Option("h", "help", false, "Print help text"));
         options.addOption(new Option("j", "json", false, "Output result in JSON format"));
@@ -168,6 +169,7 @@ public class LicenseChecker {
         Map<String, Object> values = new HashMap<>();
         values.put(COMPONENT_FILE_CLI, null);
         values.put(CONNECTOR_FILE_CLI, "licenses/connections/dwheeler.json");
+        values.put(LATER_FILE_CLI, "licenses/later/later-definitions.json");
         values.put("output", null);
         values.put(LICENSE_DIR, "licenses/json");
         values.put(POLICY_FILE_CLI, null);
@@ -211,6 +213,10 @@ public class LicenseChecker {
             if (line.hasOption(COMPONENT_FILE_CLI)) {
                 values.put(COMPONENT_FILE_CLI, line.getOptionValue(COMPONENT_FILE_CLI));
                 Log.d(LOG_TAG, " Component file: " + values.get(COMPONENT_FILE_CLI));
+            }
+            if (line.hasOption(LATER_FILE_CLI)) {
+                values.put(LATER_FILE_CLI, line.getOptionValue(LATER_FILE_CLI));
+                Log.d(LOG_TAG, " Later definitions file: " + values.get(LATER_FILE_CLI));
             }
             if (line.hasOption("expression")) {
                 values.put("expression", line.getOptionValue("expression"));

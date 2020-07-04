@@ -4,8 +4,8 @@
         "version":"0.1"
     },
     "component": {
-        "name": "A-dual",
-        "license": "GPL-2.0-only | BSD-3-Clause",
+        "name": "A-only",
+        "license": "GPL-2.0-or-later",
         "dependencies": []
     }
 }

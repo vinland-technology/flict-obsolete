@@ -6,19 +6,22 @@
     },
     "later-definitions": [
         {
+            "spdx": "GPL-2.0-or-later",
+            "later": [
+                "GPL-3.0-only"
+            ]
+        },       
+        {
             "spdx": "LGPL-2.1-or-later",
             "later": [
-                "LGPL-3.0-only",
-                "LGPL-3.0-or-later"
+                "LGPL-3.0-only"
             ]
         },
         {
             "spdx": "GPL-2.1-or-later",
             "later": [
-                "GPL-3.0-only",
-                "GPL-3.0-or-later"
+                "GPL-3.0-only"
             ]
         }
-        
     ]
 }

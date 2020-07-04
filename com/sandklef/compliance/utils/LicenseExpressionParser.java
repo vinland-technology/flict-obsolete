@@ -7,6 +7,8 @@ import com.sandklef.compliance.domain.LicenseExpressionException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 
 public class LicenseExpressionParser {
@@ -84,7 +86,52 @@ public class LicenseExpressionParser {
         return subExpr;
     }
 
+    public String fixOrLaterExpression(String expr) {
+        return null;
+    }
+
     public String fixLicenseExpression(String expr) throws LicenseExpressionException {
+        StringBuilder sb = new StringBuilder();
+        expr = expr.trim();
+        LicenseStore store = LicenseStore.getInstance();
+
+        for (int i=0; i<expr.length(); i++) {
+            //          System.out.println(" * " + expr.charAt(i));
+            //          System.out.println(" " + expr.charAt(i) + " " + (expr.charAt(i)>='a') + " " + (expr.charAt(i)<='Z') + " => " + (expr.charAt(i)>='a' && expr.charAt(i)<='Z'));
+            if ( ( expr.charAt(i)>='a' && expr.charAt(i)<='z') ||
+                    ( expr.charAt(i)>='A' && expr.charAt(i)<='Z') ) {
+                String license = readLicense(expr.substring(i));
+
+                Map<String, List<License>> laterLicenses = store.laterLicenses();
+      //          System.out.println(" ------------* \"" + license + "\" => " + laterLicenses.get(license.trim()));
+                //        System.out.println(" * \"" + "GPL-2.0-or-later" + "\" => " + laterLicenses.get("GPL-2.0-or-later") + "\n");
+                if (laterLicenses != null && laterLicenses.get(license.trim())!=null) {
+                    sb.append("(");
+                    sb.append(license);
+                    for (License later : laterLicenses.get(license.trim()) ) {
+                        sb.append("|");
+                        sb.append(later);
+//                        System.out.println(" ------------* \"" + later + "\"  " + sb.toString());
+                    }
+                    sb.append(")");
+                } else {
+                    sb.append(license);
+                }
+                //System.out.println(" * " + license);
+                i += license.length() - 1 ;
+  //              System.out.println(" * remains: \"" + expr.substring(i) + "\"");
+            } else {
+                //System.out.println(" * " + expr.charAt(i));
+                sb.append(expr.charAt(i));
+            }
+        }
+
+    //    System.out.println(" ------------------------------------------- later fixed: \"" + sb.toString() + "\"");
+        return fixLicenseExpressionHelper(sb.toString());
+        //return fixLicenseExpressionHelper(expr);
+    }
+
+    private String fixLicenseExpressionHelper(String expr) throws LicenseExpressionException {
         // remove space
         Log.d(LOG_TAG, "fixLicenseExpression: " + expr);
         expr = expr.replaceAll("\\s", "");
@@ -104,14 +151,15 @@ public class LicenseExpressionParser {
             if (expr.length() == 1 && expr.equals(")")) {
                 if (letterNextUC(expr)) {
                     Log.d(LOG_TAG, " discard () from : " + pExpr);
-                    return fixLicenseExpression(pExpr);
+                    return fixLicenseExpressionHelper(pExpr);
                 } else {
                     Log.d(LOG_TAG, " add () from : " + pExpr);
-                    return "(" + fixLicenseExpression(pExpr) + ")";
+                    return "(" + fixLicenseExpressionHelper(pExpr) + ")";
                 }
+
             } else if (expr.length()==0) {
                 Log.d(LOG_TAG, " noting left in expr,   pExpr: " + pExpr);
-                return "(" + fixLicenseExpression(pExpr) + ")";
+                return "(" + fixLicenseExpressionHelper(pExpr) + ")";
             }
 
             if (expr.charAt(0)==')') {
@@ -167,7 +215,7 @@ public class LicenseExpressionParser {
                     if (expr.charAt(0) == '(') {
                         String innerExpr = readParenthisedExpr(expr);
                         sb.append(LicenseExpression.operatorToString(LicenseExpression.Operator.AND));
-                        sb.append("("+fixLicenseExpression(innerExpr)+")");
+                        sb.append("("+fixLicenseExpressionHelper(innerExpr)+")");
                         Log.d(LOG_TAG, "  ( found inner:  " + innerExpr);
                         expr = expr.substring(innerExpr.length()+2);
                         Log.d(LOG_TAG, "  ( found expr :  " + expr);
@@ -211,14 +259,14 @@ public class LicenseExpressionParser {
 
             if (op == LicenseExpression.Operator.OR) {
                 if (first.equals("")) {
-                    Log.d(LOG_TAG, "    ------------------------------ " + expr);
+                    Log.d(LOG_TAG, "    -OR ----------------------------- " + expr);
                     sb.append(LicenseExpression.operatorToString(LicenseExpression.Operator.OR));
-                    sb.append(fixLicenseExpression(expr));
+                    sb.append(fixLicenseExpressionHelper(expr));
                 } else {
                     Log.d(LOG_TAG, "  OR found, append: " + first);
                     sb.append(first);
                     sb.append(LicenseExpression.operatorToString(op));
-                    sb.append(fixLicenseExpression(expr));
+                    sb.append(fixLicenseExpressionHelper(expr));
                 }
             } else if ( expr.length() > 0){
                 throw new LicenseExpressionException("Invalid operator: " + op +  " \"" + expr + "\"");

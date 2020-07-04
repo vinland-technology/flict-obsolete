@@ -5,6 +5,7 @@
 package com.sandklef.compliance.utils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sandklef.compliance.domain.*;
@@ -22,6 +23,16 @@ public class LicenseStore {
   private final Map<String, License> licenses;
   private final Map<String, LicenseGroup> licenseGroups;
   private Map<String, LicenseConnector> connectors;
+
+  public Map<String, List<License>> laterLicenses() {
+    return laterLicenses;
+  }
+
+  public void laterLicenses(Map<String, List<License>> laterLicenses) {
+    this.laterLicenses = laterLicenses;
+  }
+
+  private Map<String, List<License>> laterLicenses;
 
   private static LicenseStore store;
   public static LicenseStore getInstance() {
@@ -64,6 +75,7 @@ public class LicenseStore {
     }
     return sb.toString();
   }
+
 
 
   public void addLicenses(Map<String, License> licenses) {
