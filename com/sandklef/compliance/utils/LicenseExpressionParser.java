@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-
 public class LicenseExpressionParser {
 
     private static final String LOG_TAG = LicenseExpressionParser.class.getSimpleName();
@@ -87,6 +86,12 @@ public class LicenseExpressionParser {
     }
 
     public String fixOrLaterExpression(String expr) {
+
+        // If any of the licenses in expr
+        // has a "or-later" or similar: look up the licenses and add them with | in between
+        // GPL-2.0-or-later
+        //  => GPL-2.0-or-later | GPL-3.0-only
+
         StringBuilder sb = new StringBuilder();
         expr = expr.trim();
         LicenseStore store = LicenseStore.getInstance();
@@ -146,7 +151,7 @@ public class LicenseExpressionParser {
             Log.d(LOG_TAG, "(  remaining    : \"" + expr + "\"");
 
             if (expr.length() == 1 && expr.equals(")")) {
-                if (letterNextUC(expr)) {
+                if (letterNextUC(expr) || letterNextLC(expr)) {
                     Log.d(LOG_TAG, " discard () from : " + pExpr);
                     return fixLicenseExpressionHelper(pExpr);
                 } else {
@@ -164,7 +169,7 @@ public class LicenseExpressionParser {
             }
             Log.d(LOG_TAG, "(  remaining    : \"" + expr + "\"   after returns pExpr: " + pExpr);
             first = "(" + pExpr + ")" ;
-        } else if (letterNextUC(expr)) {
+        } else if (letterNextUC(expr) ) {
             Log.d(LOG_TAG, "  NO ( found: ");
             String licenseString = readLicense(expr);
             expr = expr.substring(licenseString.length());
@@ -216,7 +221,7 @@ public class LicenseExpressionParser {
                         Log.d(LOG_TAG, "  ( found inner:  " + innerExpr);
                         expr = expr.substring(innerExpr.length()+2);
                         Log.d(LOG_TAG, "  ( found expr :  " + expr);
-                    } else if (letterNextUC(expr)) {
+                    } else if (letterNextUC(expr) || letterNextLC(expr) ) {
                         String innerExpr = readLicense(expr);
                         sb.append(LicenseExpression.operatorToString(LicenseExpression.Operator.AND));
                         sb.append(innerExpr);
@@ -313,7 +318,7 @@ public class LicenseExpressionParser {
                 Log.d(LOG_TAG, "doParse parenth: firstExpr: \"" + firstExpr + "\"");
                 Log.d(LOG_TAG, "doParse parenth: \"" + expr + "\" ---");
                 le.addLicense(firstExpr);
-            } else if (letterNextUC(expr)) {
+            } else if (letterNextUC(expr) || letterNextLC(expr) ) {
                 LicenseExpression firstExpr = null;
                 Log.d(LOG_TAG, "doParse license: \"" + expr + "\"");
                 Log.d(LOG_TAG, "doParse license: \"" + expr + "\"");
