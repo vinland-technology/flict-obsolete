@@ -14,7 +14,7 @@ License Checker can also conclude outbound licenses for your component.
 
 # Input
 
-## Component
+## Component (required)
 
 Let's begin with an example component. Let's say we have a program
 "Text mangler" (GPL-2.0-only) that uses a piece of software called
@@ -48,7 +48,7 @@ For now, the meta section is not used so we can continue with the component. A c
 
 ```dependencies``` - a list of other components that this component depends on
 
-## Licenses
+## Licenses (built in or custom)
 
 A license is specified using:
 
@@ -77,7 +77,9 @@ If you want to provide your own licenses you need to put them in a
 directory and pass that directory to this tool using the option
 ```--license-dir```.
 
-## License graph
+
+
+## License graph (built in or custom)
 
 To decide wether a license is compatible with another a graph of
 license compatibilities is used. Bye default License checker uses
@@ -87,7 +89,7 @@ get in contact with that project to update their graph. If you still
 would like to use your own graph you can use the command line option
 ```--connector-file```.
 
-## Policy (optional)
+## Policy (no built in, optional)
 
 With a policy file you can tell this tool which licenses you're not
 allowing (denied) and which you preferr not to use (gray). Here's an
@@ -112,7 +114,7 @@ example policy file:
 }
 ```
 
-## License later defininitions (optional)
+## License later defininitions (built in or custom)
 
 Some licenses can be specifed saying "or-later", e g
 GPL-2.0-or-later. You can provide a list of definitions for this tool
@@ -145,7 +147,7 @@ As with previous example you can for now skip the meta section. A later definiti
 
 ``later``` - a list of licenses (SPDX short name) that the above license can be turned into
 
-In the above example we state that GPL-2.0-or-later also can be "GPL-3.0-only"
+In the above example we state that GPL-2.0-or-later also can be "GPL-3.0-only". If you want to use your own later definition file or disable later definitions by providing an empty file you can use the option ```--later-file```.
 
 # Output
 
