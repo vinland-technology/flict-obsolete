@@ -87,10 +87,6 @@ public class LicenseExpressionParser {
     }
 
     public String fixOrLaterExpression(String expr) {
-        return null;
-    }
-
-    public String fixLicenseExpression(String expr) throws LicenseExpressionException {
         StringBuilder sb = new StringBuilder();
         expr = expr.trim();
         LicenseStore store = LicenseStore.getInstance();
@@ -103,7 +99,7 @@ public class LicenseExpressionParser {
                 String license = readLicense(expr.substring(i));
 
                 Map<String, List<License>> laterLicenses = store.laterLicenses();
-      //          System.out.println(" ------------* \"" + license + "\" => " + laterLicenses.get(license.trim()));
+                //          System.out.println(" ------------* \"" + license + "\" => " + laterLicenses.get(license.trim()));
                 //        System.out.println(" * \"" + "GPL-2.0-or-later" + "\" => " + laterLicenses.get("GPL-2.0-or-later") + "\n");
                 if (laterLicenses != null && laterLicenses.get(license.trim())!=null) {
                     sb.append("(");
@@ -119,16 +115,17 @@ public class LicenseExpressionParser {
                 }
                 //System.out.println(" * " + license);
                 i += license.length() - 1 ;
-  //              System.out.println(" * remains: \"" + expr.substring(i) + "\"");
+                //              System.out.println(" * remains: \"" + expr.substring(i) + "\"");
             } else {
                 //System.out.println(" * " + expr.charAt(i));
                 sb.append(expr.charAt(i));
             }
         }
+        return sb.toString();
+    }
 
-    //    System.out.println(" ------------------------------------------- later fixed: \"" + sb.toString() + "\"");
-        return fixLicenseExpressionHelper(sb.toString());
-        //return fixLicenseExpressionHelper(expr);
+    public String fixLicenseExpression(String expr) throws LicenseExpressionException {
+        return fixLicenseExpressionHelper(fixOrLaterExpression(expr));
     }
 
     private String fixLicenseExpressionHelper(String expr) throws LicenseExpressionException {
