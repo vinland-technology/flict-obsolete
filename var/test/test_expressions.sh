@@ -64,6 +64,12 @@ test_expressions()
     test_expression "(GPL-2.0-only |   BSD-3-Clause) & MIT | Apache-2.0" "[GPL-2.0-only,MIT]#[BSD-3-Clause,MIT]#[Apache-2.0]#"
     test_expression "(GPL-2.0-only |   BSD-3-Clause) & MIT & Apache-2.0" "[GPL-2.0-only,MIT,Apache-2.0]#[BSD-3-Clause,MIT,Apache-2.0]#"
     test_expression "(GPL-2.0-only |   BSD-3-Clause) & (MIT | Apache-2.0)" "[GPL-2.0-only,MIT]#[GPL-2.0-only,Apache-2.0]#[BSD-3-Clause,MIT]#[BSD-3-Clause,Apache-2.0]#"
+    test_expression "GPL-2.0-or-later" "[GPL-2.0-or-later]#[GPL-3.0-only]#"
+    test_expression "GPL-2.0-or-later|MIT" "[GPL-2.0-or-later]#[GPL-3.0-only]#[MIT]#"
+    test_expression "GPL-2.0-or-later&MIT" "[GPL-2.0-or-later,MIT]#[GPL-3.0-only,MIT]#"
+    test_expression "GPL-2.0-only&MIT" "[GPL-2.0-only,MIT]#"
+    test_expression "GPL-2.0-only&MIT|BSD-3-Clause" "[GPL-2.0-only,MIT]#[BSD-3-Clause]#"
+    test_expression "GPL-2.0-only&(MIT|BSD-3-Clause)&Apache-2.0" "[GPL-2.0-only,MIT,Apache-2.0]#[GPL-2.0-only,BSD-3-Clause,Apache-2.0]#"
 
 }
 
