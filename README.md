@@ -67,6 +67,7 @@ Here's an example:
     "license": {
         "name":"GNU General Public License v2.0 or later",
         "spdx":"GPL-2.0-or-later"
+    }
 }
 ```
 
