@@ -111,6 +111,41 @@ example policy file:
 }
 ```
 
+## License later defininitions (optional)
+
+Some licenses can be specifed saying "or-later", e g
+GPL-2.0-or-later. You can provide a list of definitions for this tool
+to decide how these licenses should be interpreted.
+
+Let's start with a example:
+
+
+```
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "type": "later-definitions",
+        "version":"0.1"
+    },
+    "later-definitions": [
+        {
+            "spdx": "GPL-2.0-or-later",
+            "later": [
+                "GPL-3.0-only"
+            ]
+        }
+    ]
+}
+```
+
+As with previous example you can for now skip the meta section. A later definition is specified using:
+
+```spdx``` - the license (SPDX short name) this later definition is valid for
+
+``later``` - a list of licenses (SPDX short name) that the above license can be turned into
+
+In the above example we state that GPL-2.0-or-later also can be "GPL-3.0-only"
+
 # Output
 
 A report of the component's compliance is created. By default a short text report is created. With the tools also comes a couple of Report format that can be used.
@@ -131,7 +166,7 @@ License Checker is released under GPLv3(https://www.gnu.org/licenses/gpl-3.0.en.
 
 # Building
 
-## Dependencies
+## Required tools
 
 * jq
 
@@ -145,12 +180,39 @@ License Checker is released under GPLv3(https://www.gnu.org/licenses/gpl-3.0.en.
 
 * Java dependencies will be download when you configure
 
+## Required java components
 
-## Preparing for build
+* GSON (downloaded automatically first time you type make)
+
+* Apache commons (downloaded automatically first time you type make)
+
+### Install required dependencies
+
+We have setup scripts for some GNU/Linux distributions:
+
+* Debian ```var/setup-linux-debian.sh```
+
+* Fedora: ```var/setup-linux-fedora.sh```
+
+* Ubuntu: ```var/setup-linux-ubuntu.sh```
+
+## Building
+
+### Check tools
 
 ~~~
 ./configure
+~~~
+
+### Build
+
+~~~
 make
+~~~
+
+### Test
+
+~~~
 make test
 ~~~
 
@@ -161,7 +223,7 @@ and its dependencies are specified in the file
 `./meta/license-policy-checker.json` as found in the source code.
 
 ~~~
-bin/license-checker.sh -v -c ./meta/license-policy-checker.json 
+bin/license-checker.sh -v -c ./meta/license-checker.json 
 
 ~~~
 
