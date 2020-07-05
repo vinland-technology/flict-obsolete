@@ -67,21 +67,38 @@ such file, but we assume most users will use our so let's assume
 you're doing that. *GPL-2.0-or-later* will be expanded to
 *(GPL-2.0-or-later | GPL-3.0-only)*. Example:
 
-***GPL-2.0-or-later*** => ***(GPL-2.0-or-later | GPL-3.0-only)***
+```
+GPL-2.0-or-later => (GPL-2.0-or-later | GPL-3.0-only)
+```
 
 ### License expressions with parenthesises 
 
 All licenses that are have an AND operator apllied to them are grouped together using parenthesises. A license expression like *MIT & Apache-2.0 | GPL-2.0-only* is in this phase transformed into  *(MIT & Apache-2.0) | GPL-2.0-only*. Example:
 
-***MIT & Apache-2.0 | GPL-2.0-only*** => ***(MIT & Apache-2.0) | GPL-2.0-only***
+```
+MIT & Apache-2.0 | GPL-2.0-only => (MIT & Apache-2.0) | GPL-2.0-only
+```
 
 ### Polish notation
 
 In this phase a license expression is turned in to an algebraic expression with polish notaion using *AND* and *OR* and lists. The expression *MIT | BSD-3-Clause* will be trans formed into *OR [MIT, BSD-3-Clause]*. Example:
 
-***MIT & Apache-2.0 | GPL-2.0-only*** => ***OR[AND["MIT", "Apache-2.0"]  , "GPL-2.0-only"]***
+```
+  MIT & Apache-2.0 | GPL-2.0-only => OR[AND["MIT", "Apache-2.0"]  , "GPL-2.0-only"]
+```
 
 ### List of AND expressions
+
+The last round we're taking the OR:ed lists and split them into separate lists. The expression ** will become two list, see example:
+
+```
+OR[AND["MIT", "Apache-2.0"]  , "GPL-2.0-only"] => 
+
+[
+  [MIT, Apache-2.0]
+  [GPL-2.0-only]
+]
+```
 
 
 
