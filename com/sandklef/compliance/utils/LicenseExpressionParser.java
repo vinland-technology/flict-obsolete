@@ -130,7 +130,7 @@ public class LicenseExpressionParser {
     }
 
     public String fixLicenseExpression(String expr) throws LicenseExpressionException {
-        return fixLicenseExpressionHelper(fixOrLaterExpression(expr));
+        return fixLicenseExpressionHelper(expr);
     }
 
     private String fixLicenseExpressionHelper(String expr) throws LicenseExpressionException {
@@ -279,7 +279,8 @@ public class LicenseExpressionParser {
     }
 
     public LicenseExpression parse(String expression) throws LicenseExpressionException, IllegalLicenseExpression {
-        String exprToParse = fixLicenseExpression(expression);
+        String laterAddedExpr = fixOrLaterExpression(expression);
+        String exprToParse = fixLicenseExpression(laterAddedExpr);
         Log.d(LOG_TAG, "parse:       " + expression);
         Log.d(LOG_TAG, "parse fixed: " + exprToParse);
         LicenseExpression le = doParse(exprToParse);

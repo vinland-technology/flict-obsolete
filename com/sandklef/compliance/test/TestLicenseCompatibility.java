@@ -1,26 +1,24 @@
 package com.sandklef.compliance.test;
 
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
-import com.sandklef.compliance.utils.LicenseUtils;
-import com.sandklef.compliance.utils.Log;
+import com.sandklef.compliance.json.JsonLicenseCompatibilityParser;
 
 import java.io.IOException;
 import java.util.Map;
 
 import static com.sandklef.compliance.test.Utils.*;
 
-public class TestLicenseConnector {
+public class TestLicenseCompatibility {
 
 
-    private static final String LOG_TAG = TestLicenseConnector.class.getSimpleName();
+    private static final String LOG_TAG = TestLicenseCompatibility.class.getSimpleName();
 
-    private static boolean aCanUseB(LicenseConnector a, LicenseConnector b) throws LicenseConnector.LicenseConnectorException {
+    private static boolean aCanUseB(LicenseCompatibility a, LicenseCompatibility b) throws LicenseCompatibility.LicenseConnectorException {
         if (a.canUse().contains(b)) {
             return true;
         }
 
-        for (LicenseConnector l : b.canBeUsedBy()) {
+        for (LicenseCompatibility l : b.canBeUsedBy()) {
             if (l.license().spdx().equals(a.license().spdx())) {
                 return true;
             }
@@ -29,20 +27,20 @@ public class TestLicenseConnector {
         return false;
     }
 
-    public static void test() throws IOException, LicenseConnector.LicenseConnectorException {
+    public static void test() throws IOException, LicenseCompatibility.LicenseConnectorException {
         test_simple();
         test_read_json();
     }
 
-    public static void test_simple() throws LicenseConnector.LicenseConnectorException {
+    public static void test_simple() throws LicenseCompatibility.LicenseConnectorException {
         printTestStart("TestLicenseConnector");
 
-        LicenseConnector bsd3Conn = new LicenseConnector(bsd3);
-        LicenseConnector lgpl21Conn = new LicenseConnector(lgpl21);
-        LicenseConnector gpl20Conn = new LicenseConnector(gpl20);
-        LicenseConnector gpl20_laterConn = new LicenseConnector(gpl20_later);
-        LicenseConnector apache20Conn = new LicenseConnector(apache20);
-        LicenseConnector gpl30Conn = new LicenseConnector(gpl30);
+        LicenseCompatibility bsd3Conn = new LicenseCompatibility(bsd3);
+        LicenseCompatibility lgpl21Conn = new LicenseCompatibility(lgpl21);
+        LicenseCompatibility gpl20Conn = new LicenseCompatibility(gpl20);
+        LicenseCompatibility gpl20_laterConn = new LicenseCompatibility(gpl20_later);
+        LicenseCompatibility apache20Conn = new LicenseCompatibility(apache20);
+        LicenseCompatibility gpl30Conn = new LicenseCompatibility(gpl30);
 
         //   bsd3 ---> lgpl21
         lgpl21Conn.addCanUse(bsd3Conn);
@@ -66,13 +64,13 @@ public class TestLicenseConnector {
     }
 
 
-    public static void test_read_json() throws IOException, LicenseConnector.LicenseConnectorException {
-        JsonLicenseConnectionsParser jcp = new JsonLicenseConnectionsParser();
-        Map<String, LicenseConnector> licenseConnectors = JsonLicenseConnectionsParser.readLicenseConnection("licenses/connections/dwheeler.json");
+    public static void test_read_json() throws IOException, LicenseCompatibility.LicenseConnectorException {
+        JsonLicenseCompatibilityParser jcp = new JsonLicenseCompatibilityParser();
+        Map<String, LicenseCompatibility> licenseConnectors = JsonLicenseCompatibilityParser.readLicenseConnection("licenses/connections/dwheeler.json");
 
-        for (Map.Entry<String, LicenseConnector> entry : licenseConnectors.entrySet()) {
+        for (Map.Entry<String, LicenseCompatibility> entry : licenseConnectors.entrySet()) {
             String key = entry.getKey();
-            LicenseConnector value = entry.getValue();
+            LicenseCompatibility value = entry.getValue();
     //        System.out.println(key);
     //            System.out.println(LicenseUtils.listCanBeUsedBy(value));
         }
@@ -101,7 +99,7 @@ public class TestLicenseConnector {
 
     }
 
-    public static void main(String[] args) throws IOException, LicenseConnector.LicenseConnectorException {
+    public static void main(String[] args) throws IOException, LicenseCompatibility.LicenseConnectorException {
         test();
     }
 

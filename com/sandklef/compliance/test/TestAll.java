@@ -8,10 +8,8 @@ import com.sandklef.compliance.json.test.TestLicenseParser;
 import com.sandklef.compliance.utils.LicenseArbiter;
 import com.sandklef.compliance.utils.LicenseExpressionParser;
 import com.sandklef.compliance.utils.LicenseStore;
-import com.sandklef.compliance.utils.Log;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 public class TestAll {
@@ -32,7 +30,7 @@ public class TestAll {
   }
 
   
-    public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+    public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
 
       //  System.out.println("\n");
       //  Log.level(Log.DEBUG);
@@ -139,7 +137,7 @@ public class TestAll {
         System.out.println("\n");
   //      VirtualLicenseBuilderTest.test();
 
-        TestLicenseConnector.test();
+        TestLicenseCompatibility.test();
 
         System.out.println("\nTests finished\n-------------------------");
         System.out.println(" * Test:      " + Utils.counter());

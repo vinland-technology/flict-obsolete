@@ -3,19 +3,16 @@ package com.sandklef.compliance.utils;
 import com.sandklef.compliance.domain.*;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class LicenseUtils {
 
 
     private static final String LOG_TAG = LicenseUtils.class.getSimpleName();
 
-    public static void connectionsPrintDot(PrintStream writer) throws LicenseConnector.LicenseConnectorException {
+    public static void connectionsPrintDot(PrintStream writer) throws LicenseCompatibility.LicenseConnectorException {
         writer.println("digraph depends {\nnode [shape=plaintext]");
-        for ( LicenseConnector lc : LicenseStore.getInstance().connectors().values()) {
-            for (LicenseConnector l : lc.canBeUsedBy()) {
+        for ( LicenseCompatibility lc : LicenseStore.getInstance().connectors().values()) {
+            for (LicenseCompatibility l : lc.canBeUsedBy()) {
                 String from = lc.hasLicense()?lc.license().spdx():lc.licenseGroup().name();
                 String to = l.hasLicense()?l.license().spdx():l.licenseGroup().name();
 
@@ -28,7 +25,7 @@ public class LicenseUtils {
 
 
 
-    public static void verifyLicenses() throws LicenseConnector.LicenseConnectorException {
+    public static void verifyLicenses() throws LicenseCompatibility.LicenseConnectorException {
         Log.d(LOG_TAG, "Verify Licenses and connectors");
         // Verify all licenses either is part of a connector or
         // is part of a group that is part of a connector
@@ -41,11 +38,11 @@ public class LicenseUtils {
             } else {
                 key = license.spdx();
             }
-            LicenseConnector c = LicenseStore.getInstance().connectors().get(key);
+            LicenseCompatibility c = LicenseStore.getInstance().connectors().get(key);
             if (c != null) {
                 Log.d(null, " OK");
             } else {
-                throw new LicenseConnector.LicenseConnectorException("Missing connector for: " + key);
+                throw new LicenseCompatibility.LicenseConnectorException("Missing connector for: " + key);
             }
         }
     }

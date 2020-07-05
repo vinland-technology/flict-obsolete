@@ -13,7 +13,7 @@ public class TestDualLicenses {
 
   private final static String LOG_TAG = TestDualLicenses.class.getSimpleName();
 
-  public static void test() throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void test() throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
     printTestStart("TestDualLicenses");
 
 //    Log.filterTag(LOG_TAG);
@@ -23,7 +23,7 @@ public class TestDualLicenses {
     //Log.level(Log.ERROR);
   }
 
-  public static void main(String[] args) throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void main(String[] args) throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
     test();
   }
   

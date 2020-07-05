@@ -5,14 +5,14 @@ import com.sandklef.compliance.utils.Log;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LicenseConnector {
+public class LicenseCompatibility {
 
-    private static final String LOG_TAG = LicenseConnector.class.getSimpleName();
+    private static final String LOG_TAG = LicenseCompatibility.class.getSimpleName();
 
     private License license;
     private LicenseGroup licenseGroup;
-    private final Set<LicenseConnector> canUse;
-    private final Set<LicenseConnector> canBeUsedBy;
+    private final Set<LicenseCompatibility> canUse;
+    private final Set<LicenseCompatibility> canBeUsedBy;
 
     public static class LicenseConnectorException extends Exception {
         public LicenseConnectorException(String msg) {
@@ -20,19 +20,19 @@ public class LicenseConnector {
         }
     }
 
-    public LicenseConnector(License license) {
+    public LicenseCompatibility(License license) {
         this.license = license;
         canUse = new HashSet<>();
         canBeUsedBy = new HashSet<>();
     }
 
-    public LicenseConnector(LicenseGroup licenseGroup) {
+    public LicenseCompatibility(LicenseGroup licenseGroup) {
         this.licenseGroup = licenseGroup;
         canUse = new HashSet<>();
         canBeUsedBy = new HashSet<>();
     }
 
-    public LicenseConnector(License license, Set<LicenseConnector> canUse, Set<LicenseConnector> canBeUsedBy) {
+    public LicenseCompatibility(License license, Set<LicenseCompatibility> canUse, Set<LicenseCompatibility> canBeUsedBy) {
         this.license = license;
         this.canUse = canUse;
         this.canBeUsedBy = canBeUsedBy;
@@ -70,20 +70,20 @@ public class LicenseConnector {
         return licenseGroup.memberLicenses().contains(license);
     }
 
-    public Set<LicenseConnector> canUse() {
+    public Set<LicenseCompatibility> canUse() {
         return canUse;
     }
 
-    public Set<LicenseConnector> canBeUsedBy() {
+    public Set<LicenseCompatibility> canBeUsedBy() {
         return canBeUsedBy;
     }
 
-    public void addCanUse(LicenseConnector licenseConnector) {
+    public void addCanUse(LicenseCompatibility licenseConnector) {
         canUse.add(licenseConnector);
         licenseConnector.canBeUsedBy.add(this);
     }
 
-    public void canBeUsedBy(LicenseConnector licenseConnector) {
+    public void canBeUsedBy(LicenseCompatibility licenseConnector) {
         licenseConnector.canUse.add(this);
         this.canBeUsedBy.add(licenseConnector);
         Log.d(LOG_TAG, "canBeUsedBy: " + licenseConnector );

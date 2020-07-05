@@ -22,7 +22,7 @@ public class LicenseStore {
   //TODO: add support for Private use, Patent claims, Trademark, Notice
   private final Map<String, License> licenses;
   private final Map<String, LicenseGroup> licenseGroups;
-  private Map<String, LicenseConnector> connectors;
+  private Map<String, LicenseCompatibility> connectors;
 
   public Map<String, List<License>> laterLicenses() {
     return laterLicenses;
@@ -102,9 +102,9 @@ public class LicenseStore {
     return licenseGroup;
   }
 
-  public LicenseConnector connector(License license) throws LicenseConnector.LicenseConnectorException {
+  public LicenseCompatibility connector(License license) throws LicenseCompatibility.LicenseConnectorException {
     // Try get directly via
-    LicenseConnector connector = connectors.get(license.spdx());
+    LicenseCompatibility connector = connectors.get(license.spdx());
     if (connector!=null) {
       return connector;
     }
@@ -120,15 +120,15 @@ public class LicenseStore {
       return connector;
     }
 
-    throw new LicenseConnector.LicenseConnectorException("Could not find connector for: " + license.info());
+    throw new LicenseCompatibility.LicenseConnectorException("Could not find connector for: " + license.info());
   }
 
 
-  public Map<String, LicenseConnector> connectors() {
+  public Map<String, LicenseCompatibility> connectors() {
     return connectors;
   }
 
-  public void connector(Map<String, LicenseConnector> connector) {
+  public void connector(Map<String, LicenseCompatibility> connector) {
         this.connectors = connector;
   }
 }

@@ -19,14 +19,14 @@ public class LicenseChecker {
 
     private enum execMode {
         PRINT_LICENSES,
-        PRINT_CONNECTIONS,
+        PRINT_COMPATIBILITIES,
         PRINT_COMPONENT,
         PRINT_COMPONENT_LICENSES,
         PRINT_EXPRESSION,
         CHECK_VIOLATION
     }
 
-    private static final String CONNECTOR_FILE_CLI = "connector-file";
+    private static final String COMPATIBILITIES_FILE_CLI = "compatibility-file";
     private static final String COMPONENT_FILE_CLI = "component-file";
     private static final String POLICY_FILE_CLI = "policy-file";
     private static final String LICENSE_DIR = "license-dir";
@@ -49,7 +49,7 @@ public class LicenseChecker {
 
             Session session = Session.getInstance();
             session.lLicenseDir((String)values.get(LICENSE_DIR));
-            session.connectorFile((String)values.get(CONNECTOR_FILE_CLI));
+            session.connectorFile((String)values.get(COMPATIBILITIES_FILE_CLI));
             session.policyFile((String)values.get(POLICY_FILE_CLI));
             session.componentFile((String)values.get(COMPONENT_FILE_CLI));
             session.laterFile((String)values.get(LATER_FILE_CLI));
@@ -60,7 +60,7 @@ public class LicenseChecker {
             Log.d(LOG_TAG, "Connector file: " + session.connectorFile());
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir(session.lLicenseDir()));
             LicenseStore.getInstance().addLicenseGroups(new JsonLicenseParser().readLicenseGroupDir(session.lLicenseDir()));
-            LicenseStore.getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection(session.connectorFile()));
+            LicenseStore.getInstance().connector(new JsonLicenseCompatibilityParser().readLicenseConnection(session.connectorFile()));
             LicenseStore.getInstance().laterLicenses((new JsonLaterDefinitionParser()).readLaterDefinition(session.laterFile()));
             Log.d(LOG_TAG, "licenses read: " + LicenseStore.getInstance().licenses().size());
 
@@ -93,7 +93,7 @@ public class LicenseChecker {
                 case PRINT_LICENSES:
                     licensePrint(writer);
                     break;
-                case PRINT_CONNECTIONS:
+                case PRINT_COMPATIBILITIES:
                     LicenseUtils.connectionsPrintDot(writer);
                     break;
                 case PRINT_COMPONENT:
@@ -117,8 +117,10 @@ public class LicenseChecker {
                     String expr = (String) values.get("expression");
                     System.out.println("\nLicense expression:\n--------------------------------\n" + expr);
                     LicenseExpressionParser lep = new LicenseExpressionParser();
-                    String expr1 = lep.fixLicenseExpression(expr);
-                    System.out.println("\nLicense expression with parenthesises:\n--------------------------------\n" + expr1);
+                    String laterExpr = lep.fixOrLaterExpression(expr);
+                    System.out.println("\nLicense expression with later:\n--------------------------------\n" + laterExpr);
+                    String fixedExpr = lep.fixLicenseExpression(laterExpr);
+                    System.out.println("\nLicense expression with parenthesises:\n--------------------------------\n" + fixedExpr);
                     LicenseExpression licenseExpression = lep.parse(expr);
                     System.out.println("\nLicenseExpression:\n--------------------------------\n" + licenseExpression);
                     List<List<License>> licenes = licenseExpression.licenseList();
@@ -128,7 +130,7 @@ public class LicenseChecker {
                     throw new IllegalStateException("Unexpected value: " + em);
             }
 
-        } catch (LicenseExpressionException | IllegalLicenseExpression | LicenseConnector.LicenseConnectorException e) {
+        } catch (LicenseExpressionException | IllegalLicenseExpression | LicenseCompatibility.LicenseConnectorException e) {
             System.out.println("Uh oh, something wicked this way comes: " + e);
         }
 
@@ -148,7 +150,7 @@ public class LicenseChecker {
         options.addOption(new Option("o", "output", true, "Output to file."));
         options.addOption(new Option("e", "expression", true, "Parse and print a license expression (for debug)"));
         options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
-        options.addOption(new Option("cf", CONNECTOR_FILE_CLI, true, "File with license connectors."));
+        options.addOption(new Option("cf", COMPATIBILITIES_FILE_CLI, true, "File with license connectors."));
         options.addOption(new Option("v", "violation", false, "Check for violations."));
         options.addOption(new Option("ld", LICENSE_DIR, true, "Directory with license files."));
         options.addOption(new Option("p", POLICY_FILE_CLI, true, "Path to policy file."));
@@ -168,7 +170,7 @@ public class LicenseChecker {
         // Prepare map wth default values
         Map<String, Object> values = new HashMap<>();
         values.put(COMPONENT_FILE_CLI, null);
-        values.put(CONNECTOR_FILE_CLI, "licenses/connections/dwheeler.json");
+        values.put(COMPATIBILITIES_FILE_CLI, "licenses/connections/dwheeler.json");
         values.put(LATER_FILE_CLI, "licenses/later/later-definitions.json");
         values.put("output", null);
         values.put(LICENSE_DIR, "licenses/json");
@@ -197,14 +199,14 @@ public class LicenseChecker {
                 Log.filterTag(line.getOptionValue("debug-class"));
             }
             if (line.hasOption("connection-graph")) {
-                values.put("mode", execMode.PRINT_CONNECTIONS);
+                values.put("mode", execMode.PRINT_COMPATIBILITIES);
             }
             if (line.hasOption("debug-component-licenses")) {
                 values.put("mode", execMode.PRINT_COMPONENT_LICENSES);
             }
-            if (line.hasOption(CONNECTOR_FILE_CLI)) {
-                Log.d(LOG_TAG, "Connector file: " + line.getOptionValue(CONNECTOR_FILE_CLI));
-                values.put(CONNECTOR_FILE_CLI, line.getOptionValue(CONNECTOR_FILE_CLI));
+            if (line.hasOption(COMPATIBILITIES_FILE_CLI)) {
+                Log.d(LOG_TAG, "Connector file: " + line.getOptionValue(COMPATIBILITIES_FILE_CLI));
+                values.put(COMPATIBILITIES_FILE_CLI, line.getOptionValue(COMPATIBILITIES_FILE_CLI));
             }
             if (line.hasOption("violation")) {
                 Log.d(LOG_TAG, " Checking violations");
@@ -298,7 +300,7 @@ public class LicenseChecker {
         try {
             String str = LicenseArbiter.componentsWithLicenses(c, null);
             System.out.println(str);
-        } catch (LicenseConnector.LicenseConnectorException e) {
+        } catch (LicenseCompatibility.LicenseConnectorException e) {
             e.printStackTrace();
         }
 
@@ -326,7 +328,7 @@ public class LicenseChecker {
         try {
             report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
             writer.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report) + "\n");
-        } catch (LicenseConnector.LicenseConnectorException e) {
+        } catch (LicenseCompatibility.LicenseConnectorException e) {
             e.printStackTrace();
         }
 

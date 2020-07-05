@@ -6,19 +6,18 @@ package com.sandklef.compliance.test;
 
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.LicenseArbiter;
-import com.sandklef.compliance.utils.Log;
 
 import static com.sandklef.compliance.test.Utils.*;
 
 public class TestCanAUseB {
 
-  private static boolean testCanAUseB(License user, License usee) throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  private static boolean testCanAUseB(License user, License usee) throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
     boolean ret = LicenseArbiter.aCanUseB(user,usee);
 //    System.out.println(user.spdxTag() + " using " + usee.spdxTag() + " :::  " + ret);
     return ret;
   }
 
-  public static void test() throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void test() throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
     printTestStart("TestCanAUseB");
     //Log.level(Log.DEBUG);
     assertHelper("gpl2 can NOT use apache2", !testCanAUseB(gpl20, apache20));
@@ -51,7 +50,7 @@ public class TestCanAUseB {
   }
 
 
-  public static void main(String[] args) throws IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void main(String[] args) throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
         test();
   }
 }

@@ -8,7 +8,6 @@ import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonComponentParser;
 import com.sandklef.compliance.json.JsonPolicyParser;
 import com.sandklef.compliance.utils.LicenseArbiter;
-import com.sandklef.compliance.utils.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class TestPolicy {
 
   private static final String LOG_TAG = TestPolicy.class.getSimpleName();
 
-  public static void test() throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void test() throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
     useAsserts=true;
     printTestStart("TestPolicy");
     test1();
@@ -29,7 +28,7 @@ public class TestPolicy {
     test4();
   }
 
-  public static void test2() throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void test2() throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
     JsonPolicyParser pp = new JsonPolicyParser();
     LicensePolicy policy = pp.readLicensePolicy("com/sandklef/compliance/json/test/blacklist-apache.json");
 
@@ -46,7 +45,7 @@ public class TestPolicy {
 //    System.exit(0);
   }
 
-  public static void test1() throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void test1() throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
     /*
         policy.addWhiteLicense(apache2);
         policy.addGrayLicense(lgpl2);
@@ -111,7 +110,7 @@ public class TestPolicy {
 
     //Report invalidReport = LicenseArbiter.report(invalidComponent(), policy);
 
-  public static void test3() throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void test3() throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
 
     printSubTestStart("Valid but concerns and conclusions");
 
@@ -151,7 +150,7 @@ public class TestPolicy {
 
   }
 
-  public static void test4() throws LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void test4() throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
 
     printSubTestStart("Valid but concerns, conclusions and violation");
 
@@ -194,7 +193,7 @@ public class TestPolicy {
   }
 
 
-  public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseConnector.LicenseConnectorException {
+  public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
     test();
   }
 }

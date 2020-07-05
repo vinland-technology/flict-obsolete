@@ -1,7 +1,7 @@
 package com.sandklef.compliance.test;
 
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.json.JsonLicenseConnectionsParser;
+import com.sandklef.compliance.json.JsonLicenseCompatibilityParser;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
@@ -56,7 +56,7 @@ public class Utils {
             successCounter = 0;
             fails = new ArrayList<>();
             LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("licenses/json"));
-            LicenseStore.getInstance().connector(new JsonLicenseConnectionsParser().readLicenseConnection("licenses/connections/dwheeler.json"));
+            LicenseStore.getInstance().connector(new JsonLicenseCompatibilityParser().readLicenseConnection("licenses/connections/dwheeler.json"));
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
             lgpl30 = LicenseStore.getInstance().license(LGPL_3_0_SPDX);
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_1_SPDX);
