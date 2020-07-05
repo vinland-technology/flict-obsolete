@@ -34,7 +34,7 @@ JAVA_SOURCES=\
   com/sandklef/compliance/exporter/TestExporterFactory.java \
   com/sandklef/compliance/json/JsonUtils.java \
   com/sandklef/compliance/json/JsonComponentParser.java \
-  com/sandklef/compliance/json/JsonLicenseConnectionsParser.java \
+  com/sandklef/compliance/json/JsonLicenseCompatibilityParser.java \
   com/sandklef/compliance/cli/LicenseChecker.java \
   com/sandklef/compliance/exporter/ReportExporter.java \
   com/sandklef/compliance/exporter/ReportExporterFactory.java \
@@ -44,7 +44,7 @@ JAVA_SOURCES=\
   com/sandklef/compliance/utils/VirtualLicenseBuilder.java \
   com/sandklef/compliance/domain/LicenseExpression.java \
   com/sandklef/compliance/utils/LicenseExpressionParser.java \
-  com/sandklef/compliance/domain/LicenseConnector.java \
+  com/sandklef/compliance/domain/LicenseCompatibility.java \
   com/sandklef/compliance/domain/MetaData.java \
 
 
@@ -56,7 +56,7 @@ TEST_SOURCES=\
   com/sandklef/compliance/test/TestPolicy.java \
   com/sandklef/compliance/test/TestDualLicenses.java \
   com/sandklef/compliance/json/test/TestLicenseParser.java \
-  com/sandklef/compliance/test/TestLicenseConnector.java \
+  com/sandklef/compliance/test/TestLicenseCompatibility.java \
   com/sandklef/compliance/json/test/TestJsonComponentParser.java \
 
 
