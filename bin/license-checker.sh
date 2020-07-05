@@ -37,8 +37,7 @@ do
             PDF_FILE=$2
             ARGS="$ARGS --markdown"
             TMP_MD=tmp.md
-            rm $TMP_MD
-            shift
+            rm -f $TMP_MD
             ;;
         "--connection-graph"|"-cg")
             CONNECTION_GRAPH=true
@@ -61,27 +60,33 @@ fi
 
 run()
 {
+    echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $* > latest.tmp
     echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $* | sh
-    exit $?
+    export COMPLIANCE_RET=$?
 }
 
 
 
 #echo THESE: $ARGS
-if [ "$CONNECTION_GRAPH" = "true" ]
+if [ "$CONNECTION_GRAPH" = "true" ] || [ "$TMP_MD" != "" ]
 then
     TMP_DOT=tmp.dot
     rm -f $TMP_DOT
     FILE_NAME=license-connections
     run -cg -o ${FILE_NAME}.dot &&  dot -Tpdf ${FILE_NAME}.dot  > ${FILE_NAME}.pdf
     echo created ${FILE_NAME}.pdf
-elif [ "$TMP_MD" != "" ]
+#    exit $COMPLIANCE_RET
+fi
+
+if [ "$TMP_MD" != "" ]
 then
+    echo "$ARGS"
     run > $TMP_MD
     pandoc $TMP_MD -o tmp.pdf
-    compliance-tool.sh libcairo2
-    pdfunite tmp.pdf libcairo2.pdf report.pdf
+    pdfunite tmp.pdf ${FILE_NAME}.pdf report.pdf
     evince report.pdf
+    exit $COMPLIANCE_RET
 else
     run
 fi
+
