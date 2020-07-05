@@ -31,7 +31,7 @@ you're doing that. *GPL-2.0-or-later* will be expanded to
 
 All licenses that are have an AND operator apllied to them are grouped together using parenthesises. A license expression like *MIT & Apache-2.0 | GPL-2.0-only* is in this phase transformed into  *(MIT & Apache-2.0) | GPL-2.0-only*. Example:
 
-*MIT & Apache-2.0 | GPL-2.0-only* => *(MIT & Apache-2.0) | GPL-2.0-only*
+***MIT & Apache-2.0 | GPL-2.0-only*** => ***(MIT & Apache-2.0) | GPL-2.0-only***
 
 ### Polish notation
 
