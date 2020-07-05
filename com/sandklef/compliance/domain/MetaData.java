@@ -56,7 +56,7 @@ public class MetaData {
         }
 
         long years = tmpTime.until( stop, YEARS );
-        System.out.println(" tmpTime: " + years);
+        //System.out.println(" tmpTime: " + years);
         tmpTime = tmpTime.plusYears( years );
         possiblyAdd(years, "year", sb);
 
