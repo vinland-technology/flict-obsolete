@@ -234,6 +234,10 @@ make
 make test
 ~~~
 
+# The way License Checker works
+
+Check out: (doc/how.md)
+
 # Example
 
 The below checks license checker itself. The component License Checker
