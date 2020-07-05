@@ -170,14 +170,14 @@ public class LicenseChecker {
         // Prepare map wth default values
         Map<String, Object> values = new HashMap<>();
         values.put(COMPONENT_FILE_CLI, null);
-        values.put(COMPATIBILITIES_FILE_CLI, "licenses/connections/dwheeler.json");
+        values.put(COMPATIBILITIES_FILE_CLI, "licenses/connections/license-checker.json");
         values.put(LATER_FILE_CLI, "licenses/later/later-definitions.json");
         values.put("output", null);
         values.put(LICENSE_DIR, "licenses/json");
         values.put(POLICY_FILE_CLI, null);
         values.put("policy", null);
         values.put("expression", null);
-        values.put("mode", execMode.PRINT_LICENSES);
+        values.put("mode", execMode.CHECK_VIOLATION);
         return values;
     }
 
@@ -328,8 +328,13 @@ public class LicenseChecker {
         try {
             report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
             writer.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report) + "\n");
+            if (report.compliantCount()==0) {
+                System.exit(3);
+            }
+            System.exit(0);
         } catch (LicenseCompatibility.LicenseConnectorException e) {
             e.printStackTrace();
+            System.exit(2);
         }
 
     }

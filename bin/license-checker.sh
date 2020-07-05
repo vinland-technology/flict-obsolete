@@ -62,6 +62,7 @@ fi
 run()
 {
     echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_ARGS" $ARGS $* | sh
+    exit $?
 }
 
 

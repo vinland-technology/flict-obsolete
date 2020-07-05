@@ -1,0 +1,22 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "Program",
+        "license": "GPL-2.0-only",
+        "dependencies": [
+            {
+                "name": "lib1",
+                "license": "MIT&Zlib",
+                "dependencies": []
+            },
+            {
+                "name": "lib2",
+                "license": "Apache-2.0 | LGPL-2.1-only",
+                "dependencies": []
+            }            
+        ]
+    }
+}

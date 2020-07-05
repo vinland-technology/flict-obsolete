@@ -26,15 +26,26 @@ test_compliance()
     TESTS=$(( $TESTS + 1 ))
     COMPONENT="$1"
     EXPECTED_COUNT=$2
+    EXPECTED_RET=$3
     printf " * %-50s" "$(basename $COMPONENT): "
     ${INSTALL_DIR}/bin/license-checker.sh \
                            -v \
-                           -cf "${INSTALL_DIR}/licenses/connections/sgl.json" \
+                           -cf "${INSTALL_DIR}/licenses/connections/license-checker.json" \
                            -ld "${INSTALL_DIR}/licenses/json" \
                            -c "${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}" \
                            > $TMP_FILE
+    ACTUAL_RET=$?
     ACTUAL_COUNT=$(cat $TMP_FILE | grep "Compliant license combinations:" | cut -d":" -f 2)
 
+    
+    if [ $ACTUAL_RET -ne $EXPECTED_RET ]
+    then
+        echo " Fail, expected return value $EXPECTED_RET but got $ACTUAL_RET"
+        FAILS=$(( $FAILS + 1 ))
+        cat $TMP_FILE
+        return
+    fi
+    
     if [ $ACTUAL_COUNT -ne $EXPECTED_COUNT ]
     then
         echo " Fail, expected $EXPECTED_COUNT but got $ACTUAL_COUNT"
@@ -51,21 +62,21 @@ test_compliance()
 test_compliances()
 {
     echo "Testing compliance"
-    test_compliance "simple.json" 1
-    test_compliance "simple-dep.json" 1
-    test_compliance "simple-deps.json" 1
-    test_compliance "simple-deps-false.json" 0
-    test_compliance "simple-dual.json" 2
-    test_compliance "simple-many.json" 1
-    test_compliance "simple-dep-many.json" 1
-    test_compliance "simple-dep-many-false.json" 0
-    test_compliance "simple-dep-dual.json" 1
-    test_compliance "simple-dep-dual-false.json" 0
-    test_compliance "simple-dep-duals.json" 2 #  out of 4
-    test_compliance "simple-dep-duals-false.json" 0
-    test_compliance "semi.json" 2
-    test_compliance "semi-dep.json" 2
-    test_compliance "simple-dep-manys.json" 0
+    test_compliance "simple.json" 1 0
+    test_compliance "simple-dep.json" 1 0
+    test_compliance "simple-deps.json" 1 0 
+    test_compliance "simple-deps-false.json" 0 3
+    test_compliance "simple-dual.json" 2 0
+    test_compliance "simple-many.json" 1 0
+    test_compliance "simple-dep-many.json" 1 0
+    test_compliance "simple-dep-many-false.json" 0 3
+    test_compliance "simple-dep-dual.json" 1 0
+    test_compliance "simple-dep-dual-false.json" 0 3
+    test_compliance "simple-dep-duals.json" 2 0 #  out of 4
+    test_compliance "simple-dep-duals-false.json" 0 3
+    test_compliance "semi.json" 2 0
+    test_compliance "semi-dep.json" 2 0
+    test_compliance "simple-dep-manys.json" 0 3
 }
 
 test_compliances
