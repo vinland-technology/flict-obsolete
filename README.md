@@ -102,7 +102,8 @@ licenses as specified FLOSS License Compatibility Graph project. Using
 this graph is recommended and if you lack some license we suggest you
 get in contact with that project to update their graph. If you still
 would like to use your own graph you can use the command line option
-```--connector-file```.
+```--compatibility-file```.
+
 
 ## Policy (no built in, optional)
 
