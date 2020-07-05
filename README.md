@@ -83,11 +83,12 @@ A license expression can consist of:
 
 * *(* and *)*
 
+
 * *&*
 
 * *|*
 
-and these are interpreted according to boolean algebra. Examples of expressions:
+and these are interpreted according to boolean algebra. A license expression example:
 
 ```
  MIT & (Apache-2.0 | BSD-3-Clause)
