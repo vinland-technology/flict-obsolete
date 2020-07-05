@@ -68,7 +68,11 @@ you're doing that. *GPL-2.0-or-later* will be expanded to
 *(GPL-2.0-or-later | GPL-3.0-only)*. Example:
 
 ```
-GPL-2.0-or-later => (GPL-2.0-or-later | GPL-3.0-only)
+  GPL-2.0-or-later
+
+  =>
+
+  (GPL-2.0-or-later | GPL-3.0-only)
 ```
 
 ### License expressions with parenthesises 
