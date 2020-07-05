@@ -185,9 +185,9 @@ License Checker is released under GPLv3(https://www.gnu.org/licenses/gpl-3.0.en.
 
 ## Required java components
 
-* GSON (downloaded automatically first time you type make)
+* GSON (downloaded automatically with configure)
 
-* Apache commons (downloaded automatically first time you type make)
+* Apache common (downloaded automatically with configure)
 
 ### Install required dependencies
 
