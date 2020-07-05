@@ -54,7 +54,7 @@ A license is specified using:
 
 ```name``` - full name (SPDX) of the license
 
-```spdx``` - the SPDX identifer of the license
+```spdx``` - the SPDX identifer of the license. Can be an algebraic expression.
 
 Here's an example:
 
@@ -77,7 +77,21 @@ If you want to provide your own licenses you need to put them in a
 directory and pass that directory to this tool using the option
 ```--license-dir```.
 
+### License expressions
 
+A license expression can consist of:
+
+* *(* and *)*
+
+* *&*
+
+* *|*
+
+and these are interpreted according to boolean algebra. Examples of expressions:
+
+```
+ MIT & (Apache-2.0 | BSD-3-Clause)
+```
 
 ## License graph (built in or custom)
 
