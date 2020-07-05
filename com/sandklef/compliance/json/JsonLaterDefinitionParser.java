@@ -53,7 +53,7 @@ public class JsonLaterDefinitionParser {
         List<LaterDefinitionIntermediate> laterGson = gson.fromJson(laterJson, new TypeToken<List<LaterDefinitionIntermediate>>() {
         }.getType());
 
-        System.out.println("  * " + laterGson);
+      //  System.out.println("  * " + laterGson);
         Map<String, List<License>> laters = new HashMap<>();
         for (LaterDefinitionIntermediate ld : laterGson) {
             laters.put(ld.spdx, convert(ld.later));
