@@ -4,6 +4,8 @@ We can split the functionality of this tool in to two main parts:
 
 * parsing and simplifying the licenses
 
+* combine component and dependencies into a list of all possible combinations
+
 * checking if a combination is compliant
 
 ## Parse and simplify licenses
@@ -27,7 +29,7 @@ simple expression (with only AND operation allowed). Example:
   lib1 (MIT&Zlib)   lib2 (Apache-2.0 | LGPL-2.1-only)
 ```
 
-Should be translated to two different cobinations of the same component:
+Should be translated to two different combinations of the same component:
 
 ```
    Program (GPL-2.0-only)
