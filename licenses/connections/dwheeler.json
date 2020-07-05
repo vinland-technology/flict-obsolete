@@ -3,7 +3,7 @@
         "software":"License Policy Checker",
         "version":"0.1"
     },
-    "connections": [
+    "compatibilities": [
         {
             "spdx":"PD",
             "used_by": [ "MIT" , "X11"]

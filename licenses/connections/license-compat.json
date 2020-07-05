@@ -1,6 +1,9 @@
 {
     "meta": {
-        "software":"License Policy Checker",
+        "software":"FOSS License Compatibility Graph",
+        "url":"https://gitlab.com/sandklef/foss-license-compat-graph",
+        "license": "CC0-1.0",
+        "copyright": "2020, Henrik Sandklef",
         "version":"0.1"
     },
     "compatibilities": [
@@ -10,6 +13,8 @@
         },
         {
             "group_name":"permissive",
+            "licenses": ["MIT" ,
+                         "X11"],
             "used_by": [ "BSD-3-Clause"]
         },
         {
@@ -33,12 +38,6 @@
         {
             "spdx":"MPL-1.1",
             "used_by": []
-        },
-        {
-            "spdx": "LGPL-2.0-only",
-            "used_by": [
-                "LGPL-2.1-only"
-            ]
         },
         {
             "spdx": "LGPL-2.1-only",
@@ -76,7 +75,7 @@
         },
         {
             "spdx": "GPL-2.0-or-later",
-            "used_by": [ "GPL-2.0-only",
+            "used_by": [ "GPL-2.0-only" ,
 			 "GPL-3.0-only",
 			 "GPL-3.0-or-later" ]
         },
@@ -90,3 +89,4 @@
         }
     ]
 }
+
