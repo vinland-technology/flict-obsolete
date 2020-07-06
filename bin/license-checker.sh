@@ -88,5 +88,6 @@ then
     exit $COMPLIANCE_RET
 else
     run
+    exit $COMPLIANCE_RET
 fi
 
