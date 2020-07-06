@@ -4,7 +4,7 @@
         "version":"0.1"
     },
     "compatibilities": [
-        {
+       {
             "spdx":"PD",
             "used_by": [ "MIT" , "X11"]
         },
