@@ -29,7 +29,6 @@ test_combination_count()
     printf " * %-50s" "$(basename $COMPONENT): "
     ACTUAL_COUNT=$(${INSTALL_DIR}/bin/license-checker.sh \
                                  --debug-component-license \
-                                 -cf "${INSTALL_DIR}/licenses/connections/sgl.json" \
                                  -ld "${INSTALL_DIR}/licenses/json" \
                                  -c "${COMPONENT_DIR}/var/test/combination-components/${COMPONENT}"  | \
                        grep "^{" | sort -u | uniq | wc -l)

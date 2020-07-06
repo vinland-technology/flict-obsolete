@@ -28,12 +28,11 @@ test_compliance()
     EXPECTED_COUNT=$2
     EXPECTED_RET=$3
     printf " * %-50s" "$(basename $COMPONENT): "
-    ${INSTALL_DIR}/bin/license-checker.sh \
+    CMD="${INSTALL_DIR}/bin/license-checker.sh \
                            -v \
-                           -cf "${INSTALL_DIR}/licenses/connections/license-checker.json" \
-                           -ld "${INSTALL_DIR}/licenses/json" \
-                           -c "${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}" \
-                           > $TMP_FILE
+                           -ld \""${INSTALL_DIR}/licenses/json\"" \
+                           -c \""${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}\"" "
+    $CMD > $TMP_FILE
     ACTUAL_RET=$?
     ACTUAL_COUNT=$(cat $TMP_FILE | grep "Compliant license combinations:" | cut -d":" -f 2)
 
@@ -42,6 +41,7 @@ test_compliance()
     then
         echo " Fail, expected return value $EXPECTED_RET but got $ACTUAL_RET"
         FAILS=$(( $FAILS + 1 ))
+        echo "command line: $CMD"
         cat $TMP_FILE
         return
     fi
@@ -50,6 +50,7 @@ test_compliance()
     then
         echo " Fail, expected $EXPECTED_COUNT but got $ACTUAL_COUNT"
         FAILS=$(( $FAILS + 1 ))
+        echo "command line: $CMD"
         cat $TMP_FILE
 #        echo ${INSTALL_DIR}/bin/license-checker.sh                                  --debug-component-license -cf "${INSTALL_DIR}/licenses/connections/sgl.json"  -l "${INSTALL_DIR}/licenses/json" -c "${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}" 
         return

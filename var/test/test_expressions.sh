@@ -29,7 +29,6 @@ test_expression()
 
     printf " * %-50s" $(echo "$EXPR:" | sed 's, ,,g')
     ACTUAL_EXPR=$(${INSTALL_DIR}/bin/license-checker.sh \
-                                -cf "${INSTALL_DIR}/licenses/connections/sgl.json" \
                                 -ld "${INSTALL_DIR}/licenses/json" \
                                 -e "$EXPR" | \
                       grep -A 10 "List of License Lists" | \
