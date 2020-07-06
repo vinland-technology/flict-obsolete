@@ -59,6 +59,8 @@ TEST_SOURCES=\
   com/sandklef/compliance/test/TestLicenseCompatibility.java \
   com/sandklef/compliance/json/test/TestJsonComponentParser.java \
 
+DOCS := manual how
+FORMATS := pdf text html
 
 CLASSES=$(JAVA_SOURCES:.java=.class)
 TEST_CLASSES=$(TEST_SOURCES:.java=.class)
@@ -71,6 +73,8 @@ WINSTONE_JAR=$(LIB_DIR)/winstone.jar
 #JUNIT_V_JAR=$(LIB_DIR)/junit-vintage-engine-5.6.2.jar
 CLASSPATH=.:$(LIB_DIR)/$(CLI_JAR):$(LIB_DIR)/$(GSON_JAR)
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
+OUT_DIR=result
+
 
 %.class:%.java 
 	javac  -Xdiags:verbose -Xlint:unchecked -cp "$(CLASSPATH)" $<
@@ -146,7 +150,22 @@ test: all $(TEST_CLASSES) Makefile
 
 cg: connector-grahp
 
+.PHONY: doc
+doc: $(OUT_DIR)
+	@echo "Creating misc formats"
+	@for format in $(FORMATS); do \
+		echo -n " * $(OUT_DIR)/manual.$${format}: " && \
+		pandoc doc/manual.md -o  $(OUT_DIR)/manual.$${format} && \
+		echo "OK" || exit ; \
+	done; 
+
 connector-grahp:
 	bin/license-checker.sh -cg -o license.dot
 	dot -Tpdf license.dot > license.pdf
 	file  license.pdf
+
+#
+# Create outpur dir
+#
+$(OUT_DIR):
+	@mkdir -p $(OUT_DIR)
