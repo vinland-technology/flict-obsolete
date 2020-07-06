@@ -8,7 +8,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 License Checker is an Free and Open Source Software compliance tool
 aimed at detecting license violations either with or without a
-policy. It assumes every component has a known license state.
+policy. It assumes every component has a known license expression.
 
 License Checker can also conclude outbound licenses for your component.
 
@@ -181,7 +181,7 @@ Using this format you can create txt, html, pdf and what format pandoc can creat
 
 # License of the License Checker
 
-License Checker is released under GPLv3(https://www.gnu.org/licenses/gpl-3.0.en.html)
+License Checker is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 # Building
 
@@ -197,7 +197,7 @@ License Checker is released under GPLv3(https://www.gnu.org/licenses/gpl-3.0.en.
 
 * wget
 
-* Java dependencies will be download when you configure
+* Extra Java components will be download when you configure
 
 ## Required java components
 
