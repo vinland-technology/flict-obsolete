@@ -1,0 +1,22 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "Awesome Program",
+        "license": "GPL-2.0-only",
+        "dependencies": [
+            {
+                "name": "Cool Library",
+                "license": "GPL-2.0-only | Apache-2.0",
+                "dependencies": []
+            },
+            {
+                "name": "Crazy Library",
+                "license": "GPL-2.0-or-later & MIT",
+                "dependencies": []
+            }
+        ]
+    }
+}
