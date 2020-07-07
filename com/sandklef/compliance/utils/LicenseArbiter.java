@@ -99,9 +99,25 @@ public class LicenseArbiter {
             return components;
         }
 
+
+
+        private String toStringHelper(InterimComponent iComponent, String indent) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(indent);
+            sb.append(iComponent.component().name());
+            sb.append("   ");
+            sb.append(iComponent.licenses());
+            for (InterimComponent d : iComponent.dependencies()) {
+                sb.append("\n");
+                sb.append(toStringHelper(d, indent + " |  " ));
+            }
+            return sb.toString();
+        }
+
         @Override
         public String toString() {
-            return "{ \"" + component + "\", \"" + licenses + "\"  " + id + " " + dependencies + "}";
+//            return "{ \"" + component + "\", \"" + licenses + "\"  " + dependencies + "}";
+            return toStringHelper(this, "  ");
         }
     }
 

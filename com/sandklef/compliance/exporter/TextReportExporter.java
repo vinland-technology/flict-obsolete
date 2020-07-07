@@ -143,10 +143,16 @@ public class TextReportExporter implements ReportExporter {
 
 
         // TODO: format properly
-        sb.append("allowed:" + report.complianAllowedtPaths() + "\n\n\n");
-        sb.append("gray:   " + report.compliantGrayPaths() + "\n\n\n");
-        sb.append("denied:   " + report.nonCompliantPaths() + "\n\n\n");
-
+        sb.append("\n");
+        sb.append("Allowed combinations:\n-------------------------------------\n");
+        sb.append(report.complianAllowedtPaths());
+        sb.append("\n\n");
+        sb.append("Allowed and gray combinations:\n-------------------------------------\n");
+        sb.append(report.compliantGrayPaths());
+        sb.append("\n\n");
+        sb.append("Allowed but denied combinations:\n-------------------------------------\n");
+        sb.append(report.nonCompliantPaths());
+        sb.append("\n");
     }
 
     private String pathComment(int pathCount) {

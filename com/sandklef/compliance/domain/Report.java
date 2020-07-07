@@ -39,11 +39,11 @@ public class Report {
 
         @Override
         public String toString() {
-            return "\n[" +
-                    "\n  color=" + type +
-                    "\n  component=" + component +
-                    "\n  compliant=" + compliant +
-                    "]\n\n";
+            return "" +
+                    "\n  policy:    " + type +
+                    "\n  compliant: " + compliant +
+                    "\n  component: \n" + component +
+                    "\n\n";
         }
     }
 
