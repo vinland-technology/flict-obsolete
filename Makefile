@@ -59,7 +59,7 @@ TEST_SOURCES=\
   com/sandklef/compliance/test/TestLicenseCompatibility.java \
   com/sandklef/compliance/json/test/TestJsonComponentParser.java \
 
-DOCS := manual how
+DOCS := manual design
 FORMATS := pdf text html
 
 CLASSES=$(JAVA_SOURCES:.java=.class)
