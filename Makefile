@@ -152,11 +152,14 @@ cg: connector-grahp
 
 .PHONY: doc
 doc: $(OUT_DIR)
-	@echo "Creating misc formats"
-	@for format in $(FORMATS); do \
-		echo -n " * $(OUT_DIR)/manual.$${format}: " && \
-		pandoc doc/manual.md -o  $(OUT_DIR)/manual.$${format} && \
+	@echo "Creating docs in misc formats"
+	@for doc in $(DOCS); do \
+	 echo " * $${doc}" ; \
+	 for format in $(FORMATS); do \
+		echo -n "   * $(OUT_DIR)/$${doc}.$${format}: " && \
+		pandoc doc/$${doc}.md -o  $(OUT_DIR)/$${doc}.$${format} && \
 		echo "OK" || exit ; \
+	done; \
 	done; 
 
 connector-grahp:
