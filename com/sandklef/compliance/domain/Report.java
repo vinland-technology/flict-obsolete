@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 public class Report {
 
     public static class ComponentResult {
-        private final ListType color;
+        private final ListType type;
         private final LicenseArbiter.InterimComponent component;
         boolean compliant ;
 
         public ComponentResult(ListType color, LicenseArbiter.InterimComponent component, boolean compliant) {
-            this.color = color;
+            this.type = color;
             this.component = component;
             this.compliant = compliant;
         }
@@ -28,17 +28,19 @@ public class Report {
         }
 
         public ListType color() {
-            return color;
+            return type;
         }
 
         public LicenseArbiter.InterimComponent component() {
             return component;
         }
 
+
+
         @Override
         public String toString() {
             return "\n[" +
-                    "\n  color=" + color +
+                    "\n  color=" + type +
                     "\n  component=" + component +
                     "\n  compliant=" + compliant +
                     "]\n\n";
@@ -88,34 +90,34 @@ public class Report {
     public List<ComponentResult> complianAllowedtPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant).
-                filter(c -> c.color==ListType.ALLOWED_LIST).
+                filter(c -> c.type ==ListType.ALLOWED_LIST).
                 collect(Collectors.toList());
     }
 
     public List<ComponentResult> compliantPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant).
-                filter(c -> c.color!=ListType.DENIED_LIST).
+                filter(c -> c.type !=ListType.DENIED_LIST).
                 collect(Collectors.toList());
     }
 
     public List<ComponentResult> compliantGrayPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant()).
-                filter(c -> c.color==ListType.GRAY_LIST).
+                filter(c -> c.type ==ListType.GRAY_LIST).
                 collect(Collectors.toList());
     }
 
     public List<ComponentResult> compliantDeniedPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant()).
-                filter(c -> c.color==ListType.DENIED_LIST).
+                filter(c -> c.type ==ListType.DENIED_LIST).
                 collect(Collectors.toList());
     }
 
     public List<ComponentResult> nonCompliantPaths() {
         return componentResults.stream().
-                filter(c -> !c.compliant() || c.color==ListType.DENIED_LIST).
+                filter(c -> !c.compliant() || c.type ==ListType.DENIED_LIST).
                 collect(Collectors.toList());
     }
 
@@ -142,7 +144,7 @@ public class Report {
             sb.append("\n  * [ ");
             sb.append(cr.compliant);
             sb.append("  | ");
-            sb.append(cr.color);
+            sb.append(cr.type);
             sb.append("  | ");
             sb.append(cr.component);
             sb.append(" ]");

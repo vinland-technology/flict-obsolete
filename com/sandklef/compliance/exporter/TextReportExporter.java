@@ -43,7 +43,7 @@ public class TextReportExporter implements ReportExporter {
         init(report);
         StringBuilder sb = new StringBuilder();
 
-        sb.append(formatColumn("Report for:", c.name()));
+        sb.append(formatColumn("Component:", c.name()));
         sb.append("\n");
 
         summaryReport(sb);
