@@ -14,7 +14,7 @@
             },
             {
                 "name": "Crazy Library",
-                "license": "GPL-2.0-or-later & MIT",
+                "license": "GPL-2.0-or-later | MIT",
                 "dependencies": []
             }
         ]

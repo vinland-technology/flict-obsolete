@@ -9,11 +9,10 @@
             "LGPL-2.1-only"
         ],
         "graylist": [
-            "GPL-2.0-only"
+            "MIT"
         ],
         "deniedlist": [
-            "GPL-3.0-only",
-            "GPL-3.0-or-later"
+            "BSD-3-Clause"
         ]
     }
 }

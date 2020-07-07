@@ -82,6 +82,25 @@ Set which class to debug. This is intended for our develoeprs.
 
 ### ```--debug-component-licenses, -dcl```
 
-Outpout the intermediate stages when transforming a component to the internal structure. This is intended for our develoeprs.
+Outpout the intermediate stages when transforming a component to the internal structure. This is intended for our developers.
+
+# Trying the tool out
+
+Let's start of by creating a small component that we can play around with. Save the following data (JSON) in a file called ```awesomeprogram.json```:
+
+```
+```
+
+*Note: this file can be found in the source code: 
+
+# Examples
+
+If you want to check a component (as specified in the file ``awesomeprogram.json```), then you'd type:
+
+```
+$ license-checker.sh -c awesomeprogram.json
+
+```
+
 
 

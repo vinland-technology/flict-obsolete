@@ -29,14 +29,22 @@ public class TextReportExporter implements ReportExporter {
         }
     }
 
+    private static String formatColumn = "%-40s %s";
+
+    private String formatColumn(String column, String content) {
+        return String.format(formatColumn, column, content);
+    }
+    private String formatColumn(String column, int content) {
+        return String.format(formatColumn, column, String.valueOf(content));
+    }
 
     @Override
     public String exportReport(Report report) {
         init(report);
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Report ");
-        sb.append(c.name());
+        sb.append(formatColumn("Report for:", c.name()));
+        sb.append("\n");
 
         summaryReport(sb);
 
@@ -63,26 +71,57 @@ public class TextReportExporter implements ReportExporter {
         return license.replace(",", " & ").replace("[", "").replace("]", "");
     }
 
+    private String compliantResult(Report report) {
+        if (report.compliantCount() == 0) {
+            return "No";
+        }
+        if (report.policy()!=null) {
+            if (report.complianAllowedtPaths().size() == report.compliantPaths().size()) {
+                return "Yes";
+            } else if (report.compliantGrayPaths().size() == report.compliantPaths().size()) {
+                return "Yes, with only gray licenses";
+            } else {
+                return "Yes, with some gray licenses";
+            }
+        }
+        return "Yes";
+    }
+
     private void summaryReport(StringBuilder sb) {
 
-        sb.append("Total license combinations: ");
-        sb.append(report.componentResults().size());
+        sb.append(formatColumn("Compliant: ", compliantResult(report)));
         sb.append("\n");
 
-        sb.append("Compliant (allowed licenses only): ");
-        sb.append(pathComment(report.compliantCount()));
+        sb.append(formatColumn("Total license combinations: ", report.componentResults().size()));
         sb.append("\n");
 
-        sb.append("Compliant (with gray licenses): ");
-        sb.append(pathComment(report.compliantGrayPaths().size()));
+        sb.append(formatColumn(" * compliant: ", report.compliantCount()));
         sb.append("\n");
 
-        sb.append("Policy: ");
-        sb.append(report.policy()==null?" none":" " + Session.getInstance().policyFile());
+        sb.append(formatColumn(" * non compliant: ", report.nonCompliantPaths().size()));
         sb.append("\n");
 
-        sb.append("Numbers of dependency components: ");
-        sb.append(c.nrDependencies());
+        if (report.policy()!=null) {
+            sb.append(formatColumn("Policy based combinations: ", report.componentResults().size()));
+            sb.append("\n");
+
+            sb.append(formatColumn(" * all: ", report.compliantCount()));
+            sb.append("\n");
+
+            sb.append(formatColumn(" * gray: ", report.compliantGrayPaths().size()));
+            sb.append("\n");
+
+            sb.append(formatColumn(" * denied: ", report.compliantDeniedPaths().size()));
+            sb.append("\n");
+
+            sb.append(formatColumn("Policy: ", Session.getInstance().policyFile()));
+            sb.append("\n");
+        } else {
+            sb.append(formatColumn("Policy: ", "none"));
+            sb.append("\n");
+        }
+
+        sb.append(formatColumn("Numbers of dependency components: ", c.nrDependencies()));
         sb.append("\n");
         for (Component d : c.allDependenciesImpl()) {
             sb.append(" * ");
@@ -90,8 +129,7 @@ public class TextReportExporter implements ReportExporter {
             sb.append("\n");
         }
 
-        sb.append("Numbers of licenses: ");
-        sb.append(licenseSet.size());
+        sb.append(formatColumn("Numbers of licenses: ", licenseSet.size()));
         sb.append("\n");
         for (String s : licenseSet) {
             sb.append(" * ");
@@ -103,23 +141,12 @@ public class TextReportExporter implements ReportExporter {
             sb.append("\n");
         }
 
-        sb.append("Compliant license combinations: ");
-        sb.append(report.compliantCount());
-        sb.append("\n");
 
-        sb.append("Compliant gray license combinations: ");
-        sb.append(report.compliantGrayPaths().size());
-        sb.append("\n");
+        // TODO: format properly
+        sb.append("allowed:" + report.complianAllowedtPaths() + "\n\n\n");
+        sb.append("gray:   " + report.compliantGrayPaths() + "\n\n\n");
+        sb.append("denied:   " + report.nonCompliantPaths() + "\n\n\n");
 
-        sb.append("Compliant denied license combinations: ");
-        sb.append(report.compliantDeniedPaths().size());
-        sb.append("\n");
-
-        sb.append("Non compliant license combinations: ");
-        sb.append(report.nonCompliantPaths().size());
-        sb.append("\n");
-
-        System.out.println("results:  " + report.complianAllowedtPaths());
     }
 
     private String pathComment(int pathCount) {

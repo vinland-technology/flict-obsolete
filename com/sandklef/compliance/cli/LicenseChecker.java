@@ -329,12 +329,15 @@ public class LicenseChecker {
             report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
             writer.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report) + "\n");
             if (report.compliantCount()==0) {
-                System.exit(3);
+                System.exit(2);
+            }
+            if (report.compliantCount()==report.compliantGrayPaths().size()) {
+                System.exit(1);
             }
             System.exit(0);
         } catch (LicenseCompatibility.LicenseConnectorException e) {
             e.printStackTrace();
-            System.exit(2);
+            System.exit(4);
         }
 
     }
