@@ -16,6 +16,8 @@ FAILS=0
 SUCCS=0
 TESTS=
 
+TMP_FILE=/tmp/test_combination-$USER-$$.txt
+
 #
 # test_combination_count
 # - argument 1: the component files
@@ -27,15 +29,25 @@ test_combination_count()
     COMPONENT="$1"
     EXPECTED_COUNT=$2
     printf " * %-50s" "$(basename $COMPONENT): "
-    ACTUAL_COUNT=$(${INSTALL_DIR}/bin/license-checker.sh \
-                                 --debug-component-license \
+    ${INSTALL_DIR}/bin/license-checker.sh \
                                  -ld "${INSTALL_DIR}/licenses/json" \
-                                 -c "${COMPONENT_DIR}/var/test/combination-components/${COMPONENT}"  | \
-                       grep "^{" | sort -u | uniq | wc -l)
+                                 -c "${COMPONENT_DIR}/var/test/combination-components/${COMPONENT}" > $TMP_FILE
+
+    
+#    cat $TMP_FILE 
+
+    ACTUAL_COUNT=$(cat $TMP_FILE | sed -n '/Allowed combinations/,/Allowed and gray/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed combinations" -e "Allowed and gray" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l)
+
+    
     if [ $ACTUAL_COUNT -ne $EXPECTED_COUNT ]
     then
         echo " Fail, expected $EXPECTED_COUNT but got $ACTUAL_COUNT"
+        echo "ACTUAL: $ACTUAL_COUNT ($EXPECTED_COUNT)"
+        cat $TMP_FILE | sed -n '/Allowed combinations/,/Allowed and gray/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed combinations" -e "Allowed and gray" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$"
+        
         FAILS=$(( $FAILS + 1 ))
+        cat $TMP_FILE
+        exit
         return
     fi
     SUCCS=$(( $SUCCS + 1 ))
@@ -53,13 +65,13 @@ test_combination_counts()
     test_combination_count "simple-dep.json" 1
     test_combination_count "simple-deps.json" 1
     test_combination_count "simple-dep-dual.json" 2
-    test_combination_count "simple-dep-dual-later.json" 3
-    test_combination_count "simple-dep-duals.json" 4
+    test_combination_count "simple-dep-dual-later.json" 2
+    test_combination_count "simple-dep-duals.json" 2
     test_combination_count "simple-dep-many.json" 1
-    test_combination_count "simple-dep-manys.json" 1
+    test_combination_count "simple-dep-manys.json" 0
     test_combination_count "semi.json" 2
-    test_combination_count "semi-dep.json" 6
-    test_combination_count "simple-dep-many-later.json" 2
+    test_combination_count "semi-dep.json" 3
+    test_combination_count "simple-dep-many-later.json" 0
 }
 
 
