@@ -223,6 +223,7 @@ test-dist: $(DIST_FILE)
 	cp $(DIST_FILE) /tmp/license-check-test/
 	cd /tmp/license-check-test/ && unzip $(DIST_FILE)
 	cd /tmp/license-check-test/ && bin/license-checker.sh -h
+	cd /tmp/license-check-test/ && bin/license-checker.sh -v
 	cd /tmp/license-check-test/ && bin/license-checker.sh -c share/components/simple-dep-dual.json
 	cd /tmp/license-check-test/ && bin/license-checker.sh -c share/components/simple-dep-dual.json --pdf
 	test -f /tmp/license-check-test/report.pdf
