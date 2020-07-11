@@ -199,6 +199,8 @@ License Checker is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en
 
 * Extra Java components will be download when you configure
 
+* pdfunite
+
 ## Required java components
 
 * GSON (downloaded automatically with configure)
