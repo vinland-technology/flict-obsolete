@@ -178,6 +178,7 @@ $(OUT_DIR):
 	@mkdir -p $(OUT_DIR)/lib
 	@mkdir -p $(OUT_DIR)/bin
 	@mkdir -p $(OUT_DIR)/etc
+	@mkdir -p $(OUT_DIR)/share
 
 $(JAR_FILE): $(CLASSES)
 	jar cvf $(JAR_FILE) com
@@ -188,16 +189,35 @@ $(CLI): $(CLI).in
 dist: $(OUT_DIR) $(JAR_FILE) $(CLI)
 	@echo Creating doc
 	@make doc
+
 	@echo Creating jar file
 	@make $(JAR_FILE)
+
 	@echo Copy start script
 	@-mkdir -p $(OUT_DIR)/bin
 	cp $(CLI) $(OUT_DIR)/bin
+
 	@echo Copy etc files
 	@cp -r etc $(OUT_DIR)
+
+	@echo Copy share files
+	@cp -r share $(OUT_DIR)
+
 	@echo Copy jar file
 	@-mkdir -p $(OUT_DIR)/lib
 	cp $(JAR_FILE) $(OUT_DIR)/lib/
 	cp $(JARS) $(OUT_DIR)/lib/
+
 	@echo Create zip file
 	cd $(OUT_DIR) && zip -r ../$(DIST_FILE) .
+
+$(DIST_FILE): dist
+
+test-dist: $(DIST_FILE)
+	@rm -fr /tmp/license-check-test
+	@mkdir  /tmp/license-check-test/
+	cp $(DIST_FILE) /tmp/license-check-test/
+	cd /tmp/license-check-test/ && unzip $(DIST_FILE)
+	cd /tmp/license-check-test/ && bin/license-checker.sh -h
+	cd /tmp/license-check-test/ && bin/license-checker.sh -c share/components/simple-dep-dual.json
+
