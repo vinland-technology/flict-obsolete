@@ -121,6 +121,7 @@ cli:
 
 cli-licenses: com/sandklef/compliance/cli/LicenseChecker.class
 	java -cp $(CLASSPATH) com/sandklef/compliance/cli/LicenseChecker  -p -dc --license-dir licenses/json 
+
 cli-violations:
 	java -cp $(CLASSPATH) com/sandklef/compliance/cli/LicenseChecker  -dc -v --license-dir licenses/json  --component ./com/sandklef/compliance/json/test/simple-problem.json
 
@@ -165,8 +166,8 @@ doc: $(OUT_DIR)
 	done; \
 	done; 
 
-connector-grahp:
-	bin/license-checker.sh -cg -o license.dot
+connector-grahp: $(CLI) 
+	$(CLI)  -cg -o license.dot
 	dot -Tpdf license.dot > license.pdf
 	file  license.pdf
 
@@ -202,6 +203,9 @@ dist: $(OUT_DIR) $(JAR_FILE) $(CLI)
 
 	@echo Copy share files
 	@cp -r share $(OUT_DIR)
+
+	@echo Copy License
+	@cp -r LICENSE $(OUT_DIR)
 
 	@echo Copy jar file
 	@-mkdir -p $(OUT_DIR)/lib
