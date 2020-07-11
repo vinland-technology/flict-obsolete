@@ -220,4 +220,11 @@ test-dist: $(DIST_FILE)
 	cd /tmp/license-check-test/ && unzip $(DIST_FILE)
 	cd /tmp/license-check-test/ && bin/license-checker.sh -h
 	cd /tmp/license-check-test/ && bin/license-checker.sh -c share/components/simple-dep-dual.json
+	cd /tmp/license-check-test/ && bin/license-checker.sh -c share/components/simple-dep-dual.json --pdf
+	test -f /tmp/license-check-test/report.pdf
+	if [ `file /tmp/license-check-test/report.pdf | grep -c "PDF document"` -ne 1 ] ; then echo "PDF report seems broken"; exit 1; fi
+	@echo ""
+	@echo "Dist file $(DIST_FILE) seems to be valid :)"
+	@echo ""
+
 
