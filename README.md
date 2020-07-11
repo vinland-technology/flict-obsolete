@@ -248,7 +248,7 @@ and its dependencies are specified in the file
 `./meta/license-policy-checker.json` as found in the source code.
 
 ~~~
-bin/license-checker.sh -v -c ./meta/license-checker.json 
+bin/license-checker.sh --c ./meta/license-checker.json 
 
 ~~~
 
