@@ -369,7 +369,9 @@ public class LicenseArbiter {
         Log.d(LOG_TAG, "aCanUseB spdx: " + a.spdx() + " " + b.spdx());
         Log.d(LOG_TAG, "aCanUseB conns " + LicenseStore.getInstance().connectors());
         Log.d(LOG_TAG, "aCanUseB a " + LicenseStore.getInstance().connectors().get(a.spdx()));
+        Log.d(LOG_TAG, "aCanUseB a " + LicenseStore.getInstance().connector(a));
         Log.d(LOG_TAG, "aCanUseB b " + LicenseStore.getInstance().connectors().get(b.spdx()));
+        Log.d(LOG_TAG, "aCanUseB b " + LicenseStore.getInstance().connector(b));
         return aCanUseB(LicenseStore.getInstance().connector(a),
                 LicenseStore.getInstance().connector(b));
     }
@@ -387,27 +389,37 @@ public class LicenseArbiter {
     }
 
     private static boolean aCanUseBImpl(LicenseCompatibility a, LicenseCompatibility b, List<LicenseCompatibility> visited) throws LicenseCompatibility.LicenseConnectorException {
-        Log.d(LOG_TAG, "   ---> check lic: " + a + " and " + b + "    { " + visited + " }");
+        Log.d(LOG_TAG, " aCanUseBImp  ---> check lic: " + a + " and " + b + "    { " + visited + " }");
+
+        // If a and b are the same object, then they're (for sure) compliant
+        if (a==b) {
+            Log.d(LOG_TAG, " aCanUseBImp <--- same licensecompat, true");
+            return true;
+        }
 
         // Check if we've visited this connector already. If so, false
         //     Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b + " ******** " + visited.contains(b));
         if (visited.contains(b)) {
             // already checked b
-            //           Log.d(LOG_TAG, "\n\n ***************** ALREADY BEEN IN " + b.license().spdx() + " ********\n\n\n");
+            Log.d(LOG_TAG, " aCanUseBImp <--- already been there, false");
             return false;
         } else if (b == null) {
+            Log.d(LOG_TAG, " aCanUseBImp <--- b null, false");
             // probably a violation in "lower" components
             return false;
         } else {
+            Log.d(LOG_TAG, " aCanUseBImp  --- add to visited: " + b);
             // not visited, mark it as visited
             visited.add(b);
         }
 
         if (directMatch(a, b)) {
+            Log.d(LOG_TAG, " aCanUseBImp <--- direct match, true");
             return true;
         }
 
         if (a.canUse().contains(b)) {
+            Log.d(LOG_TAG, " aCanUseBImp <--- contains, true");
             return true;
         }
         //      System.out.println(" Try 1 <--- : " + a.license().spdxTag() + " " + a.canUse() + " contains " + b.license());
@@ -425,7 +437,7 @@ public class LicenseArbiter {
             }
         }
 
-        Log.d(LOG_TAG, "aCanUseBImpl: <--- false: " + a + "  " + b);
+        Log.d(LOG_TAG, "aCanUseBImpl: <--- end of method ... false: " + a + "  " + b);
         return false;
     }
 
