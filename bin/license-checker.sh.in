@@ -104,7 +104,7 @@ then
     run > $TMP_MD
     pandoc $TMP_MD -o tmp.pdf
     pdfunite tmp.pdf ${FILE_NAME}.pdf report.pdf
-    evince report.pdf
+#    evince report.pdf
     exit $COMPLIANCE_RET
 else
     run
