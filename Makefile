@@ -30,6 +30,7 @@ JAVA_SOURCES=\
   com/sandklef/compliance/json/JsonLicenseParser.java \
   com/sandklef/compliance/json/JsonLaterDefinitionParser.java \
   com/sandklef/compliance/json/JsonPolicyParser.java \
+  com/sandklef/compliance/json/JsonMetaInfoParser.java \
   com/sandklef/compliance/exporter/TextReportExporter.java \
   com/sandklef/compliance/exporter/TestExporterFactory.java \
   com/sandklef/compliance/json/JsonUtils.java \
