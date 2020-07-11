@@ -28,6 +28,8 @@ test_combination_count()
     TESTS=$(( $TESTS + 1 ))
     COMPONENT="$1"
     EXPECTED_COUNT=$2
+    EXPECTED_GRAY_COUNT=$3
+    EXPECTED_DENIED_COUNT=$4
     printf " * %-50s" "$(basename $COMPONENT): "
     ${INSTALL_DIR}/bin/license-checker.sh \
                                  -ld "${INSTALL_DIR}/licenses/json" \
@@ -38,7 +40,6 @@ test_combination_count()
 
     ACTUAL_COUNT=$(cat $TMP_FILE | sed -n '/Allowed combinations/,/Allowed and gray/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed combinations" -e "Allowed and gray" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l)
 
-    
     if [ $ACTUAL_COUNT -ne $EXPECTED_COUNT ]
     then
         echo " Fail, expected $EXPECTED_COUNT but got $ACTUAL_COUNT"
@@ -50,28 +51,65 @@ test_combination_count()
         exit
         return
     fi
-    SUCCS=$(( $SUCCS + 1 ))
     
+    ACTUAL_GRAY=$(cat $TMP_FILE | sed -n '/Allowed and gray/,/Allowed but denied/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed and gray" -e "Allowed but denied" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l    )
+    if [ $ACTUAL_GRAY -ne $EXPECTED_GRAY_COUNT ]
+    then
+        echo " Fail with gray, expected $EXPECTED_GRAY_COUNT but got $ACTUAL_GRAY gray listed"
+        echo "ACTUAL: $ACTUAL_GRAY ($EXPECTED_GRAY_COUNT)"
+        cat $TMP_FILE | sed -n '/Allowed and gray/,/Allowed but denied/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed and gray" -e "Allowed but denied" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' 
+        FAILS=$(( $FAILS + 1 ))
+        cat $TMP_FILE
+        exit
+        return
+    fi
+
+#    echo $TMP_FILE
+    
+    ACTUAL_DENIED=$(cat $TMP_FILE | sed -n '/Allowed but denied/,//p' | grep -v -e "policy:" -e "compliant:" -e "Allowed but denied" -e '^[\-]*$'  -e '^\[' -e '^\]' | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l)
+
+#    echo "$ACTUAL_DENIED -ne $EXPECTED_DENIED_COUNT"
+
+    if [ $ACTUAL_DENIED -ne $EXPECTED_DENIED_COUNT ]
+    then
+        echo " Fail with denied, expected $EXPECTED_DENIED_COUNT but got $ACTUAL_DENIED denied listed"
+        echo "ACTUAL: $ACTUAL_DENIED ($EXPECTED_DENIED_COUNT)"
+        cat $TMP_FILE | sed -n '/Allowed but denied/,//p' | grep -v -e "policy:" -e "compliant:" -e "Allowed but denied" -e '^[\-]*$'  -e '^\[' -e '^\]' | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' 
+        echo "---000000000000000000000000000000000000----------------"
+        cat $TMP_FILE | sed -n '/Allowed but denied/,//p' | grep -v -e "policy:" -e "compliant:" -e "Allowed but denied" -e '^[\-]*$'  -e '^\[' -e '^\]' | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | grep -v '^[ ]*,[ ]*$' | sort -u 
+        echo "---000000000000000000000000000000000000----------------"
+        cat $TMP_FILE | sed -n '/Allowed but denied/,//p' | grep -v -e "policy:" -e "compliant:" -e "Allowed but denied" -e '^[\-]*$'  -e '^\[' -e '^\]' | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l
+        
+        FAILS=$(( $FAILS + 1 ))
+      #  cat $TMP_FILE
+        exit
+        return
+    fi
+    
+
+
+    SUCCS=$(( $SUCCS + 1 ))
     echo "OK"
+
 }
 
 test_combination_counts()
 {
     echo "Testing combination count"
-    test_combination_count "simple.json" 1
-    test_combination_count "simple-dual.json" 2
-    test_combination_count "simple-later.json" 2
-    test_combination_count "simple-many.json" 1
-    test_combination_count "simple-dep.json" 1
-    test_combination_count "simple-deps.json" 1
-    test_combination_count "simple-dep-dual.json" 2
-    test_combination_count "simple-dep-dual-later.json" 2
-    test_combination_count "simple-dep-duals.json" 2
-    test_combination_count "simple-dep-many.json" 1
-    test_combination_count "simple-dep-manys.json" 0
-    test_combination_count "semi.json" 2
-    test_combination_count "semi-dep.json" 3
-    test_combination_count "simple-dep-many-later.json" 0
+    test_combination_count "simple.json" 1 0 0
+    test_combination_count "simple-dual.json" 2 0 0
+    test_combination_count "simple-later.json" 2 0 0
+    test_combination_count "simple-many.json" 1 0 0
+    test_combination_count "simple-dep.json" 1 0 0
+    test_combination_count "simple-deps.json" 1 0 0
+    test_combination_count "simple-dep-dual.json" 2 0 0
+    test_combination_count "simple-dep-dual-later.json" 2 0 1
+    test_combination_count "simple-dep-duals.json" 2 0 2
+    test_combination_count "simple-dep-many.json" 1 0 0
+    test_combination_count "simple-dep-manys.json" 0 0 1
+    test_combination_count "semi.json" 2 0 0
+    test_combination_count "semi-dep.json" 4 0 2
+    test_combination_count "simple-dep-many-later.json" 0 0 2
 }
 
 
