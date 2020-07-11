@@ -42,3 +42,5 @@ out/*
 *.pdf
 *.tmp
 tmp.*
+
+result/*
