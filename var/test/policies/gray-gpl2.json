@@ -1,0 +1,16 @@
+{
+    "meta" : {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    } ,
+    "policy": {
+        "allowlist": [
+        ],
+        "graylist": [
+            "GPL-2.0-only",
+            "GPL-2.0-or-later"
+        ],
+        "deniedlist": [
+        ]
+    }
+}
