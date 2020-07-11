@@ -83,7 +83,7 @@ CLI=bin/license-checker.sh
 
 JARS=$(LIB_DIR)/$(CLI_JAR) $(LIB_DIR)/$(GSON_JAR)
 
-all: $(CLASSES) $(JARS) Makefile
+all: $(CLASSES) $(JARS) $(CLI) Makefile 
 	@echo all is done
 
 $(CLASSES): $(SOURCES) #Makefile
@@ -228,3 +228,4 @@ test-dist: $(DIST_FILE)
 	@echo ""
 
 
+test-all: clean all doc test dist test-dist
