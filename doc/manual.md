@@ -28,7 +28,7 @@ Which component to analyse. No default files.
 
 Parse show result of a license expression. The expression is supplied on the command line.
 
-### ```--violation, -v ```
+### ```--check-compatibility, -cc ```
 
 Check for license compatibility and violations. This is the default mode.
 
@@ -72,13 +72,17 @@ Print the licenses supported by License Checker.
 
 Print a simple help message.
 
+### ```--version, -v```
+
+Print version number and (c) information.
+
 ### ```--debug, -d```
 
-Enable debug messages. This is intended for our develoeprs.
+Enable debug messages. This is intended for our developers.
 
 ### ```--debug-class, -dc```
 
-Set which class to debug. This is intended for our develoeprs.
+Set which class to debug. This is intended for our developers.
 
 ### ```--debug-component-licenses, -dcl```
 

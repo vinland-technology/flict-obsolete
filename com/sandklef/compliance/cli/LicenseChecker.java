@@ -23,14 +23,16 @@ public class LicenseChecker {
         PRINT_COMPONENT,
         PRINT_COMPONENT_LICENSES,
         PRINT_EXPRESSION,
-        CHECK_VIOLATION
+        CHECK_COMPATIBILITY
     }
 
+    private static final String CHECK_COMPATIBILITY_CLI = "check-compatibility";
     private static final String COMPATIBILITIES_FILE_CLI = "compatibility-file";
     private static final String COMPONENT_FILE_CLI = "component-file";
     private static final String POLICY_FILE_CLI = "policy-file";
     private static final String LICENSE_DIR = "license-dir";
     private static final String LATER_FILE_CLI = "later-file";
+    private static final String VERSION_CLI = "version";
 
     private static final String LOG_TAG = LicenseChecker.class.getSimpleName();
     private static PrintStream writer;
@@ -103,7 +105,7 @@ public class LicenseChecker {
                         e.printStackTrace();
                     }
                     break;
-                case CHECK_VIOLATION:
+                case CHECK_COMPATIBILITY:
                     try {
                         reportPrint(writer, values, options);
                     } catch (LicenseExpressionException | IllegalLicenseExpression e) {
@@ -151,12 +153,13 @@ public class LicenseChecker {
         options.addOption(new Option("e", "expression", true, "Parse and print a license expression (for debug)"));
         options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
         options.addOption(new Option("cf", COMPATIBILITIES_FILE_CLI, true, "File with license connectors."));
-        options.addOption(new Option("v", "violation", false, "Check for violations."));
+        options.addOption(new Option("cc", CHECK_COMPATIBILITY_CLI, false, "Check for compatibility."));
         options.addOption(new Option("ld", LICENSE_DIR, true, "Directory with license files."));
         options.addOption(new Option("p", POLICY_FILE_CLI, true, "Path to policy file."));
         options.addOption(new Option("pl", "print-licenses", false, "Output list of licenses as found in the files in the provided license directory"));
         options.addOption(new Option("c", COMPONENT_FILE_CLI, true, "Component file to check"));
         options.addOption(new Option("lf", LATER_FILE_CLI, true, "Later license file"));
+        options.addOption(new Option("v", VERSION_CLI, false, "Prints version and more"));
         options.addOption(new Option("pc", "print-component", false, "Print component"));
         options.addOption(new Option("h", "help", false, "Print help text"));
         options.addOption(new Option("j", "json", false, "Output result in JSON format"));
@@ -177,7 +180,7 @@ public class LicenseChecker {
         values.put(POLICY_FILE_CLI, null);
         values.put("policy", null);
         values.put("expression", null);
-        values.put("mode", execMode.CHECK_VIOLATION);
+        values.put("mode", execMode.CHECK_COMPATIBILITY);
         return values;
     }
 
@@ -208,9 +211,9 @@ public class LicenseChecker {
                 Log.d(LOG_TAG, "Connector file: " + line.getOptionValue(COMPATIBILITIES_FILE_CLI));
                 values.put(COMPATIBILITIES_FILE_CLI, line.getOptionValue(COMPATIBILITIES_FILE_CLI));
             }
-            if (line.hasOption("violation")) {
-                Log.d(LOG_TAG, " Checking violations");
-                values.put("mode", execMode.CHECK_VIOLATION);
+            if (line.hasOption(CHECK_COMPATIBILITY_CLI)) {
+                Log.d(LOG_TAG, " Checking compatibility");
+                values.put("mode", execMode.CHECK_COMPATIBILITY);
             }
             if (line.hasOption(COMPONENT_FILE_CLI)) {
                 values.put(COMPONENT_FILE_CLI, line.getOptionValue(COMPONENT_FILE_CLI));
@@ -228,6 +231,10 @@ public class LicenseChecker {
             if (line.hasOption("licenses")) {
                 values.put("mode", execMode.PRINT_LICENSES);
                 Log.d(LOG_TAG, " licenses mode choosend");
+            }
+            if (line.hasOption(VERSION_CLI)) {
+                version();
+                System.exit(0);
             }
             if (line.hasOption(LICENSE_DIR)) {
                 values.put(LICENSE_DIR, line.getOptionValue(LICENSE_DIR));
@@ -262,6 +269,13 @@ public class LicenseChecker {
         }
 
         return parser;
+    }
+
+    private static void version() {
+        System.out.println(Version.LICENSE_CHECKER_NAME + " (" + Version.LICENSE_CHECKER_VERSION + ")");
+        System.out.println("Copyright (C) " + Version.LICENSE_CHECKER_COPYRIGHT);
+        System.out.println("License " + Version.LICENSE_CHECKER_LICENSE);
+        System.out.println("Authors " + Version.LICENSE_CHECKER_AUTHORS);
     }
 
 
