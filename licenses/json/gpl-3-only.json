@@ -5,23 +5,7 @@
     },
     "license": {
         "name":"GPLv3.0 only",
-        "spdx":"GPL-3.0-only",
-        "obligations": {
-            "linking_copylefted":"true",
-            "modification_allowed":"true",
-            "modification_copylefted":"true",
-            "sublicensing_allowed":"false",
-            "distribution_allowed":"true",
-            "distribution_copylefted":"true",
-            "disclose_source":"true",
-            "include_original":"true",
-            "state_changes":"true",
-            "include_copyright":"true",
-            "include_license":"true",
-            "include_install_instructions":"true",
-            "include_notice_file":"false",
-            "include_notice_about_license":"false"
-        }
+        "spdx":"GPL-3.0-only"
     }
 }
 

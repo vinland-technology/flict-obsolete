@@ -4,8 +4,9 @@
         "version":"0.1"
     },
     "license": {
-        "name":"GNU General Public License v2.0 or later",
-        "spdx":"GPL-2.0-or-later"
+        "name":"X11 License",
+        "spdx":"X11",
+        "license_group":"permissive"
     }
 }
 

@@ -5,23 +5,7 @@
     },
     "license": {
         "name":"Apache License 2.0",
-        "spdx":"Apache-2.0",
-        "obligations": {
-            "linking_copylefted":"false",
-            "modification_allowed":"true",
-            "modification_copylefted":"false",
-            "sublicensing_allowed":"true",
-            "distribution_allowed":"true",
-            "distribution_copylefted":"false",
-            "disclose_source":"false",
-            "include_original":"false",
-            "state_changes":"true",
-            "include_copyright":"true",
-            "include_license":"true",
-            "include_install_instructions":"false",
-            "include_notice_file":"true",
-            "include_notice_about_license":"false"
-        }
+        "spdx":"Apache-2.0"
     }
 }
 
