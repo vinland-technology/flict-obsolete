@@ -18,6 +18,12 @@ public class MetaData {
         start = LocalDateTime.now();
     }
 
+    public MetaData(String producer,String version) {
+        this.producer = producer;
+        this.version = version;
+        start = null;
+    }
+
     public void finished() {
         stop = LocalDateTime.now();
     }
@@ -85,11 +91,17 @@ public class MetaData {
 
     @Override
     public String toString() {
-        return "[ " +
-                " producer='" + producer + '\'' +
-                " version='" + version + '\'' +
-                " duration: " + duration() +
-                ']';
+        if (start != null) {
+            return "[ " +
+                    " producer='" + producer + "'" +
+                    " version='" + version + "'" +
+                    " duration: " + duration() +
+                    ']';
+        } else {
+            return "[ " +
+                    " producer='" + producer + "'" +
+                    " version='" + version + "' ]" ;
+        }
     }
 
 }

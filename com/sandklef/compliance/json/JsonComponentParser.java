@@ -55,6 +55,8 @@ public class JsonComponentParser {
 
     public Component readComponentString(String json) throws LicenseExpressionException, IllegalLicenseExpression {
         JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
+        Log.d(LOG_TAG, "MetaData: " + JsonMetaInfoParser.readMetaData(jo.getAsJsonObject(JsonTags.META_TAG)));
+
         //    Log.level(Log.DEBUG);
         Log.d(LOG_TAG, " n *** read co:   " + jo + " ****\n\n");
 //    Log.d(LOG_TAG, " \n\n\n *** read meta: " + jo.get("meta").getAsJsonObject() + " ****\n\n");

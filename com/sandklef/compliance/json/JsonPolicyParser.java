@@ -32,6 +32,8 @@ public class JsonPolicyParser {
   }
   private LicensePolicy readLicensePolicyString(String str) throws LicenseExpressionException {
     JsonObject jo = new JsonParser().parse(str).getAsJsonObject();
+    Log.d(LOG_TAG, "MetaData: " + JsonMetaInfoParser.readMetaData(jo.getAsJsonObject(JsonTags.META_TAG)));
+
     JsonObject polocyJson = jo.get("policy").getAsJsonObject();
     Gson gson = new Gson();
     LicensePolicyIntermediate policyGson = gson.fromJson(polocyJson, LicensePolicyIntermediate.class);

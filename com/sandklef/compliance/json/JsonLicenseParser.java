@@ -87,6 +87,8 @@ public class JsonLicenseParser {
 
   public License readLicenseString(String json) {
     JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
+    Log.d(LOG_TAG, "MetaData: " + JsonMetaInfoParser.readMetaData(jo.getAsJsonObject(JsonTags.META_TAG)));
+
     JsonObject licenseJson = jo.get("license").getAsJsonObject();
     Gson gson = new Gson();
     License license = gson.fromJson(licenseJson, License.class);
@@ -95,6 +97,7 @@ public class JsonLicenseParser {
 
   public LicenseGroup readLicenseGroupString(String json) {
     JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
+    Log.d(LOG_TAG, "MetaData: " + JsonMetaInfoParser.readMetaData(jo.getAsJsonObject(JsonTags.META_TAG)));
     Gson gson = new Gson();
     JsonObject licenseGroupJson = jo.get("group_name").getAsJsonObject();
     LicenseGroup licenseGroup = gson.fromJson(licenseGroupJson, LicenseGroup.class);

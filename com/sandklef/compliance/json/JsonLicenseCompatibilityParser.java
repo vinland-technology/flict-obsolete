@@ -22,9 +22,6 @@ public class JsonLicenseCompatibilityParser {
 
     public static final String LOG_TAG = JsonLicenseCompatibilityParser.class.getSimpleName();
 
-    public static final String SW_TAG = "software";
-    public static final String SW_VERSION_TAG = "version";
-
     public static Map<String, LicenseCompatibility>  readLicenseConnection(String fileName) throws IOException {
         //Log.level(Log.DEBUG);
         return readLicenseConnectionString(new String(Files.readAllBytes(Paths.get(fileName))));
@@ -35,10 +32,10 @@ public class JsonLicenseCompatibilityParser {
         Map<String, LicenseCompatibility> connectorMap = new HashMap<>();
 
         JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
+        Log.d(LOG_TAG, "MetaData: " + JsonMetaInfoParser.readMetaData(jo.getAsJsonObject(JsonTags.META_TAG)));
         //        Log.level(Log.DEBUG);
         Log.d(LOG_TAG, " \n\n\n *** read jo:   " + jo + " ****\n\n");
-        Log.d(LOG_TAG, " \n\n\n *** read meta: " + jo.get("meta").getAsJsonObject() + " ****\n\n");
-        Log.d(LOG_TAG, " \n\n\n *** read conn: " + jo.get("compatibilities").getAsJsonArray() + " ****\n\n");
+        Log.d(LOG_TAG, " \n\n\n *** read conn: " + jo.get(JsonTags.COMPATIBILITIES_TAG).getAsJsonArray() + " ****\n\n");
         JsonArray connectorsJson = jo.get("compatibilities").getAsJsonArray();
         Gson gson = new Gson();
         List<LicenseConnectorIntermediate> connectors = gson.fromJson(connectorsJson, new TypeToken<List<LicenseConnectorIntermediate>>() {}.getType());

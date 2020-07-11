@@ -25,8 +25,6 @@ import java.util.Map;
 
 public class JsonLaterDefinitionParser {
 
-    public static final String SW_TAG = "software";
-    public static final String SW_VERSION_TAG = "version";
 
     public static final String LOG_TAG = JsonLaterDefinitionParser.class.getSimpleName();
 
@@ -48,7 +46,8 @@ public class JsonLaterDefinitionParser {
 
     private Map<String, List<License>> readLaterDefinitionString(String str) throws LicenseExpressionException {
         JsonObject jo = new JsonParser().parse(str).getAsJsonObject();
-        JsonArray laterJson = jo.get("later-definitions").getAsJsonArray();
+        Log.d(LOG_TAG, "MetaData: " + JsonMetaInfoParser.readMetaData(jo.getAsJsonObject(JsonTags.META_TAG)));
+        JsonArray laterJson = jo.get(JsonTags.LATER_DEFINITION_TAG).getAsJsonArray();
         Gson gson = new Gson();
         List<LaterDefinitionIntermediate> laterGson = gson.fromJson(laterJson, new TypeToken<List<LaterDefinitionIntermediate>>() {
         }.getType());
