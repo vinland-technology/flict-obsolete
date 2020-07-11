@@ -13,8 +13,8 @@ public class MetaData {
     private LocalDateTime stop;
 
     public MetaData() {
-        producer = Version.POLICY_CHECKER_NAME;
-        version = Version.POLICY_CHECKER_VERSION;
+        producer = Version.LICENSE_CHECKER_NAME;
+        version = Version.LICENSE_CHECKER_VERSION;
         start = LocalDateTime.now();
     }
 

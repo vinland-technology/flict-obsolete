@@ -1,0 +1,49 @@
+<h1 id="license-checker-users-guide">License Checker User’s Guide</h1>
+<h1 id="introduction">Introduction</h1>
+<p>License Checker is an Free and Open Source Software compliance tool aimed at detecting license violations either with or without a policy. It assumes every component has a known license expression.</p>
+<p>License Checker can also conclude outbound licenses for your component.</p>
+<h1 id="invoking-license-checker">Invoking License Checker</h1>
+<pre><code>license-checker.sh [OPTIONS]</code></pre>
+<h2 id="options">Options</h2>
+<h3 id="compatibility-file--cf-file"><code>--compatibility-file, -cf [FILE]</code></h3>
+<p>Which compatibility graph to use. Default file is <code>licenses/connections/license-checker.json</code> as found in the installtion directory.</p>
+<h3 id="component-file--c-file"><code>--component-file, -c [FILE]</code></h3>
+<p>Which component to analyse. No default files.</p>
+<h3 id="expression--e-expr"><code>--expression, -e [EXPR]</code></h3>
+<p>Parse show result of a license expression. The expression is supplied on the command line.</p>
+<h3 id="violation--v"><code>--violation, -v</code></h3>
+<p>Check for license compatibility and violations. This is the default mode.</p>
+<h3 id="policy-file--p-file"><code>---policy-file, -p [FILE]</code></h3>
+<p>Set the policy file to use. A policy is optional, without a policy all licenses are considered equal.</p>
+<h3 id="license-dir--ld"><code>--license-dir, -ld</code></h3>
+<p>Set the directory containing the license definitions. Default directory is <code>licenses/json/</code> as found in the installtion directory.</p>
+<h3 id="later-file--lf"><code>--later-file, -lf</code></h3>
+<p>Set the file containing the definitions of how to interpret licenses with “later” definitions (e g <em>GPL-2.0-or-later</em>). Default file is <code>licenses/later/later-definitions.json</code> as found in the installtion directory.</p>
+<h3 id="output--o-file"><code>--output, -o [FILE]</code></h3>
+<p>Set the output file. Default is stdout.</p>
+<h3 id="connection-graph--cg"><code>--connection-graph, -cg</code></h3>
+<p>Output the compatibility graph in dot format.</p>
+<h3 id="json--j"><code>--json, -j</code></h3>
+<p>Output the report in JSON format.</p>
+<h3 id="markdown--md"><code>--markdown, -md</code></h3>
+<p>Output the report in Markdown format.</p>
+<h3 id="pdf"><code>--pdf</code></h3>
+<p>Output the report in pdf format.</p>
+<h3 id="print-licenses--pl"><code>--print-licenses, -pl</code></h3>
+<p>Print the licenses supported by License Checker.</p>
+<h3 id="help--h"><code>--help, -h</code></h3>
+<p>Print a simple help message.</p>
+<h3 id="debug--d"><code>--debug, -d</code></h3>
+<p>Enable debug messages. This is intended for our develoeprs.</p>
+<h3 id="debug-class--dc"><code>--debug-class, -dc</code></h3>
+<p>Set which class to debug. This is intended for our develoeprs.</p>
+<h3 id="debug-component-licenses--dcl"><code>--debug-component-licenses, -dcl</code></h3>
+<p>Outpout the intermediate stages when transforming a component to the internal structure. This is intended for our developers.</p>
+<h1 id="trying-the-tool-out">Trying the tool out</h1>
+<p>Let’s start of by creating a small component that we can play around with. Save the following data (JSON) in a file called <code>awesomeprogram.json</code>:</p>
+<pre><code></code></pre>
+<p>*Note: this file can be found in the source code:</p>
+<h1 id="examples">Examples</h1>
+<p>If you want to check a component (as specified in the file ``awesomeprogram.json```), then you’d type:</p>
+<pre><code>$ license-checker.sh -c awesomeprogram.json
+</code></pre>

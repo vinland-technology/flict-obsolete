@@ -74,7 +74,9 @@ WINSTONE_JAR=$(LIB_DIR)/winstone.jar
 CLASSPATH=.:$(LIB_DIR)/$(CLI_JAR):$(LIB_DIR)/$(GSON_JAR)
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 OUT_DIR=result
-
+JAR_FILE=license-checker.jar
+DIST_FILE=license-checker.zip
+CLI=bin/license-checker.sh
 
 %.class:%.java 
 	javac  -Xdiags:verbose -Xlint:unchecked -cp "$(CLASSPATH)" $<
@@ -84,7 +86,7 @@ JARS=$(LIB_DIR)/$(CLI_JAR) $(LIB_DIR)/$(GSON_JAR)
 all: $(CLASSES) $(JARS) Makefile
 	@echo all is done
 
-$(CLASSES): $(SOURCES) Makefile
+$(CLASSES): $(SOURCES) #Makefile
 
 JARS=$(LIB_DIR)/$(CLI_JAR) $(LIB_DIR)/$(GSON_JAR)
 
@@ -153,11 +155,12 @@ cg: connector-grahp
 .PHONY: doc
 doc: $(OUT_DIR)
 	@echo "Creating docs in misc formats"
+	@-mkdir -p $(OUT_DIR)/doc
 	@for doc in $(DOCS); do \
 	 echo " * $${doc}" ; \
 	 for format in $(FORMATS); do \
-		echo -n "   * $(OUT_DIR)/$${doc}.$${format}: " && \
-		pandoc doc/$${doc}.md -o  $(OUT_DIR)/$${doc}.$${format} && \
+		echo -n "   * $(OUT_DIR)/doc/$${doc}.$${format}: " && \
+		pandoc doc/$${doc}.md -o  $(OUT_DIR)/doc/$${doc}.$${format} && \
 		echo "OK" || exit ; \
 	done; \
 	done; 
@@ -171,4 +174,30 @@ connector-grahp:
 # Create outpur dir
 #
 $(OUT_DIR):
-	@mkdir -p $(OUT_DIR)
+	@mkdir -p $(OUT_DIR)/doc
+	@mkdir -p $(OUT_DIR)/lib
+	@mkdir -p $(OUT_DIR)/bin
+	@mkdir -p $(OUT_DIR)/etc
+
+$(JAR_FILE): $(CLASSES)
+	jar cvf $(JAR_FILE) com
+
+$(CLI): $(CLI).in
+	cp $(CLI).in $(CLI)
+
+dist: $(OUT_DIR) $(JAR_FILE) $(CLI)
+	@echo Creating doc
+	@make doc
+	@echo Creating jar file
+	@make $(JAR_FILE)
+	@echo Copy start script
+	@-mkdir -p $(OUT_DIR)/bin
+	cp $(CLI) $(OUT_DIR)/bin
+	@echo Copy etc files
+	@cp -r etc $(OUT_DIR)
+	@echo Copy jar file
+	@-mkdir -p $(OUT_DIR)/lib
+	cp $(JAR_FILE) $(OUT_DIR)/lib/
+	cp $(JARS) $(OUT_DIR)/lib/
+	@echo Create zip file
+	cd $(OUT_DIR) && zip -r ../$(DIST_FILE) .

@@ -1,0 +1,109 @@
+<h1 id="how-does-license-checker-work">How does License Checker work</h1>
+<p>We can split the functionality of this tool in to two main parts:</p>
+<ul>
+<li><p>parsing and simplifying the licenses</p></li>
+<li><p>combine component and dependencies into a list of all possible combinations</p></li>
+<li><p>checking if a combination is compliant</p></li>
+</ul>
+<h2 id="parse-and-simplify-licenses">Parse and simplify licenses</h2>
+<p>Let’s look at a simple license expression: <em>MIT</em>. This is easy to understand. But when having license expressions such as <em>GPL-2.0-or-later | ( Apache-2.0 &amp; MIT)</em> things become o bit trickier. Since there may be bugs in our tools we’ve decided to go for an approach that make it easy to track down bugs by doing one thing at a time and be able to check the intermediate states.</p>
+<p>The idea is to create a list of all possible license combinations for a component and its dependencies. Each of the licenses should be a simple expression (with only AND operation allowed). Example:</p>
+<pre><code>   Program (GPL-2.0-only)
+        |
+  +-----+-------------+
+  |                   |
+  lib1 (MIT&amp;Zlib)   lib2 (Apache-2.0 | LGPL-2.1-only)</code></pre>
+<p>Should be translated to two different combinations of the same component:</p>
+<pre><code>   Program (GPL-2.0-only)
+        |
+  +-----+-------------+
+  |                   |
+  lib1 (MIT&amp;Zlib)   lib2 (LGPL-2.1-only)</code></pre>
+<p>and</p>
+<pre><code>   Program (GPL-2.0-only)
+        |
+  +-----+-------------+
+  |                   |
+  lib1 (MIT&amp;Zlib)   lib2 (Apache-2.0)</code></pre>
+<p>These two are easier to check for compliance than using complex license expressions. This means that we may end up with a list of the same component with different license combinations but at least these are easy to 1) debug and 2) check for compliance.</p>
+<p>So, we’re trying to make our initial problem of a component with dependencies and complex license expression to a more sequential problem of a list of a component with dependencies all using simple license expressions.</p>
+<h3 id="expand-later-expressions">Expand later expressions</h3>
+<p>A license expression such as <em>MIT</em> is left unchanged in this phase. But a license expression ike “GPL-2.0-or-later” is expanded according to rules specified in a separate file. This tool comes with a file that specifies some later definitions. You can specify your own such file, but we assume most users will use our so let’s assume you’re doing that. <em>GPL-2.0-or-later</em> will be expanded to <em>(GPL-2.0-or-later | GPL-3.0-only)</em>. Example:</p>
+<pre><code>  GPL-2.0-or-later
+
+  =&gt;
+
+  (GPL-2.0-or-later | GPL-3.0-only)</code></pre>
+<h3 id="license-expressions-with-parenthesises">License expressions with parenthesises</h3>
+<p>All licenses that are have an AND operator apllied to them are grouped together using parenthesises. A license expression like <em>MIT &amp; Apache-2.0 | GPL-2.0-only</em> is in this phase transformed into <em>(MIT &amp; Apache-2.0) | GPL-2.0-only</em>. Example:</p>
+<pre><code>  MIT &amp; Apache-2.0 | GPL-2.0-only
+ 
+  =&gt;
+
+  (MIT &amp; Apache-2.0) | GPL-2.0-only</code></pre>
+<h3 id="polish-notation">Polish notation</h3>
+<p>In this phase a license expression is turned in to an algebraic expression with polish notaion using <em>AND</em> and <em>OR</em> and lists. The expression <em>MIT | BSD-3-Clause</em> will be trans formed into <em>OR [MIT, BSD-3-Clause]</em>. Example:</p>
+<pre><code>  (MIT &amp; Apache-2.0) | GPL-2.0-only
+
+  =&gt;
+
+  OR[AND[&quot;MIT&quot;, &quot;Apache-2.0&quot;]  , &quot;GPL-2.0-only&quot;]</code></pre>
+<h3 id="list-of-and-expressions">List of AND expressions</h3>
+<p>The last round we’re taking the OR:ed lists and split them into separate lists. The expression ** will become two list, see example:</p>
+<pre><code>  OR[AND[&quot;MIT&quot;, &quot;Apache-2.0&quot;]  , &quot;GPL-2.0-only&quot;]
+
+  =&gt; 
+
+ [
+   [MIT, Apache-2.0]
+   [GPL-2.0-only]
+ ]</code></pre>
+<p>All the lists (in the list) are license combinations for the component’s license expression. So the possible license combination of this components are <em>MIT &amp; Apache-2.0</em> or <em>GPL-2.0-only</em>, wihch really is where we started. But we have the licenses in a data structure (a list of list), which is nice.</p>
+<h3 id="debugging-the-transformation">Debugging the transformation</h3>
+<p>If you would like to see how this tool is tranforming your license expression before using it in later phases you try using the option <code>--expression</code>.</p>
+<p>To test the expression <code>MIT &amp; Apache-2.0 | GPL-2.0-only</code>, do:</p>
+<pre><code>bin/license-checker.sh -e &quot;MIT &amp; Apache-2.0 | GPL-2.0-only&quot;
+</code></pre>
+<h2 id="combine-components-and-dependencies-in-to-a-list">Combine components and dependencies in to a list</h2>
+<p>If we’re not having and dependencies for a component we really have an easy task of checking compliance. So let’s assume we have two dependency components. Each component has their own list of possible license combinations. Our approach to this is to create a list of our top level component with all different license combination. Let’s look at the earlier example:</p>
+<pre><code>   Program (GPL-2.0-only)
+        |
+  +-----+-------------+
+  |                   |
+  lib1 (MIT&amp;Zlib)   lib2 (Apache-2.0 | LGPL-2.1-only)</code></pre>
+<p>If we work through the license expressions first we’ll end up with:</p>
+<pre><code>   Program [ [GPL-2.0-only] ]
+        |
+  +-----+-------------+
+  |                   |
+  lib1 [ [MIT&amp;Zlib] ]   lib2 [ [Apache-2.0], [LGPL-2.1-only] ]</code></pre>
+<p>and then if we create one top component (Program) as we the product of all list sizes. In our case the list sizes are 1, 1 and 2 so the product is 2. This means we will have two components (Program) with licenses as this:</p>
+<pre><code>   Program (GPL-2.0-only)
+        |
+  +-----+-------------+
+  |                   |
+  lib1 (MIT&amp;Zlib)   lib2 (LGPL-2.1-only)</code></pre>
+<p>and</p>
+<pre><code>   Program (GPL-2.0-only)
+        |
+  +-----+-------------+
+  |                   |
+  lib1 (MIT&amp;Zlib)   lib2 (Apache-2.0)</code></pre>
+<h2 id="check-compliance">Check compliance</h2>
+<h3 id="license-compliance">License compliance</h3>
+<p>We’ve been trying out a lot of different approaches, such as trying to implement rules per obligation, but have for now ended up using a graph of dependencies.</p>
+<p>Now, we have a couple of otp components with different license combinations. The trick with creaeting one component “copy” per license combination is to have a couple (2 in this case) simple license situations. It is now fairly easy to go through the component from the top and check the dependency components if they’re compliant.</p>
+<p>In th example above we will check for compliance:</p>
+<ul>
+<li><p>the first component: <em>GPL-2.0-only</em> is compliant with both <em>MIT</em> and <em>Zlib</em></p></li>
+<li><p>the second component: <em>GPL-2.0-only</em> is compliant with <em>Apache-2.0</em></p></li>
+</ul>
+<p>We save the compliance state for each component.</p>
+<p>The compliance between two (or more) licenses is done using the graph. If there is a way from a license to another in the graph then they’re compliant. In our example we can go for the first component copy:</p>
+<ul>
+<li><p>can <em>GPL-2.0-only</em> use <em>MIT</em></p></li>
+<li><p>can <em>GPL-2.0-only</em> use <em>Zlib</em></p></li>
+</ul>
+<p>If both of them are true, then the component, or rather the component with this license combination, is compliant.</p>
+<h3 id="policy">Policy</h3>
+<p>If the user provides a policy we walk through the list of component copies to see if any of the licenses in the lists are marked as <em>denied</em> or <em>gray</em>. If they are, this is stored together with the specific component.</p>
