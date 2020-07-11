@@ -30,14 +30,16 @@ test_combination_count()
     EXPECTED_COUNT=$2
     EXPECTED_GRAY_COUNT=$3
     EXPECTED_DENIED_COUNT=$4
+
+    POLICY_ARGS="$5"
+    
     printf " * %-50s" "$(basename $COMPONENT): "
     ${INSTALL_DIR}/bin/license-checker.sh \
                                  -ld "${INSTALL_DIR}/licenses/json" \
-                                 -c "${COMPONENT_DIR}/var/test/combination-components/${COMPONENT}" > $TMP_FILE
+                                 -c "${COMPONENT_DIR}/var/test/combination-components/${COMPONENT}" \
+                                 ${POLICY_ARGS} > $TMP_FILE
 
     
-#    cat $TMP_FILE 
-
     ACTUAL_COUNT=$(cat $TMP_FILE | sed -n '/Allowed combinations/,/Allowed and gray/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed combinations" -e "Allowed and gray" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l)
 
     if [ $ACTUAL_COUNT -ne $EXPECTED_COUNT ]
@@ -45,7 +47,7 @@ test_combination_count()
         echo " Fail, expected $EXPECTED_COUNT but got $ACTUAL_COUNT"
         echo "ACTUAL: $ACTUAL_COUNT ($EXPECTED_COUNT)"
         cat $TMP_FILE | sed -n '/Allowed combinations/,/Allowed and gray/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed combinations" -e "Allowed and gray" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$"
-        
+        echo $TMP_FILE
         FAILS=$(( $FAILS + 1 ))
         cat $TMP_FILE
         exit
@@ -108,12 +110,32 @@ test_combination_counts()
     test_combination_count "simple-dep-many.json" 1 0 0
     test_combination_count "simple-dep-manys.json" 0 0 1
     test_combination_count "semi.json" 2 0 0
-    test_combination_count "semi-dep.json" 4 0 2
-    test_combination_count "simple-dep-many-later.json" 0 0 2
+}
+
+
+test_combination_policy_counts()
+{
+    echo "Testing combination count with policies"
+
+    # with policies, no GPL-3.0*
+    test_combination_count "semi-dep.json" 4 0 2 " -p var/test/policies/no-gpl3.json "
+    test_combination_count "simple-dep-many-later.json" 0 0 2 " -p var/test/policies/no-gpl3.json "
+
+    # with policies, no GPL-2.0*
+    test_combination_count "semi-dep.json" 1 0 5 " -p var/test/policies/no-gpl2.json "
+    test_combination_count "simple-dep-many-later.json" 0 0 2 " -p var/test/policies/no-gpl2.json "
+
+    # with policies, gray GPL-2.0*
+    test_combination_count "semi-dep.json" 1 3 2 " -p var/test/policies/gray-gpl2.json "
+    # there's 0 ALLOWED AND GRAY list 
+    test_combination_count "simple-dep-many-later.json" 0 0 2 " -p var/test/policies/gray-gpl2.json "
+
 }
 
 
 test_combination_counts
+echo
+test_combination_policy_counts
 
 echo "Tests: $TESTS"
 echo " * success:  $SUCCS"
