@@ -29,7 +29,6 @@ test_compliance()
     EXPECTED_RET=$3
     printf " * %-50s" "$(basename $COMPONENT): "
     CMD="${INSTALL_DIR}/bin/license-checker.sh \
-                           -v \
                            -ld \""${INSTALL_DIR}/licenses/json\"" \
                            -c \""${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}\"" "
     $CMD > $TMP_FILE
