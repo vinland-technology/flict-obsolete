@@ -29,7 +29,7 @@ public class TestJsonComponentParser {
 
     JsonComponentParser jp = new JsonComponentParser();
 
-    Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
+    Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("etc/licenses/json");
     LicenseStore.getInstance().addLicenses(licenses);
     Component component = jp.readComponent("com/sandklef/compliance/json/test/simple.json");
 
@@ -69,7 +69,7 @@ public class TestJsonComponentParser {
 
     JsonComponentParser jp = new JsonComponentParser();
 
-    Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("licenses/json");
+    Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("etc/licenses/json");
     LicenseStore.getInstance().addLicenses(licenses);
 
 

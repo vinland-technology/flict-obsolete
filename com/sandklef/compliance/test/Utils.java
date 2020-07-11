@@ -55,8 +55,8 @@ public class Utils {
             errorCounter = 0;
             successCounter = 0;
             fails = new ArrayList<>();
-            LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("licenses/json"));
-            LicenseStore.getInstance().connector(new JsonLicenseCompatibilityParser().readLicenseConnection("licenses/connections/dwheeler.json"));
+            LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir("etc/licenses/json"));
+            LicenseStore.getInstance().connector(new JsonLicenseCompatibilityParser().readLicenseConnection("etc/licenses/connections/dwheeler.json"));
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_0_SPDX);
             lgpl30 = LicenseStore.getInstance().license(LGPL_3_0_SPDX);
             lgpl21 = LicenseStore.getInstance().license(LGPL_2_1_SPDX);
