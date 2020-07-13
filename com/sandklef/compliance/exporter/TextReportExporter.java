@@ -1,16 +1,8 @@
 package com.sandklef.compliance.exporter;
 
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.utils.LicenseArbiter;
 import com.sandklef.compliance.utils.LicenseUtils;
-import com.sandklef.compliance.utils.Log;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Set;
 
 public class TextReportExporter implements ReportExporter {
@@ -55,8 +47,8 @@ public class TextReportExporter implements ReportExporter {
     }
 
     private String licenseTypeComment(String license) throws LicenseExpressionException {
-        ListType color = LicenseUtils.licenseColor(license,report.policy());
-        switch (color) {
+        ListType type = LicenseUtils.licenseType(license,report.policy());
+        switch (type) {
             case ALLOWED_LIST:
                 return "";
             case GRAY_LIST:

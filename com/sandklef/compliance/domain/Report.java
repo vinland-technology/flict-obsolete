@@ -17,8 +17,8 @@ public class Report {
         private final LicenseArbiter.InterimComponent component;
         boolean compliant ;
 
-        public ComponentResult(ListType color, LicenseArbiter.InterimComponent component, boolean compliant) {
-            this.type = color;
+        public ComponentResult(ListType type, LicenseArbiter.InterimComponent component, boolean compliant) {
+            this.type = type;
             this.component = component;
             this.compliant = compliant;
         }
@@ -27,7 +27,7 @@ public class Report {
             return compliant;
         }
 
-        public ListType color() {
+        public ListType type() {
             return type;
         }
 

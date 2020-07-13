@@ -47,7 +47,7 @@ public class LicenseUtils {
         }
     }
 
-    public static ListType licenseColor(String licenseSPDX, LicensePolicy policy) throws LicenseExpressionException {
+    public static ListType licenseType(String licenseSPDX, LicensePolicy policy) throws LicenseExpressionException {
         if (policy != null) {
             License license = LicenseStore.getInstance().license(licenseSPDX);
             if (policy.allowedList().contains(license)) {

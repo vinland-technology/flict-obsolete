@@ -151,44 +151,41 @@ public class LicenseArbiter {
     }
 
 
-    public static ListType color(InterimComponent c, LicensePolicy policy) {
+    public static ListType type(InterimComponent c, LicensePolicy policy) {
 
-        ListType color = ListType.ALLOWED_LIST;
+        ListType type = ListType.ALLOWED_LIST;
 
-        Log.d(LOG_TAG, " color check: " + c.component().name());
+        Log.d(LOG_TAG, " type check: " + c.component().name());
 
         // If we find a denied license directly, return denied
         // if gray remember, it
         for (License l : c.licenses) {
 
-            /*Log.d(LOG_TAG, " color check:   * " + l.spdx() + " in " + policy.deniedList() + " :: " +
-                    policy.deniedList().contains(l));
 
-             */
             // if black, return now
             if (policy != null && policy.deniedList().contains(l)) {
-                Log.d(LOG_TAG, " color check:   * denied");
+                Log.d(LOG_TAG, " type check:   * denied");
                 return ListType.DENIED_LIST;
             } else if (policy != null && policy.grayList().contains(l)) {
-                Log.d(LOG_TAG, " color check:   * gray");
+                Log.d(LOG_TAG, " type check:   * gray");
                 return ListType.GRAY_LIST;
             }
         }
 
         // Loop through all components and look for a denied or gray license
         for (InterimComponent d : c.dependencies()) {
-            if (color(d, policy) == ListType.DENIED_LIST) {
+            if (type(d, policy) == ListType.DENIED_LIST) {
                 // if black, return now
-                Log.d(LOG_TAG, " color check:   * deniged");
+                Log.d(LOG_TAG, " type check:   * deniged");
                 return ListType.DENIED_LIST;
-            } else if (color(d, policy) == ListType.GRAY_LIST) {
+            } else if (type(d, policy) == ListType.GRAY_LIST) {
                 // if gray, store - may be black so continue looking
-                Log.d(LOG_TAG, " color check:   * gray");
-                color = ListType.GRAY_LIST;
+                Log.d(LOG_TAG, " type check:   * gray");
+                type = ListType.GRAY_LIST;
             }
         }
 
-        return color;
+        return type;
     }
 
 
@@ -477,8 +474,8 @@ public class LicenseArbiter {
         for (InterimComponent ic : components) {
             boolean compliant = compliant(ic, 2);
             debug("compliant:  " + ic.name() + " => " + compliant, 2);
-            ListType color = color(ic, policy);
-            report.addComponentResult(new Report.ComponentResult(color, ic, compliant));
+            ListType type = type(ic, policy);
+            report.addComponentResult(new Report.ComponentResult(type, ic, compliant));
         }
 
         return report;
