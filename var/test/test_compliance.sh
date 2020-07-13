@@ -30,7 +30,7 @@ test_compliance()
     printf " * %-50s" "$(basename $COMPONENT): "
     CMD="${INSTALL_DIR}/bin/foss-license-checker.sh \
                            -ld \""${INSTALL_DIR}/etc/licenses/json\"" \
-                           -c \""${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}\"" "
+                           -c  \""${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}\"" "
     $CMD > $TMP_FILE
     ACTUAL_RET=$?
     ACTUAL_COUNT=$(cat $TMP_FILE | grep "\* compliant:" | cut -d":" -f 2)
