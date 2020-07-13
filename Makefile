@@ -229,6 +229,8 @@ test-dist: $(DIST_FILE)
 	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -c share/components/simple-dep-dual.json --pdf
 	test -f /tmp/foss-license-check-test/report.pdf
 	if [ `file /tmp/foss-license-check-test/report.pdf | grep -c "PDF document"` -ne 1 ] ; then echo "PDF report seems broken"; exit 1; fi
+	PATH=$(PATH):/tmp/foss-license-check-test/bin && foss-license-checker.sh -c share/components/simple-dep-dual.json --pdf
+	if [ `file report.pdf | grep -c "PDF document"` -ne 1 ] ; then echo "PDF report seems broken"; exit 1; fi
 	@echo ""
 	@echo "Dist file $(DIST_FILE) seems to be valid :)"
 	@echo ""
