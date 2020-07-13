@@ -75,9 +75,9 @@ WINSTONE_JAR=$(LIB_DIR)/winstone.jar
 CLASSPATH=.:$(LIB_DIR)/$(CLI_JAR):$(LIB_DIR)/$(GSON_JAR)
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 OUT_DIR=result
-JAR_FILE=license-checker.jar
-DIST_FILE=license-checker.zip
-CLI=bin/license-checker.sh
+JAR_FILE=foss-license-checker.jar
+DIST_FILE=foss-license-checker.zip
+CLI=bin/foss-license-checker.sh
 
 %.class:%.java 
 	javac  -Xdiags:verbose -Xlint:unchecked -cp "$(CLASSPATH)" $<
@@ -219,16 +219,16 @@ dist: $(OUT_DIR) $(JAR_FILE) $(CLI)
 $(DIST_FILE): dist
 
 test-dist: $(DIST_FILE)
-	@rm -fr /tmp/license-check-test
-	@mkdir  /tmp/license-check-test/
-	cp $(DIST_FILE) /tmp/license-check-test/
-	cd /tmp/license-check-test/ && unzip $(DIST_FILE)
-	cd /tmp/license-check-test/ && bin/license-checker.sh -h
-	cd /tmp/license-check-test/ && bin/license-checker.sh -v
-	cd /tmp/license-check-test/ && bin/license-checker.sh -c share/components/simple-dep-dual.json
-	cd /tmp/license-check-test/ && bin/license-checker.sh -c share/components/simple-dep-dual.json --pdf
-	test -f /tmp/license-check-test/report.pdf
-	if [ `file /tmp/license-check-test/report.pdf | grep -c "PDF document"` -ne 1 ] ; then echo "PDF report seems broken"; exit 1; fi
+	@rm -fr /tmp/foss-license-check-test
+	@mkdir  /tmp/foss-license-check-test/
+	cp $(DIST_FILE) /tmp/foss-license-check-test/
+	cd /tmp/foss-license-check-test/ && unzip $(DIST_FILE)
+	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -h
+	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -v
+	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -c share/components/simple-dep-dual.json
+	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -c share/components/simple-dep-dual.json --pdf
+	test -f /tmp/foss-license-check-test/report.pdf
+	if [ `file /tmp/foss-license-check-test/report.pdf | grep -c "PDF document"` -ne 1 ] ; then echo "PDF report seems broken"; exit 1; fi
 	@echo ""
 	@echo "Dist file $(DIST_FILE) seems to be valid :)"
 	@echo ""

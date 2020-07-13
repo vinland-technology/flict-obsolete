@@ -28,8 +28,8 @@ test_expression()
     EXPECTED_EXPR=$2
 
     printf " * %-50s" $(echo "$EXPR:" | sed 's, ,,g')
-    ACTUAL_EXPR=$(${INSTALL_DIR}/bin/license-checker.sh \
-                                -ld "${INSTALL_DIR}/licenses/json" \
+    ACTUAL_EXPR=$(${INSTALL_DIR}/bin/foss-license-checker.sh \
+                                -ld "${INSTALL_DIR}/etc/licenses/json" \
                                 -e "$EXPR" | \
                       grep -A 10 "List of License Lists" | \
                       grep -v -e "List of License Lists" -e "^[\-]*$" -e "^\]*$" -e "^\[*$" | \

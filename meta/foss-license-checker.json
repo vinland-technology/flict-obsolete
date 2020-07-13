@@ -1,6 +1,6 @@
 {
     "component": {
-        "name": "License Policy Checker",
+        "name": "FOSS License Checker",
         "license": "GPL-3.0-only",
         "dependencies": [
             {

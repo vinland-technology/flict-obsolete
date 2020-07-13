@@ -4,13 +4,13 @@ SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# License Checker
+# FOSS License Checker
 
-License Checker is an Free and Open Source Software compliance tool
+FOSS License Checker is an Free and Open Source Software compliance tool
 aimed at detecting license violations either with or without a
 policy. It assumes every component has a known license expression.
 
-License Checker can also conclude outbound licenses for your component.
+FOSS License Checker can also conclude outbound licenses for your component.
 
 # Input
 
@@ -23,7 +23,7 @@ Let's begin with an example component. Let's say we have a program
 ```
 {
     "meta": {
-        "software":"License Policy Checker",
+        "software":"FOSS License Checker",
         "version":"0.1"
     },
     "component": {
@@ -61,7 +61,7 @@ Here's an example:
 ```
 {
     "meta": {
-        "software":"License Policy Checker",
+        "software":"FOSS License Checker",
         "version":"0.1"
     },
     "license": {
@@ -114,7 +114,7 @@ example policy file:
 ```
 {
     "meta" : {
-        "software":"License Policy Checker",
+        "software":"FOSS License Checker",
         "version":"0.1"
     } ,
     "policy": {
@@ -142,7 +142,7 @@ Let's start with a example:
 ```
 {
     "meta": {
-        "software":"License Policy Checker",
+        "software":"FOSS License Checker",
         "type": "later-definitions",
         "version":"0.1"
     },
@@ -179,9 +179,9 @@ This is currently rewritten and not available.
 
 Using this format you can create txt, html, pdf and what format pandoc can create from markdown.
 
-# License of the License Checker
+# License of the FOSS License Checker
 
-License Checker is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
+FOSS License Checker is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 # Building
 
@@ -237,7 +237,7 @@ make
 make test
 ~~~
 
-# The way License Checker works
+# The way FOSS License Checker works
 
 Check out: (doc/how.md)
 
@@ -248,8 +248,7 @@ and its dependencies are specified in the file
 `./meta/license-policy-checker.json` as found in the source code.
 
 ~~~
-bin/license-checker.sh --c ./meta/license-checker.json 
-
+foss-license-checker.sh --c ./meta/foss-license-checker.json 
 ~~~
 
 

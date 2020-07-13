@@ -1,4 +1,4 @@
-# How does License Checker work
+# How does FOSS License Checker work
 
 We can split the functionality of this tool in to two main parts:
 
@@ -129,7 +129,7 @@ If you would like to see how this tool is tranforming your license expression be
 To test the expression ```MIT & Apache-2.0 | GPL-2.0-only```, do:
 
 ```
-bin/license-checker.sh -e "MIT & Apache-2.0 | GPL-2.0-only"
+foss-license-checker.sh -e "MIT & Apache-2.0 | GPL-2.0-only"
 
 ```
 
