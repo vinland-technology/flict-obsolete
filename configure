@@ -6,7 +6,7 @@ LOG_FILE=configure.log
 
 check_dependencies()
 {
-    java --version >> $LOG_FILE 2>&1
+    java -version >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]
     then
         echo "Java seems to be missing."
@@ -15,7 +15,7 @@ check_dependencies()
         exit 1
     fi
     
-    javac --version >> $LOG_FILE 2>&1
+    javac -version >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]
     then
         echo "Java compiler seems to be missing."
