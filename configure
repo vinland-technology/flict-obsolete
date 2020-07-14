@@ -50,6 +50,10 @@ USER_INSTALL_DATA_DIR=\~/.local/share
 MULTI_USER_BIN_DIR=/usr/bin
 MULTI_USER_DATA_DIR=/usr/share
 
+# Docker preset
+DOCKER_BIN_DIR=./
+DOCKER_DATA_DIR=./
+
 #
 # Default
 #
@@ -71,6 +75,11 @@ usage()
     echo "    Set installation directories to:"
     echo "      BIN_DIR=$MULTI_USER_INSTALL_BIN_DIR"
     echo "      DATA_DIR=$MULTI_USER_INSTALL_DATA_DIR"
+    echo ""
+    echo "  --docker-installation"
+    echo "    Set installation directories to:"
+    echo "      BIN_DIR=$DOCKER_INSTALL_BIN_DIR"
+    echo "      DATA_DIR=$DOCKER_INSTALL_DATA_DIR"
     echo ""
     echo "  --bin-dir=DIR"
     echo "    Set installation bin directory to: DIR"
