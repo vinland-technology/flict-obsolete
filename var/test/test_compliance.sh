@@ -29,7 +29,8 @@ test_compliance()
     EXPECTED_RET=$3
     printf " * %-50s" "$(basename $COMPONENT): "
     CMD="${INSTALL_DIR}/bin/foss-license-checker.sh \
-                           -ld \""${INSTALL_DIR}/etc/licenses/json\"" \
+                           -ld \""${INSTALL_DIR}/share/licenses/json\"" \
+                           -cf "${INSTALL_DIR}/share/licenses/connections/foss-license-checker.json" \
                            -c  \""${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}\"" "
     $CMD > $TMP_FILE
     ACTUAL_RET=$?

@@ -173,8 +173,8 @@ public class LicenseChecker {
         // Prepare map wth default values
         Map<String, Object> values = new HashMap<>();
         values.put(COMPONENT_FILE_CLI, null);
-        values.put(COMPATIBILITIES_FILE_CLI, "etc/licenses/connections/license-checker.json");
-        values.put(LATER_FILE_CLI, "etc/licenses/later/later-definitions.json");
+        values.put(COMPATIBILITIES_FILE_CLI, "share/licenses/connections/license-checker.json");
+        values.put(LATER_FILE_CLI, "share/licenses/later/later-definitions.json");
         values.put("output", null);
         values.put(LICENSE_DIR, "licenses/json");
         values.put(POLICY_FILE_CLI, null);

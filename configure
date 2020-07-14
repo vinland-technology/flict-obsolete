@@ -1,14 +1,24 @@
 #!/bin/bash
 
-P_NAME="License Policy Checker"
+P_NAME="FOSS License Checker"
+PROGRAM_NAME=foss-license-checker
 LOG_FILE=configure.log
 
 check_dependencies()
 {
-    java -h >> $LOG_FILE 2>&1
+    java --version >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]
     then
         echo "Java seems to be missing."
+        echo "You need install a Java JDK"
+        echo
+        exit 1
+    fi
+    
+    javac --version >> $LOG_FILE 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo "Java compiler seems to be missing."
         echo "You need install Java JDK"
         echo
         exit 1
@@ -32,20 +42,111 @@ check_dependencies()
     fi
 }
 
-get_java_libs()
+# User preset
+USER_INSTALL_BIN_DIR=~/.local/bin
+USER_INSTALL_DATA_DIR=~/.local/share
+# Multi user preset
+MULTI_USER_BIN_DIR=/usr/bin
+MULTI_USER_DATA_DIR=/usr/share
+
+# Default
+BIN_DIR="$USER_INSTALL_BIN_DIR"
+DATA_DIR="$USER_INSTALL_DATA_DIR"
+
+usage()
 {
-    make dload-libs
+    echo ""
+    echo "configure"
+    echo 
+    echo "  --user-installation"
+    echo "    Set installation directories to:"
+    echo "      BIN_DIR=$USER_INSTALL_BIN_DIR"
+    echo "      DATA_DIR=$USER_INSTALL_DATA_DIR"
+    echo "    This is default"
+    echo ""
+    echo "  --multi-user-installation"
+    echo "    Set installation directories to:"
+    echo "      BIN_DIR=$MULTI_USER_INSTALL_BIN_DIR"
+    echo "      DATA_DIR=$MULTI_USER_INSTALL_DATA_DIR"
+    echo ""
+    echo "  --bin-dir=DIR"
+    echo "    Set installation bin directory to: DIR"
+    echo ""
+    echo "  --data-dir=DIR"
+    echo "    Set installation data directory to: DIR"
+    echo ""
+    echo "  --help"
+    echo "    Print usage information"
+    echo ""
 }
 
+parse()
+{
+    while [ "$1" != "" ]
+    do
+        if [[ "$1" =~ "--user-installation" ]]
+        then
+            BIN_DIR="$USER_INSTALL_BIN_DIR"
+            DATA_DIR="$USER_INSTALL_DATA_DIR"
+        elif [[ "$1" =~ "--multi-user-installation" ]]
+        then
+            BIN_DIR="$MULTI_USER_BIN_DIR"
+            DATA_DIR="$MULTI_USER_DATA_DIR"
+        elif [[ "$1" =~ "--bin-dir=" ]]
+        then
+            BIN_DIR=$(echo $1 | sed 's,--bin-dir=,,g')
+        elif [[ "$1" =~ "--data-dir=" ]]
+        then
+            DATA_DIR=$(echo $1 | sed 's,--data-dir=,,g')/
+        elif [[ "$1" = "--help" ]]
+        then
+            usage
+            exit 0
+        else
+            echo "SYNTAX ERROR - \"$1\""
+            usage       
+            exit 1
+        fi
+        shift
+    done
+}
+
+parse $*
+
+
+
+echo -n "Preparing Makefile: "
+if [ "$BIN_DIR" = "" ] || [ "$DATA_DIR" = "" ]
+then
+    MSG="    (BIN_DIR and/or DATA_DIR not set, using .)";
+    BIN_DIR=./bin
+    DATA_DIR=./share
+fi
+cat Makefile.in | \
+    sed "s,__PROGRAM_NAME__,$PROGRAM_NAME,g" | \
+    sed "s,__BIN_DIR__,$BIN_DIR,g" | \
+    sed "s,__DATA_DIR__,$DATA_DIR,g" > Makefile
+if [ $? -ne 0 ] ; then
+    echo "Failed creating Makefile"; exit 1;
+fi
+cat bin/foss-license-checker.sh.in | \
+    sed "s,__PROGRAM_NAME__,$PROGRAM_NAME,g" | \
+    sed "s,__BIN_DIR__,$BIN_DIR,g" | \
+    sed "s,__DATA_DIR__,$DATA_DIR,g" > bin/foss-license-checker.sh
+if [ $? -ne 0 ] ; then
+    echo "Failed creating Makefile"; exit 1;
+fi
+echo "OK $MSG"
+
+echo
+echo -n "Installing required packages"
+./var/setup.sh
+echo
 
 echo -n "Check dependencies: "
 check_dependencies
 echo "OK"
 
-echo -n "Download java libs: "
-get_java_libs >> $LOG_FILE 2>&1
-echo "OK"
-
-
-
-
+echo
+echo " .... configure done, perhaps time to build. Type \"make\" followed by enter"
+echo ""

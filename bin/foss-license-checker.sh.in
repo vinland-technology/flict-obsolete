@@ -4,12 +4,16 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-INSTALL_DIR=$(dirname $(realpath $(which $0)) | sed 's,\/bin,,g')
+#INSTALL_DIR=$(dirname $(realpath $(which $0)) | sed 's,\/bin,,g'
+PROGRAM_NAME=__PROGRAM_NAME__
+DATA_DIR=__DATA_DIR__/${PROGRAM_NAME}
 
-CLASSPATH="$INSTALL_DIR:$INSTALL_DIR/lib/gson-2.2.2.jar:$INSTALL_DIR/lib/commons-cli-1.4.jar:$INSTALL_DIR/lib/license-checker.jar"
-DEFAULT_LICENSE_ARGS=" --license-dir ${INSTALL_DIR}/etc/licenses/json "
-DEFAULT_COMPAT_ARGS=" --compatibility-file ${INSTALL_DIR}/etc/licenses/connections/foss-license-checker.json"
-DEFAULT_LATER_ARGS=" --later-file ${INSTALL_DIR}/etc/licenses/later/later-definitions.json"
+
+DEVEL_CLASSPATH="lib/gson-2.2.2.jar:lib/commons-cli-1.4.jar:."
+CLASSPATH="$DATA_DIR/lib/gson-2.2.2.jar:$DATA_DIR/lib/commons-cli-1.4.jar:$DATA_DIR/lib/license-checker.jar:$DEVEL_CLASSPATH"
+DEFAULT_LICENSE_ARGS=" --license-dir ${DATA_DIR}/share/licenses/json "
+DEFAULT_COMPAT_ARGS=" --compatibility-file ${DATA_DIR}/share/licenses/connections/foss-license-checker.json"
+DEFAULT_LATER_ARGS=" --later-file ${DATA_DIR}/share/licenses/later/later-definitions.json"
 CLASS="com.sandklef.compliance.cli.LicenseChecker"
 
 # basic verification of json files
