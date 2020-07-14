@@ -43,13 +43,16 @@ check_dependencies()
 }
 
 # User preset
-USER_INSTALL_BIN_DIR=~/.local/bin
-USER_INSTALL_DATA_DIR=~/.local/share
+USER_INSTALL_BIN_DIR=\~/.local/bin
+USER_INSTALL_DATA_DIR=\~/.local/share
+
 # Multi user preset
 MULTI_USER_BIN_DIR=/usr/bin
 MULTI_USER_DATA_DIR=/usr/share
 
+#
 # Default
+#
 BIN_DIR="$USER_INSTALL_BIN_DIR"
 DATA_DIR="$USER_INSTALL_DATA_DIR"
 
@@ -129,6 +132,7 @@ cat Makefile.in | \
 if [ $? -ne 0 ] ; then
     echo "Failed creating Makefile"; exit 1;
 fi
+
 cat bin/foss-license-checker.sh.in | \
     sed "s,__PROGRAM_NAME__,$PROGRAM_NAME,g" | \
     sed "s,__BIN_DIR__,$BIN_DIR,g" | \
