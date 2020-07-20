@@ -28,7 +28,7 @@ summarize()
 check_component()
 {
     COMPONENT="$1"
-    COMPONENT_NAME="$(basename $1)"
+    COMPONENT_NAME="$(basename $1 | sed 's,\.json,,g')"
 
 
     log ""
@@ -36,7 +36,7 @@ check_component()
     log "  -------------------------"
     mkdir -p "$REPORTS_DIR/$COMPONENT_NAME"
     logn "   * compliance: "
-    $FLC_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown -o "$REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.md"
+    $FLC_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown > "$REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.md"
     RES_STR=
     SUM_STR=
     if [ $? -eq 0 ]
@@ -59,7 +59,7 @@ check_component()
     for fmt in $FORMATS
     do
         logn "$fmt "
-#        pandoc $REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.md -o $REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.$fmt
+        pandoc $REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.md -o $REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.$fmt
     done
     log
 }
