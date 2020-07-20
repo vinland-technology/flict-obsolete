@@ -6,11 +6,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # FOSS License Checker
 
-FOSS License Checker is an Free and Open Source Software compliance tool
-aimed at detecting license violations either with or without a
+FOSS License Checker is a Free and Open Source Software compliance
+tool aimed at detecting license violations either with or without a
 policy. It assumes every component has a known license expression.
 
-FOSS License Checker can also conclude outbound licenses for your component.
+FOSS License Checker can also conclude outbound license(s) for your
+component.
 
 # Input
 
@@ -183,72 +184,15 @@ Using this format you can create txt, html, pdf and what format pandoc can creat
 
 FOSS License Checker is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-# Building
+# Building and using
 
-## Required tools
+You can chose between two ways of installing and using this tool:
 
-* jq
+* native installation (see doc/native-install)
 
-* GNU Make
-
-* JDK (Jav Development Kit) (7 or higher)
-
-* bash
-
-* wget
-
-* Extra Java components will be download when you configure
-
-* pdfunite
-
-## Required java components
-
-* GSON (downloaded automatically with configure)
-
-* Apache common (downloaded automatically with configure)
-
-### Install required dependencies
-
-We have setup scripts for some GNU/Linux distributions:
-
-* Debian ```var/setup-linux-debian.sh```
-
-* Fedora: ```var/setup-linux-fedora.sh```
-
-* Ubuntu: ```var/setup-linux-ubuntu.sh```
-
-## Building
-
-### Check tools
-
-~~~
-./configure
-~~~
-
-### Build
-
-~~~
-make
-~~~
-
-### Test
-
-~~~
-make test
-~~~
+* docker (see doc/docker-install)
 
 # The way FOSS License Checker works
 
 Check out: (doc/how.md)
-
-# Example
-
-The below checks license checker itself. The component License Checker
-and its dependencies are specified in the file
-`./meta/license-policy-checker.json` as found in the source code.
-
-~~~
-foss-license-checker.sh --c ./meta/foss-license-checker.json 
-~~~
-
 
