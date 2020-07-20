@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-BIN_DIR=/home/hesa/.local/bin
-DATA_DIR=/home/hesa/.local/share
+BIN_DIR=.
+DATA_DIR=.
 PROGRAM_NAME=foss-license-checker
 
 JAVA_SOURCES=\
@@ -170,7 +170,7 @@ connector-grahp: bin/$(CLI)
 # Create outpur dir
 #
 $(OUT_DIR):
-	@mkdir -p $(OUT_DIR)/$(DATA_DIR)
+	@mkdir -p $(OUT_DIR)
 
 $(JAR_FILE): $(CLASSES)
 	jar cvf $(JAR_FILE) com
@@ -188,13 +188,16 @@ dist: $(OUT_DIR) $(JAR_FILE) bin/$(CLI)
 
 	@echo Copy share files
 	@-mkdir -p $(OUT_DIR)/share
-	@cp -r share $(OUT_DIR)/share
+	@cp -r share/* $(OUT_DIR)/share
 
 	@echo Copy License
 	@echo " * LICENSE"
 	@cp -r LICENSE $(OUT_DIR)/share
 	@echo " * COPYING"
 	@cp -r COPYING $(OUT_DIR)/share
+
+	@echo Copy docker stuff
+	@cp -r docker/*.sh $(OUT_DIR)/share
 
 	@echo Copy jar file
 	@-mkdir -p $(OUT_DIR)/lib
@@ -235,6 +238,6 @@ install: dist
 	@echo "Installed to $(BIN_DIR) "
 	@echo
 	@echo "Try it out:"
-	@echo "   $(BIN_DIR)/foss-license-checker.sh -c $(DATA_DIR)/$(PROGRAM_NAME)//components/simple-dep-dual.json"
+	@echo "   $(BIN_DIR)/foss-license-checker.sh -c $(DATA_DIR)/$(PROGRAM_NAME)/components/simple-dep-dual.json"
 
 test-all: clean all doc test dist test-dist
