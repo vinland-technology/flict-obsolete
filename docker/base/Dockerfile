@@ -28,6 +28,11 @@ ENV COMPAT_ARGS=" --compatibility-file $COMPAT_FILE "
 ENV LATER_ARGS=" --later-file $LATER_FILE "
 
 #RUN ls -al $FLC_BIN $LICENSE_DIR $COMPAT_FILE $LATER_FILE share/components/simple-dep-dual.json
-RUN $FLC_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c share/components/simple-dep-dual.json
+#RUN $FLC_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS --version
+#RUN apt-get update && apt-get install -y pandoc poppler-utils jq wget make curl texlive-latex-recommended pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra
+RUN $FLC_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS --version && printf "\n\nDocker image works fine\n\n" || printf "\n\n***ERROR*** Docker image does not seem to work\n\n"
+#RUN find .
+
+CMD bash share/check-components.sh 
 
 
