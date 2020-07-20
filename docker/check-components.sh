@@ -81,8 +81,11 @@ then
     mv "$SUMMARY_LOG" "$SUMMARY_LOG".old
 fi
 
-log "FOSS License Checker - for use in docker"
-log
+log ""
+log "  *** FOSS License Checker ***"
+log "" 
+log "  gitlab.com/sandklef/foss-license-checker"
+log ""
 check_components
 log
 
