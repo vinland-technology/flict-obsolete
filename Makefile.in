@@ -196,6 +196,9 @@ dist: $(OUT_DIR) $(JAR_FILE) bin/$(CLI)
 	@echo " * COPYING"
 	@cp -r COPYING $(OUT_DIR)/share
 
+	@echo Copy docker stuff
+	@cp -r docker/*.sh $(OUT_DIR)/share
+
 	@echo Copy jar file
 	@-mkdir -p $(OUT_DIR)/lib
 	cp $(JAR_FILE) $(OUT_DIR)/lib/
