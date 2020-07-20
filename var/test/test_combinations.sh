@@ -37,6 +37,7 @@ test_combination_count()
     ${INSTALL_DIR}/bin/foss-license-checker.sh \
                                  -ld "${INSTALL_DIR}/share/licenses/json" \
                                  -cf "${INSTALL_DIR}/share/licenses/connections/foss-license-checker.json" \
+                                 -lf "${INSTALL_DIR}/share/licenses/later/later-definitions.json" \
                                  -c "${COMPONENT_DIR}/var/test/combination-components/${COMPONENT}" \
                                  ${POLICY_ARGS} > $TMP_FILE
 
