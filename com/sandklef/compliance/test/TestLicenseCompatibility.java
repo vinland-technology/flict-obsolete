@@ -66,7 +66,7 @@ public class TestLicenseCompatibility {
 
     public static void test_read_json() throws IOException, LicenseCompatibility.LicenseConnectorException {
         JsonLicenseCompatibilityParser jcp = new JsonLicenseCompatibilityParser();
-        Map<String, LicenseCompatibility> licenseConnectors = JsonLicenseCompatibilityParser.readLicenseConnection("etc/licenses/connections/dwheeler.json");
+        Map<String, LicenseCompatibility> licenseConnectors = JsonLicenseCompatibilityParser.readLicenseConnection("share/licenses/connections/dwheeler.json");
 
         for (Map.Entry<String, LicenseCompatibility> entry : licenseConnectors.entrySet()) {
             String key = entry.getKey();

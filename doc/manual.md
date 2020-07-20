@@ -18,7 +18,7 @@ foss-license-checker.sh [OPTIONS]
 
 ### ```--compatibility-file, -cf [FILE]```
 
-Which compatibility graph to use. Default file is ```etc/licenses/connections/foss-license-checker.json``` as found in the installtion directory.
+Which compatibility graph to use. Default file is ```share/licenses/connections/foss-license-checker.json``` as found in the installtion directory.
 
 ### ```--component-file, -c [FILE]```
 
@@ -42,7 +42,7 @@ Set the directory containing the license definitions. Default directory is ```li
 
 ### ```--later-file, -lf```
 
-Set the file containing the definitions of how to interpret licenses with "later" definitions (e g *GPL-2.0-or-later*). Default file is ```etc/licenses/later/later-definitions.json``` as found in the installtion directory.
+Set the file containing the definitions of how to interpret licenses with "later" definitions (e g *GPL-2.0-or-later*). Default file is ```share/licenses/later/later-definitions.json``` as found in the installtion directory.
 
 ### ```--output, -o [FILE]```
 

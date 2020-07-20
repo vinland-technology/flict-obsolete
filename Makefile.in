@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-BIN_DIR=/home/hesa/.local/bin
-DATA_DIR=/home/hesa/.local/share
-PROGRAM_NAME=foss-license-checker
+BIN_DIR=__BIN_DIR__
+DATA_DIR=__DATA_DIR__
+PROGRAM_NAME=__PROGRAM_NAME__
 
 JAVA_SOURCES=\
   com/sandklef/compliance/domain/LicensePolicy.java \
@@ -170,7 +170,7 @@ connector-grahp: bin/$(CLI)
 # Create outpur dir
 #
 $(OUT_DIR):
-	@mkdir -p $(OUT_DIR)/$(DATA_DIR)
+	@mkdir -p $(OUT_DIR)
 
 $(JAR_FILE): $(CLASSES)
 	jar cvf $(JAR_FILE) com
@@ -188,7 +188,7 @@ dist: $(OUT_DIR) $(JAR_FILE) bin/$(CLI)
 
 	@echo Copy share files
 	@-mkdir -p $(OUT_DIR)/share
-	@cp -r share $(OUT_DIR)/share
+	@cp -r share/* $(OUT_DIR)/share
 
 	@echo Copy License
 	@echo " * LICENSE"
@@ -235,6 +235,6 @@ install: dist
 	@echo "Installed to $(BIN_DIR) "
 	@echo
 	@echo "Try it out:"
-	@echo "   $(BIN_DIR)/foss-license-checker.sh -c $(DATA_DIR)/$(PROGRAM_NAME)//components/simple-dep-dual.json"
+	@echo "   $(BIN_DIR)/foss-license-checker.sh -c $(DATA_DIR)/$(PROGRAM_NAME)/components/simple-dep-dual.json"
 
 test-all: clean all doc test dist test-dist

@@ -1,44 +1,3 @@
-#!/bin/bash
-
-LIB_DIR=lib
-
-exit_on_error()
-{
-    if [ "$1" != "0" ]
-    then
-        if [ "$2" != "" ]
-        then
-            echo "$2"
-            echo "return value: $1"
-            exit $1
-        else
-            echo "Failure"
-            echo "return value: $1"
-            exit $1
-        fi
-    fi
-}
-
-get_date()
-{
-    echo -n "$(date '+%Y-%m-%d %H:%M:%S')"
-}
-
-log()
-{
-    echo -n "["
-    get_date
-    echo "] $*"
-}
-
-log_to_file()
-{
-    if [ "$LOG_FILE" != "" ]
-    then
-        log "$*" >> $LOG_FILE
-    fi           
-}
-
 determine_os()
 {
     if [ "$(uname  | grep -ic linux)" != "0" ]
@@ -47,7 +6,7 @@ determine_os()
         if [ -f /etc/fedora-release ]
         then
             DIST=fedora
-        elif [ -f /etc/redhat-release ]
+        elif [ -f /etc/fedora-release ]
         then
             DIST=redhat
         elif [ -f /etc/os-release ]
@@ -78,7 +37,7 @@ determine_os()
         echo ""
         echo "This might be a very good and useful software, "
         echo "possibly better than cygwin when it comes to git"
-        echo "but this is not something Juneday supports. "
+        echo "but this is not something we currently support. "
         echo ""
         echo "Your software"
         echo " * OS:    $(uname)"
@@ -87,7 +46,7 @@ determine_os()
         echo ""
         echo "WHAT TO DO NOW?"
         echo ""
-        echo "Install cygwin? Use Ubuntu for Windows?"
+        echo "Perhaps, install cygwin or Ubuntu for windows?"
         echo ""
         exit 1
     else
@@ -99,10 +58,3 @@ determine_os()
     fi
 
 }
-
-determine_os
-
-
-echo "Installing software for $OS / $DIST"
-SETUP_DIR=$(dirname $(realpath $(which $0)) | sed 's,\/bin,,g')
-$SETUP_DIR/setup-$OS-$DIST.sh

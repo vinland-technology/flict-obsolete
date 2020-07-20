@@ -19,7 +19,7 @@ public class TestAll {
 
       //  System.out.println("\n");
       //  Log.level(Log.DEBUG);
-        Map<String, License> licenses1 = new JsonLicenseParser().readLicenseDir("etc/licenses/json");
+        Map<String, License> licenses1 = new JsonLicenseParser().readLicenseDir("share/licenses/json");
         LicenseStore.getInstance().addLicenses(licenses1);
 
       //  System.out.println(" licenses: " + licenses1);
@@ -39,7 +39,7 @@ public class TestAll {
 
         // TODO: move to separate test
         JsonComponentParser jp = new JsonComponentParser();
-        Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("etc/licenses/json");
+        Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("share/licenses/json");
         LicenseStore.getInstance().addLicenses(licenses);
         Component component = jp.readComponent("com/sandklef/compliance/json/test/archive.json");
         Report report = LicenseArbiter.report(component, null);
