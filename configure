@@ -159,5 +159,5 @@ check_dependencies
 echo "OK"
 
 echo
-echo " .... configure done, perhaps time to build. Type \"make\" followed by enter"
+echo " .... configure finished successfully :)"
 echo ""
