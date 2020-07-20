@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IMAGE_NAME=sandklef/foss-license-checker
+IMAGE_NAME=sandklef/foss-license-checker-base
 CONTAINER_NAME=sandklef-flc
 
 build_image()
