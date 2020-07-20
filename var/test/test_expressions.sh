@@ -29,8 +29,9 @@ test_expression()
 
     printf " * %-50s" $(echo "$EXPR:" | sed 's, ,,g')
     ACTUAL_EXPR=$(${INSTALL_DIR}/bin/foss-license-checker.sh \
-                                -ld "${INSTALL_DIR}/share/licenses/json" \
+                                -ld "${INSTALL_DIR}/share/licenses/json/" \
                                 -cf "${INSTALL_DIR}/share/licenses/connections/foss-license-checker.json" \
+                                -lf "${INSTALL_DIR}/share/licenses/later/later-definitions.json" \
                                 -e "$EXPR" | \
                       grep -A 10 "List of License Lists" | \
                       grep -v -e "List of License Lists" -e "^[\-]*$" -e "^\]*$" -e "^\[*$" | \

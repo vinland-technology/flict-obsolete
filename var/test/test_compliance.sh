@@ -31,6 +31,7 @@ test_compliance()
     CMD="${INSTALL_DIR}/bin/foss-license-checker.sh \
                            -ld \""${INSTALL_DIR}/share/licenses/json\"" \
                            -cf "${INSTALL_DIR}/share/licenses/connections/foss-license-checker.json" \
+                           -lf "${INSTALL_DIR}/share/licenses/later/later-definitions.json" \
                            -c  \""${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}\"" "
     $CMD > $TMP_FILE
     ACTUAL_RET=$?

@@ -56,7 +56,7 @@ do
             LATER_FILE=true
             ARGS="$ARGS \"$1\""
             ;;
-        "--license-dir"|"-l")
+        "--license-dir"|"-ld")
             LICENSE_DIR=true
             ARGS="$ARGS \"$1\""
             ;;
