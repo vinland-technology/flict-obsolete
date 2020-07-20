@@ -21,7 +21,7 @@ jq --version >/dev/null 2>&1
 RET=$?
 if [ $RET -eq 0 ]
 then
-    JSON_FILES=$(echo $* | tr ' ' '\n' | grep json )
+    JSON_FILES=$(echo $* | tr ' ' '\n' | grep -e  ".json$" )
     for FILE in $JSON_FILES
     do
         #   echo check file $FILE
