@@ -4,42 +4,28 @@ P_NAME="FOSS License Checker"
 PROGRAM_NAME=foss-license-checker
 LOG_FILE=configure.log
 
+
+
+
+check_dependency()
+{
+    echo checking $1 >> $LOG_FILE 2>&1
+    which $1 2>/dev/null >/dev/null 
+    if [ $? -ne 0 ]
+    then
+        echo "$1 seems to be missing."
+        echo
+        exit 1
+    fi
+
+}
+
 check_dependencies()
 {
-    java --version >> $LOG_FILE 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "Java seems to be missing."
-        echo "You need install a Java JDK"
-        echo
-        exit 1
-    fi
-    
-    javac --version >> $LOG_FILE 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "Java compiler seems to be missing."
-        echo "You need install Java JDK"
-        echo
-        exit 1
-    fi
-    
-    make -v >> $LOG_FILE 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "GNU Make seems to be missing."
-        echo "You need install GNU make"
-        echo
-        exit 1
-    fi
-    
-    jq -h >> $LOG_FILE 2>&1
-    if [ $? -ne 0 ]
-    then
-        echo "jq seems to be missing."
-        echo "You need install it before using  $P_NAME"
-        exit 1
-    fi
+    check_dependency java
+    check_dependency javac
+    check_dependency jq
+    check_dependency make
 }
 
 # User preset
@@ -49,6 +35,10 @@ USER_INSTALL_DATA_DIR=\~/.local/share
 # Multi user preset
 MULTI_USER_BIN_DIR=/usr/bin
 MULTI_USER_DATA_DIR=/usr/share
+
+#
+DEVEL_BIN_DIR=.
+DEVEL_DATA_DIR=.
 
 #
 # Default
@@ -71,6 +61,11 @@ usage()
     echo "    Set installation directories to:"
     echo "      BIN_DIR=$MULTI_USER_INSTALL_BIN_DIR"
     echo "      DATA_DIR=$MULTI_USER_INSTALL_DATA_DIR"
+    echo ""
+    echo "  --devel"
+    echo "    Set installation directories to:"
+    echo "      BIN_DIR=$DEVEL_BIN_DIR"
+    echo "      DATA_DIR=$DEVEL_DATA_DIR"
     echo ""
     echo "  --bin-dir=DIR"
     echo "    Set installation bin directory to: DIR"
@@ -95,6 +90,10 @@ parse()
         then
             BIN_DIR="$MULTI_USER_BIN_DIR"
             DATA_DIR="$MULTI_USER_DATA_DIR"
+        elif [[ "$1" =~ "--devel" ]]
+        then
+            BIN_DIR="$DEVEL_BIN_DIR"
+            DATA_DIR="$DEVEL_DATA_DIR"
         elif [[ "$1" =~ "--bin-dir=" ]]
         then
             BIN_DIR=$(echo $1 | sed 's,--bin-dir=,,g')
@@ -141,11 +140,6 @@ if [ $? -ne 0 ] ; then
     echo "Failed creating Makefile"; exit 1;
 fi
 echo "OK $MSG"
-
-echo
-echo -n "Installing required packages"
-./var/setup.sh
-echo
 
 echo -n "Check dependencies: "
 check_dependencies
