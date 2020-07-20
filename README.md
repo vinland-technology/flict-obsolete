@@ -219,6 +219,15 @@ We have setup scripts for some GNU/Linux distributions:
 
 ## Building
 
+### Install required tools
+
+~~~
+./var/setup.sh
+~~~
+
+*Note: we're currently only supporting Debian, Ubuntu, Fedroa, Redhat GNU/Linux* 
+
+
 ### Check tools
 
 ~~~
