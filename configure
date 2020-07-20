@@ -51,8 +51,8 @@ MULTI_USER_BIN_DIR=/usr/bin
 MULTI_USER_DATA_DIR=/usr/share
 
 # Docker preset
-DOCKER_BIN_DIR=./
-DOCKER_DATA_DIR=./
+DOCKER_BIN_DIR=.
+DOCKER_DATA_DIR=.
 
 #
 # Default
@@ -70,7 +70,6 @@ usage()
     echo "      BIN_DIR=$USER_INSTALL_BIN_DIR"
     echo "      DATA_DIR=$USER_INSTALL_DATA_DIR"
     echo "    This is default"
-    echo ""
     echo "  --multi-user-installation"
     echo "    Set installation directories to:"
     echo "      BIN_DIR=$MULTI_USER_INSTALL_BIN_DIR"
@@ -81,7 +80,9 @@ usage()
     echo "      BIN_DIR=$DOCKER_INSTALL_BIN_DIR"
     echo "      DATA_DIR=$DOCKER_INSTALL_DATA_DIR"
     echo ""
+    echo ""
     echo "  --bin-dir=DIR"
+    echo ""
     echo "    Set installation bin directory to: DIR"
     echo ""
     echo "  --data-dir=DIR"
@@ -104,6 +105,10 @@ parse()
         then
             BIN_DIR="$MULTI_USER_BIN_DIR"
             DATA_DIR="$MULTI_USER_DATA_DIR"
+        elif [[ "$1" =~ "--docker-installation" ]]
+        then
+            BIN_DIR="$DOCKER_BIN_DIR"
+            DATA_DIR="$DOCKER_DATA_DIR"
         elif [[ "$1" =~ "--bin-dir=" ]]
         then
             BIN_DIR=$(echo $1 | sed 's,--bin-dir=,,g')
