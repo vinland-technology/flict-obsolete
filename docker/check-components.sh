@@ -82,11 +82,23 @@ then
 fi
 
 log ""
-log "  *** FOSS License Checker ***"
-log "" 
-log "  gitlab.com/sandklef/foss-license-checker"
-log "" 
-log "  date: $(date)"
+log " *****************************************************"
+log " ***                                               ***"
+log " ***            FOSS License Checker               ***"
+log " ***                                               ***"
+log " *****************************************************"
+log " * " 
+log " * Information about FOSS License Checker:" 
+log " *   gitlab.com/sandklef/foss-license-checker"
+log " *   version:      $($FLC_BIN --version | head -1)"
+log " * " 
+log " * Information about current check:" 
+log " *   date:  $(date)"
+log " *   os:    $(uname -a)"
+log " * " 
+log " * " 
+log " * ..... thanks for using FOSS License Checker" 
+log " * " 
 log ""
 check_components
 log
