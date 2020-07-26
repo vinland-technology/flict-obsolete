@@ -18,7 +18,7 @@ Define the version and update the version in the following files:
 
 * docker/foss-license-checker/Dockerfile
 
-## Verify release
+## Verify and create release
 
 ```
 ./var/release.sh VERSION-NUMBER
