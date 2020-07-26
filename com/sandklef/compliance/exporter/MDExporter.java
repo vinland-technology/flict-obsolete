@@ -131,6 +131,7 @@ public class MDExporter implements ReportExporter {
                     sb.append(ic.name() + " (" +
                             beautifyLicense(ic.licenses().toString()) + ")");
                 }
+                sb.append("\n\n");
             }
         }
         sb.append("\n\n");
