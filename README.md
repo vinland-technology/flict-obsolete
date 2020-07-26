@@ -190,7 +190,7 @@ You can chose between two ways of installing and using this tool:
 
 * native installation (see doc/native-install)
 
-* docker (see doc/docker-install)
+* docker (see doc/docker)
 
 # The way FOSS License Checker works
 
