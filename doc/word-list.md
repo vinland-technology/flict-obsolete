@@ -1,4 +1,4 @@
-# Word list
+# Word list (OBSOLETE FOR NOW)
 
 * component - a collection of source code as packaged and released by a project (e g gstreamer)
 
