@@ -149,8 +149,9 @@ cat bin/foss-license-checker.sh.in | \
     sed "s,__PROGRAM_NAME__,$PROGRAM_NAME,g" | \
     sed "s,__BIN_DIR__,$BIN_DIR,g" | \
     sed "s,__DATA_DIR__,$DATA_DIR,g" > bin/foss-license-checker.sh
+chmod a+x bin/foss-license-checker.sh
 if [ $? -ne 0 ] ; then
-    echo "Failed creating Makefile"; exit 1;
+    echo "Failed creating script"; exit 1;
 fi
 echo "OK $MSG"
 

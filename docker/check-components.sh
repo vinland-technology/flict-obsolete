@@ -85,6 +85,8 @@ log ""
 log "  *** FOSS License Checker ***"
 log "" 
 log "  gitlab.com/sandklef/foss-license-checker"
+log "" 
+log "  date: $(date)"
 log ""
 check_components
 log

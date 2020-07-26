@@ -6,7 +6,7 @@ package com.sandklef.compliance.utils;
 
 public class Version {
 
-    public static final String LICENSE_CHECKER_VERSION = "0.1";
+    public static final String LICENSE_CHECKER_VERSION = "0.1-beta4";
     public static final String LICENSE_CHECKER_NAME = "FOSS License Checker";
     public static final String LICENSE_CHECKER_LICENSE = "GPL-3.0-or-later";
     public static final String LICENSE_CHECKER_COPYRIGHT = "2020 Henrik Sandklef";
