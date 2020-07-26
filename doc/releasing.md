@@ -7,7 +7,7 @@
 ## Build and test
 
 ```
-./configure --devel && make clean all test dist 
+./configure --devel && make clean all test dist test-dist
 ```
 
 ## Name the release
