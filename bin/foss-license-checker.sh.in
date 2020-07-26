@@ -110,8 +110,9 @@ if [ "$TMP_MD" != "" ]
 then
     echo "$ARGS"
     run > $TMP_MD
-    pandoc $TMP_MD -o tmp.pdf
-    pdfunite tmp.pdf ${FILE_NAME}.pdf report.pdf
+    printf "# License Compatibility graph\n\nThe following license graph have been used" > tmp-graph.md
+    pandoc tmp-graph.md -o tmp-graph.pdf
+    pdfunite tmp.pdf tmp-graph.pdf ${FILE_NAME}.pdf report.pdf
     #    evince report.pdf
     echo "Created report.pdf"
     exit $COMPLIANCE_RET
