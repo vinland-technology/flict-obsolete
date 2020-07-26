@@ -89,7 +89,6 @@ public class LicenseArbiter {
             return component.name();
         }
 
-
         public List<InterimComponent> allDependenciesImpl() {
             List<InterimComponent> components = new ArrayList<>();
             for (InterimComponent ic : dependencies) {
@@ -98,8 +97,6 @@ public class LicenseArbiter {
             }
             return components;
         }
-
-
 
         private String toStringHelper(InterimComponent iComponent, String indent) {
             StringBuilder sb = new StringBuilder();
