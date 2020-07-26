@@ -28,41 +28,38 @@ docker run -it -v `pwd`/components/:/components sandklef/foss-license-checker
 
 # Example run
 
-We're going to analyse a component called Cairo. The component is
-specified in the JSON file ```cairo.json``` and the ```components```
+We're going to analyse a component called Super Awesome Program. The component is
+specified in the JSON file ```example.json``` and the ```components```
 directory.
 
 Let's have a look at the ```components``` directory
 ```
 $ tree --charset=ascii components/
 components/
-`-- cairo.json
+`-- example.json
 
 0 directories, 1 file
 ```
 
 The component itself looks like this:
 ```
-$ cat components/cairo.json 
+$ cat components/example.json 
 {
     "meta": {
         "software":"License Policy Checker",
-        "version":"0.1"
+        "version" : "0.1"
     },
-    "component": {
-        "name": "cairo",
-        "license": "Apache-2.0",
-        "dependencies": [],
-        "include_dependencies": [
-            "fontconfig",
-            "freetype",
-            "glibc",
-            "libpng",
-            "pixman",
-            "zlib"            
-        ]
-    }
-}
+    "component": 
+    { "name":    "Super Awesome Program",
+      "license": "GPL-2.0-or-later", 
+      "dependencies": [
+          { "name":    "Great library",
+            "license": "MIT|BSD-3-Clause&GPL-2.0-only ", 
+            "dependencies": [  ] 
+          } 
+      ] 
+    } 
+} 
 ```
 
 Let's run the check:
@@ -73,7 +70,7 @@ FOSS License Checker - for use in docker
 Check components:
 ===========================
 
-  cairo
+  example
   -------------------------
    * compliance:   yes
    * convert report to: pdf html docx opendocument plain json 
@@ -83,20 +80,20 @@ Check components:
 You should be able to see the report in various formats in the ```components/report``` directory.
 
 ```
-$ tree --charset=ascii components/
+$ tree components/
 components/
-|-- cairo.json
-|-- check-components.log
-`-- reports
-    |-- cairo
-    |   |-- report-cairo.docx
-    |   |-- report-cairo.html
-    |   |-- report-cairo.json
-    |   |-- report-cairo.md
-    |   |-- report-cairo.opendocument
-    |   |-- report-cairo.pdf
-    |   `-- report-cairo.plain
-    `-- summary.log
+├── check-components.log
+├── example.json
+└── reports
+    ├── example
+    │   ├── report-example.docx
+    │   ├── report-example.html
+    │   ├── report-example.json
+    │   ├── report-example.md
+    │   ├── report-example.opendocument
+    │   ├── report-example.pdf
+    │   └── report-example.plain
+    └── summary.log
 
 2 directories, 10 files
 ```
