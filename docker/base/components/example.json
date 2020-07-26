@@ -1,0 +1,16 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version" : "0.1"
+    },
+    "component": 
+    { "name":    "Super Awesome Program",
+      "license": "GPL-2.0-or-later", 
+      "dependencies": [
+          { "name":    "Great library",
+            "license": "MIT|BSD-3-Clause&GPL-2.0-only ", 
+            "dependencies": [  ] 
+          } 
+      ] 
+    } 
+} 
