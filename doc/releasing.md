@@ -21,7 +21,7 @@ Define the version and update the version in the following files:
 ## Verify release
 
 ```
-./var/release.sh
+./var/release.sh VERSION-NUMBER
 ```
 
 *Note: this script pushes an image over at docker.io*
