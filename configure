@@ -4,9 +4,6 @@ P_NAME="FOSS License Checker"
 PROGRAM_NAME=foss-license-checker
 LOG_FILE=configure.log
 
-
-
-
 check_dependency()
 {
     echo checking $1 >> $LOG_FILE 2>&1
