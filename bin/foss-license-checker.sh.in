@@ -11,10 +11,11 @@ DATA_DIR=__DATA_DIR__/
 
 DOCKER_DEVEL_CLASSPATH="lib/gson-2.2.2.jar:lib/commons-cli-1.4.jar:lib/foss-license-checker.jar:."
 CLASSPATH="$DATA_DIR/lib/gson-2.2.2.jar:$DATA_DIR/lib/commons-cli-1.4.jar:$DATA_DIR/lib/foss-license-checker.jar:$DOCKER_DEVEL_CLASSPATH"
-DEFAULT_LICENSE_ARGS=" --license-dir ${DATA_DIR}/share/licenses/json "
-DEFAULT_COMPAT_ARGS=" --compatibility-file ${DATA_DIR}/share/licenses/connections/foss-license-checker.json"
-DEFAULT_LATER_ARGS=" --later-file ${DATA_DIR}/share/licenses/later/later-definitions.json"
+DEFAULT_LICENSE_ARGS=" --license-dir ${DATA_DIR}/$PROGRAM_NAME/licenses/json "
+DEFAULT_COMPAT_ARGS=" --compatibility-file ${DATA_DIR}/$PROGRAM_NAME/licenses/connections/foss-license-checker.json"
+DEFAULT_LATER_ARGS=" --later-file ${DATA_DIR}/$PROGRAM_NAME/licenses/later/later-definitions.json"
 CLASS="com.sandklef.compliance.cli.LicenseChecker"
+
 
 # basic verification of json files
 jq --version >/dev/null 2>&1
@@ -69,7 +70,7 @@ do
             ;;
     esac
     shift
-done #<<<"$HENRIK"
+done 
 
 if [ "$LICENSE_DIR" = "true" ]
 then
@@ -92,7 +93,6 @@ run()
     echo java -cp "$CLASSPATH" "$CLASS" "$DEFAULT_LICENSE_ARGS" "$DEFAULT_COMPAT_ARGS" "$DEFAULT_LATER_ARGS" $ARGS $* | sh
     export COMPLIANCE_RET=$?
 }
-
 
 
 #echo THESE: $ARGS
