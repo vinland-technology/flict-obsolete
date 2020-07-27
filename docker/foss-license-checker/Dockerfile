@@ -2,7 +2,7 @@ FROM sandklef/foss-license-checker-base
 
 #
 # 
-ENV FLC_RELEASE=0.1-beta9
+ENV FLC_RELEASE=0.1-beta10
 ENV FLC=foss-license-checker
 ENV FLC_DIR=foss-license-checker
 ENV FLC_BASE_URL=https://gitlab.com/sandklef/foss-license-checker/-/archive/$FLC_RELEASE
