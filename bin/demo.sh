@@ -68,7 +68,7 @@ demo_run_info()
     then
         echo " $FLC_BIN -c $DEMO_COMPONENT"
     else
-        echo " install FOSS License checker"
+        echo " you first need to install FOSS License checkerand/or make sure you the path to the tool is in your PATH variable"
     fi
     echo
     echo "To run a license check using docker image: "
