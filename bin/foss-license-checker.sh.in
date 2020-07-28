@@ -10,7 +10,7 @@ DATA_DIR=__DATA_DIR__/
 
 
 DOCKER_DEVEL_CLASSPATH="lib/gson-2.2.2.jar:lib/commons-cli-1.4.jar:lib/foss-license-checker.jar:."
-CLASSPATH="$DATA_DIR/lib/gson-2.2.2.jar:$DATA_DIR/lib/commons-cli-1.4.jar:$DATA_DIR/lib/foss-license-checker.jar:$DOCKER_DEVEL_CLASSPATH"
+CLASSPATH="$DATA_DIR/$PROGRAM_NAME/lib/gson-2.2.2.jar:$DATA_DIR/$PROGRAM_NAME/lib/commons-cli-1.4.jar:$DATA_DIR/$PROGRAM_NAME/lib/foss-license-checker.jar:$DOCKER_DEVEL_CLASSPATH"
 DEFAULT_LICENSE_ARGS=" --license-dir ${DATA_DIR}/$PROGRAM_NAME/licenses/json "
 DEFAULT_COMPAT_ARGS=" --compatibility-file ${DATA_DIR}/$PROGRAM_NAME/licenses/connections/foss-license-checker.json"
 DEFAULT_LATER_ARGS=" --later-file ${DATA_DIR}/$PROGRAM_NAME/licenses/later/later-definitions.json"
