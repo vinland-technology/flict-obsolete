@@ -16,13 +16,21 @@
 
 * pdfunite
 
-## Required java components
+## Download prebuilt package
+
+Download the latest released prebuilt package from from gitlab.com:
+
+https://gitlab.com/sandklef/foss-license-checker/-/releases
+
+## Build from source code
+
+### Required java components
 
 * GSON (downloaded automatically with configure)
 
 * Apache common (downloaded automatically with configure)
 
-### Install required tools
+#### Install required tools
 
 ~~~
 ./var/setup.sh
@@ -30,26 +38,25 @@
 
 *Note: we're currently only supporting Debian, Ubuntu, Fedroa, Redhat GNU/Linux. If you're usong something else, please check the required tools above* 
 
-
-### Check tools
+#### Check tools and prepare build
 
 ~~~
 ./configure
 ~~~
 
-### Build
+#### Build
 
 ~~~
 make
 ~~~
 
-### Test
+#### Test
 
 ~~~
 make test
 ~~~
 
-## Example
+#### Example
 
 The below checks license checker itself. The component License Checker
 and its dependencies are specified in the file
