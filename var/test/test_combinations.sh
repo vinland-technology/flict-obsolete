@@ -25,7 +25,6 @@ TMP_FILE=/tmp/test_combination-$USER-$$.txt
 #
 test_combination_count()
 {
-    TESTS=$(( $TESTS + 1 ))
     COMPONENT="$1"
     EXPECTED_COUNT=$2
     EXPECTED_GRAY_COUNT=$3
@@ -44,6 +43,7 @@ test_combination_count()
     
     ACTUAL_COUNT=$(cat $TMP_FILE | sed -n '/Allowed combinations/,/Allowed and gray/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed combinations" -e "Allowed and gray" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l)
 
+    TESTS=$(( $TESTS + 1 ))
     printf  "   * %-45s" "actual count" 
     if [ $ACTUAL_COUNT -ne $EXPECTED_COUNT ]
     then
@@ -59,6 +59,7 @@ test_combination_count()
     echo " OK"
     SUCCS=$(( $SUCCS + 1 ))
     
+    TESTS=$(( $TESTS + 1 ))
     printf  "   * %-45s" "actual gray" 
     ACTUAL_GRAY=$(cat $TMP_FILE | sed -n '/Allowed and gray/,/Allowed but denied/p' | grep -v -e "policy:" -e "compliant:" -e "Allowed and gray" -e "Allowed but denied" -e '^[\-]*$'  -e '^\[' -e '^\]'  | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l    )
     if [ $ACTUAL_GRAY -ne $EXPECTED_GRAY_COUNT ]
@@ -77,6 +78,7 @@ test_combination_count()
 
 #    echo $TMP_FILE
     
+    TESTS=$(( $TESTS + 1 ))
     printf  "   * %-45s" "denied" 
     ACTUAL_DENIED=$(cat $TMP_FILE | sed -n '/Allowed but denied/,//p' | grep -v -e "policy:" -e "compliant:" -e "Allowed but denied" -e '^[\-]*$'  -e '^\[' -e '^\]' | tr '\n' '#' | sed 's,component:,\n,g' | grep -v "^[ \t]*$" | grep -v '^[ ]*,[ ]*$' | sort -u | uniq | wc -l)
 
