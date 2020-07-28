@@ -66,7 +66,7 @@ curl https://gitlab.com/sandklef/foss-license-compatibility-tool/-/raw/primary/b
 
 docker - see docker.io for information on how to install docker
 
-### Get Foss License Checker docker image
+### Get Foss License Compatibility Tool docker image
 
 ```
 docker pull sandklef/flict
