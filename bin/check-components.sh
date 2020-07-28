@@ -105,7 +105,7 @@ fi
 log ""
 log " *****************************************************"
 log " ***                                               ***"
-log " ***            FOSS License Compatibility Tool               ***"
+log " ***       FOSS License Compatibility Tool         ***"
 log " ***                                               ***"
 log " *****************************************************"
 log " * " 

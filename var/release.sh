@@ -40,11 +40,11 @@ check_java()
 
 check_docker()
 {
-    DOCKER_VERSION=$(cat docker/foss-license-checker/Dockerfile | grep "FLICT_RELEASE=" | cut -d "=" -f 2 | sed 's,[ ]*,,')
+    DOCKER_VERSION=$(cat docker/flict/Dockerfile | grep "FLICT_RELEASE=" | cut -d "=" -f 2 | sed 's,[ ]*,,')
     printf "%-40s" " * version in Dockerfile: " 
     if [ "$VERSION" != "$DOCKER_VERSION" ]
     then
-        echo "ERROR. Version in Dockerfile ($DOCKER_VERSION) differs from requested ($VERSION). Update the Dockerfile (docker/foss-license-checker/Dockerfile) and try again"
+        echo "ERROR. Version in Dockerfile ($DOCKER_VERSION) differs from requested ($VERSION). Update the Dockerfile (docker/flict/Dockerfile) and try again"
         exit 2
     fi
     echo "OK"
@@ -97,8 +97,8 @@ build()
     handle_ret $?  "make dist"
 
     printf "%-40s" " * rename dist: "
-    mv foss-license-checker.zip foss-license-checker-$VERSION.zip
-    handle_ret $?  "mv foss-license-checker.zip foss-license-checker-$VERSION.zip"
+    mv flict.zip flict-$VERSION.zip
+    handle_ret $?  "mv flict.zip flict-$VERSION.zip"
     
 }
 
@@ -135,9 +135,9 @@ do_tag()
 don_dokker()
 {
     echo "Docker"
-    pushd docker/foss-license-checker > /dev/null 2>&1
+    pushd docker/flict > /dev/null 2>&1
 
-    IMAGE_NAME=sandklef/foss-license-checker
+    IMAGE_NAME=sandklef/flict
     
     printf "%-40s" " * remove docker image: "
     docker image rm -f $IMAGE_NAME  >> $LOG_FILE 2>&1
@@ -159,7 +159,7 @@ don_dokker()
     then
         printf "%-40s" " * pushd docker image: "
         docker push $IMAGE_NAME:$VERSION
-        handle_ret $?  "docker push sandklef/foss-license-checker:$VERSION"
+        handle_ret $?  "docker push $IMAGE_NAME:$VERSION"
     fi
     popd  > /dev/null 2>&1
 }
