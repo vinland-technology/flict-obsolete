@@ -389,6 +389,8 @@ In the above example we state that GPL-2.0-or-later also can be "GPL-3.0-only". 
 
 # Exit code and reports
 
+flict outputs a report as well as an exit code.
+
 ## Exit code
 
 FOSS License Compatibility Tool returns:
