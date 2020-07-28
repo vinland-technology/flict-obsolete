@@ -198,11 +198,16 @@ dist: $(OUT_DIR)
 
 	@echo Copy jar file
 	@-mkdir -p $(OUT_DIR)/lib
-	cp $(JAR_FILE) $(OUT_DIR)/lib/
-	cp $(JARS) $(OUT_DIR)/lib/
+	@cp $(JAR_FILE) $(OUT_DIR)/lib/
+	@cp $(JARS) $(OUT_DIR)/lib/
+
+	@echo Prepare tmp directory
+	@-rm -fr  tmp-release
+	@-mkdir -p tmp-release/$(PROGRAM_NAME)
+	@cp -r $(OUT_DIR)/* tmp-release/$(PROGRAM_NAME)/
 
 	@echo Create zip file
-	cd $(OUT_DIR) && zip -r ../$(DIST_FILE) .
+	@cd tmp-release/ && zip -r $(DIST_FILE) . && mv $(DIST_FILE) ../
 
 $(DIST_FILE): dist
 
