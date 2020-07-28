@@ -7,6 +7,12 @@ FORMATS="pdf html docx opendocument plain json"
 SUMMARY_LOG=${COMPONENTS_DIR}/reports/summary.log
 LOG=${COMPONENTS_DIR}/check-components.log
 
+if [ -f /.dockerenv ]
+then
+    IN_DOCKER=true
+else
+    IN_DOCKER=false
+fi
 
 log()
 {
@@ -70,6 +76,7 @@ check_components()
     log "Check components:"
     log "==========================="
     mkdir -p $REPORTS_DIR
+    NR_COMPONENTS=$(ls -1 $COMPONENTS_DIR/*.json | wc -l)
     ls $COMPONENTS_DIR/*.json | while read c
     do
         check_component "$c"
@@ -93,13 +100,32 @@ log " *   gitlab.com/sandklef/foss-license-checker"
 log " *   version:      $($FLC_BIN --version | head -1)"
 log " * " 
 log " * Information about current check:" 
-log " *   date:  $(date)"
-log " *   os:    $(uname -a)"
+log " *   date:   $(date)"
+log " *   os:     $(uname -a)"
 log " * " 
+if [ "$IN_DOCKER" = "true" ]
+then
+    log " *   docker: yes" 
+else
+    log " *   docker: not used" 
+fi
 log " * " 
 log " * ..... thanks for using FOSS License Checker" 
 log " * " 
 log ""
 check_components
+log " *" 
+log " *" 
+if [ $NR_COMPONENTS -eq 0 ]
+then
+    log " * No components could be found - no checks performed"
+else
+    log " * $NR_COMPONENTS components have been checked"
+    log " * "
+    log " * Reports are available in $COMPONENTS_DIR/reports"
+    log " * "
+fi
+log " * "
+log " * " 
 log
 
