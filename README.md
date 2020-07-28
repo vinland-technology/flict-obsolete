@@ -8,30 +8,32 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Introduction
 
-***FOSS License Compatibility Tool*** (***flict***) is a Free and Open Source
-Software tool to verify license compliance in and between
-[_components_](#component). You can use the tool to automate the
-license compliance in the compliance work flow.
+***FOSS License Compatibility Tool*** (***flict***) is a Free and Open
+Source Software tool to verify license compliance in and between
+[_components_](#component). You can use the tool to automate license
+compliance verification in the compliance work flow.
 
-flict checks components, with a defined license and
-with dependencies (themselves being components), so you need to tweak
-your other tools into providing this information in the correct [format](#component). 
+flict checks components, with a defined license and with dependencies
+(themselves being components), provided in the FOSS License
+Compatibility Tool [format](#component).
 
 ## Extensible and tweakable
 
-flict does not come with any knowledge about certain
-policies, licenses and their compatibilities. These things are
-specified outside the program. By default the tool uses the licenses
-that comes with the tool. This makes it easy to extend the program
-with new licenses etc.
+flict does not come with any knowledge about certain policies,
+licenses and their compatibilities. These things are specified outside
+the tool. By default flict has files defining licenses and
+compatibilities which probably gets mos of our users going. Having
+licenses and compatibilities (and even more stuff) defined outside the
+tool makes it easy to extend the tool with new licenses etc without
+modifying the code.
 
 You can tweak the tool by providing:
 
-* [_License_](#license) - name and SPDX short name for a license
+* [_License_](#license) - change supported licenses, by specifying name and SPDX short name for a license
 
-* [_License graph_](#license_graph) - a graph of license compatibility
+* [_License graph_](#license_graph) - change the license compatibility, by adding a graph of license compatibility
 
-* [_Later_](#later) - with these you can define how to interpret a license with "or-later" (e g _GPL-2.0-or-later_)
+* [_Later_](#later) - change the interpretation of a license with "or-later" (e g _GPL-2.0-or-later_)
 
 * [_Policy_](#policy) - specify which licenses you would like to avoid and which are denied
 
@@ -49,7 +51,7 @@ You can chose between two ways of installing and using this tool:
 
 We have a small script that you can use to create a directory and a
 component. The script also instructs you how to do a scan of the
-component, using either a normally install flict or a
+component, using either a normally installed flict or a
 docker image.
 
 ```
@@ -80,9 +82,10 @@ Create a directory for the components
 mkdir components
 ```
 
-### Run FOSS License Compatibility Tool
+Put the components you want checked in the above created folder (```components```). If you want to try out ```flict``` with a sample component, you can try the following command ```curl "https://gitlab.com/sandklef/foss-license-compatibility-tool/-/raw/primary/meta/flict.json" -o components/flict.json```.
 
-Put the components you want checked in the above created folder (```components```). 
+
+### Run FOSS License Compatibility Tool
 
 ```
 docker run -it -v `pwd`/components/:/components sandklef/flict
