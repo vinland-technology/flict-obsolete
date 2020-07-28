@@ -41,9 +41,9 @@ Read more about input in the separate page (doc/input).
 
 You can chose between two ways of installing and using this tool:
 
-* native installation 
+* [_Native installation_](#native)
 
-* docker (see doc/docker)
+* [_Docker image_](#docker_image)
 
 # Try it out with docker
 
@@ -56,8 +56,10 @@ docker image.
 curl https://gitlab.com/sandklef/foss-license-checker/-/raw/primary/bin/demo.sh | bash
 ```
 
+<a name="install"></a>
 # Installation
 
+<a name="docker_image"></a>
 ## Using the FOSS License Checker Docker image
 
 ### Required tools
@@ -158,6 +160,7 @@ components/
 2 directories, 10 files
 ```
 
+<a name="native_install"></a>
 ## Native installation
 
 ### Required tools
