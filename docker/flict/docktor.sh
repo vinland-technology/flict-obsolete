@@ -1,7 +1,7 @@
 #!/bin/bash
 
-IMAGE_NAME=sandklef/foss-license-checker
-CONTAINER_NAME=sandklef-flc
+IMAGE_NAME=sandklef/flict
+CONTAINER_NAME=flict
 
 build_image()
 {
