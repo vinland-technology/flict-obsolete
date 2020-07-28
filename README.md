@@ -329,7 +329,7 @@ would like to use your own graph you can use the command line option
 ## Policy (no built in, optional)
 
 With a policy file you can tell this tool which licenses you're not
-allowing (denied) and which you preferr not to use (gray). Here's an
+allowing (denied) and which you preferr not to use (avoid). Here's an
 example policy file:
 
 ```
@@ -340,7 +340,7 @@ example policy file:
     } ,
     "policy": {
         "allowlist": [],
-        "graylist": [
+        "avoidlist": [
             "BSD-3-Clause"
         ],
         "deniedlist": [
