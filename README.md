@@ -8,7 +8,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Introduction
 
-FOSS License Compatibility Tool (flict) is a Free and Open Source
+***FOSS License Compatibility Tool*** (***flict***) is a Free and Open Source
 Software tool to verify license compliance in and between
 [_components_](#component). You can use the tool to automate the
 license compliance in the compliance work flow.
