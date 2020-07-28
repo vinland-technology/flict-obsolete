@@ -27,4 +27,4 @@ ENV LICENSE_ARGS=" --license-dir $LICENSE_DIR"
 ENV COMPAT_ARGS=" --compatibility-file $COMPAT_FILE "
 ENV LATER_ARGS=" --later-file $LATER_FILE "
 
-CMD cd foss-license-checker-$FLC_RELEASE && docker/check-components.sh 
+CMD cd foss-license-checker-$FLC_RELEASE && bin/check-components.sh 
