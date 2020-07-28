@@ -34,11 +34,11 @@ summarize()
 check_component()
 {
     COMPONENT="$1"
-    COMPONENT_NAME="$(basename $1 | sed 's,\.json,,g')"
-
+    COMPONENT_FILE="$(basename $1)"
+    COMPONENT_NAME=$(jq '.component.name' base/components/example.json | sed 's,\",,g')
 
     log ""
-    log "  $COMPONENT_NAME"
+    log "  $COMPONENT_NAME ($COMPONENT_FILE)"
     log "  -------------------------"
     mkdir -p "$REPORTS_DIR/$COMPONENT_NAME"
     logn "   * compliance: "
