@@ -9,7 +9,13 @@ SPDX-License-Identifier: GPL-3.0-or-later
 # Introduction
 
 FOSS License Checker is a Free and Open Source Software tool to verify
-license compliance in and between components. 
+license compliance in and between [_components_](#component). You can
+use the tool to automate the license compliance in the compliance work
+flow.
+
+FOSS License Checker checks components, with a defined license and
+with dependencies (themselves being components), so you need to tweak
+your other tools into providing this information in the correct [format](#component). 
 
 ## Extensible and tweakable
 
@@ -21,69 +27,202 @@ with new licenses etc.
 
 You can tweak the tool by providing:
 
-* [_License_](#license) 
+* [_License_](#license) - name and SPDX short name for a license
 
-* license graph
+* [_License graph_](#license_graph) - a graph of license compatibility
 
-* policy
+* [_Later_](#later) - with these you can define how to interpret a license with "or-later" (e g _GPL-2.0-or-later_)
+
+* [_Policy_](#policy) - specify which licenses you would like to avoid and which are denied
 
 Read more about input in the separate page (doc/input).
-
-# Output
-
-A report of the component's compliance is created. By default a short text report is created. With the tools also comes a couple of Report format that can be used.
-
-## Report formats
-
-### JSON
-
-This is currently rewritten and not available.
-
-### Markdown (pdf, html ..)
-
-Using this format you can create txt, html, pdf and what format pandoc can create from markdown.
-
-# License of the FOSS License Checker
-
-FOSS License Checker is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 # Building and using
 
 You can chose between two ways of installing and using this tool:
 
-* native installation (see doc/native-install)
+* native installation 
 
 * docker (see doc/docker)
 
-# Demonstration
+# Try it out with docker
 
 We have a small script that you can use to create a directory and a
 component. The script also instructs you how to do a scan of the
 component, using either a normally install FOSS License Checker or a
 docker image.
 
-You can use the script in two different ways:
-
-## Safe
-
-```
-curl -LJO https://gitlab.com/sandklef/foss-license-checker/-/raw/primary/bin/demo.sh
-# inspect the script 
-chmod a+d demo.sh
-./demo.sh
-```
-
-## Easy but less safe
-
 ```
 curl https://gitlab.com/sandklef/foss-license-checker/-/raw/primary/bin/demo.sh | bash
 ```
 
-# The way FOSS License Checker works
+# Installation
 
-Check out: (doc/how.md)
+## Using the FOSS License Checker Docker image
 
-#
+### Required tools
+
+docker - see docker.io for information on how to install docker
+
+### Get Foss License Checker docker image
+
+```
+docker pull sandklef/foss-license-checker
+```
+
+### Prepare to run the FOSS License Checker
+
+Create a directory for the components
+
+```
+mkdir components
+```
+
+### Run FOSS License Checker
+
+Put the components you want checked in the above created folder (```components```). 
+
+```
+docker run -it -v `pwd`/components/:/components sandklef/foss-license-checker 
+```
+
+### Example run
+
+We're going to analyse a component called Super Awesome Program. The component is
+specified in the JSON file ```example.json``` and the ```components```
+directory.
+
+Let's have a look at the ```components``` directory
+```
+$ tree --charset=ascii components/
+components/
+`-- example.json
+
+0 directories, 1 file
+```
+
+The component itself looks like this:
+```
+$ cat components/example.json 
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version" : "0.1"
+    },
+    "component": 
+    { "name":    "Super Awesome Program",
+      "license": "GPL-2.0-or-later", 
+      "dependencies": [
+          { "name":    "Great library",
+            "license": "MIT|BSD-3-Clause&GPL-2.0-only ", 
+            "dependencies": [  ] 
+          } 
+      ] 
+    } 
+} 
+```
+
+Let's run the check:
+```
+$ docker run -it -v `pwd`/components/:/components sandklef/foss-license-checker 
+FOSS License Checker - for use in docker
+
+Check components:
+===========================
+
+  example
+  -------------------------
+   * compliance:   yes
+   * convert report to: pdf html docx opendocument plain json 
+
+```
+
+You should be able to see the report in various formats in the ```components/report``` directory.
+
+```
+$ tree components/
+components/
+├── check-components.log
+├── example.json
+└── reports
+    ├── example
+    │   ├── report-example.docx
+    │   ├── report-example.html
+    │   ├── report-example.json
+    │   ├── report-example.md
+    │   ├── report-example.opendocument
+    │   ├── report-example.pdf
+    │   └── report-example.plain
+    └── summary.log
+
+2 directories, 10 files
+```
+
+## Native installation
+
+### Required tools
+
+* jq
+
+* GNU Make
+
+* JDK (Jav Development Kit) (7 or higher)
+
+* bash
+
+* wget
+
+* Extra Java components will be download when you configure
+
+* pdfunite
+
+### Download prebuilt package
+
+Download the latest released prebuilt package from from gitlab.com:
+
+https://gitlab.com/sandklef/foss-license-checker/-/releases
+
+### Build from source code
+
+#### Required java components
+
+* GSON (downloaded automatically with configure)
+
+* Apache common (downloaded automatically with configure)
+
+You can install required tools using the script:
+
+~~~
+./var/setup.sh
+~~~
+
+*Note: we're currently only supporting Debian, Ubuntu, Fedora, Redhat GNU/Linux. If you're usong something else, please manually install the required tools* 
+
+### Build and install
+
+~~~
+./configure
+make
+make install
+~~~
+
+This installs FOSS License Checker in ```~/.local/``` so make sure to update your PATH variable to include ```~/.local/bin```. If you want to install to some other directory you can tweak the configure script (check out how with ```./configure --help```).
+
+#### Example
+
+The below checks license checker itself. The component License Checker
+and its dependencies are specified in the file
+`./meta/license-policy-checker.json` as found in the source code.
+
+~~~
+foss-license-checker.sh -c ./meta/foss-license-checker.json 
+~~~
+
+
+
+
+
+# Syntax
 
 <a name="component"></a>
 ## Component (required)
@@ -180,6 +319,7 @@ would like to use your own graph you can use the command line option
 ```--compatibility-file```.
 
 
+<a name="policy"></a>
 ## Policy (no built in, optional)
 
 With a policy file you can tell this tool which licenses you're not
@@ -205,7 +345,7 @@ example policy file:
 }
 ```
 
-<a name="later_def"></a>
+<a name="later"></a>
 ## License later defininitions (built in or custom)
 
 Some licenses can be specifed saying "or-later", e g
@@ -240,3 +380,42 @@ As with previous example you can for now skip the meta section. A later definiti
 ``later``` - a list of licenses (SPDX short name) that the above license can be turned into
 
 In the above example we state that GPL-2.0-or-later also can be "GPL-3.0-only". If you want to use your own later definition file or disable later definitions by providing an empty file you can use the option ```--later-file```.
+
+# Exit code and reports
+
+## Exit code
+
+FOSS License Checker returns:
+
+* ***0*** if your component is fully compliant,
+
+* ***1*** if your component is compliant but there are licenses that you requested (with a policy) to avoid
+
+* ***2*** if your component is not compliant
+
+All other exit codes indicate some kind of error.
+
+## Report
+
+A report of the component's compliance is created. By default a short
+text report is created. With the tools also comes a couple of Report
+format that can be used.
+
+## Report formats
+
+### JSON
+
+This is currently rewritten and not available.
+
+### Markdown (pdf, html ..)
+
+Using this format you can create txt, html, pdf and what format pandoc can create from markdown.
+
+# License of the FOSS License Checker
+
+FOSS License Checker is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+# The way FOSS License Checker works
+
+Check out: (doc/how.md)
+
