@@ -1,17 +1,30 @@
 #!/bin/sh
 
-COMPONENTS_DIR=/components
-REPORTS_DIR=${COMPONENTS_DIR}/reports
 
 FORMATS="pdf html docx opendocument plain json"
-SUMMARY_LOG=${COMPONENTS_DIR}/reports/summary.log
-LOG=${COMPONENTS_DIR}/check-components.log
+
 
 if [ -f /.dockerenv ]
 then
     IN_DOCKER=true
+    COMPONENTS_DIR=/components
+    FLC_BIN=bin/foss-license-checker.sh
 else
     IN_DOCKER=false
+    COMPONENTS_DIR=./components
+    FLC_BIN=foss-license-checker.sh
+fi
+
+REPORTS_DIR=${COMPONENTS_DIR}/reports
+LOG=${COMPONENTS_DIR}/check-components.log
+SUMMARY_LOG=${COMPONENTS_DIR}/reports/summary.log
+
+if [ -d $COMPONENTS_DIR ] || [ -h $COMPONENTS_DIR ] 
+then
+    :
+else
+    echo "ERROR - Directory \"$COMPONENTS_DIR\" is missing"
+    exit 4
 fi
 
 log()
@@ -34,15 +47,15 @@ summarize()
 check_component()
 {
     COMPONENT="$1"
-    COMPONENT_FILE="$(basename $1)"
-    COMPONENT_NAME=$(jq '.component.name' base/components/example.json | sed 's,\",,g')
+    COMPONENT_FILE="$(basename $1 | sed 's,\.json,,g')"
+    COMPONENT_NAME=$(jq '.component.name' $1 | sed 's,\",,g')
 
-    log ""
-    log "  $COMPONENT_NAME ($COMPONENT_FILE)"
-    log "  -------------------------"
+    log " "
+    log " $COMPONENT_NAME ($COMPONENT_FILE.json)"
+    log " -------------------------"
     mkdir -p "$REPORTS_DIR/$COMPONENT_NAME"
-    logn "   * compliance: "
-    $FLC_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown > "$REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.md"
+    logn "    compliant:         "
+    $FLC_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown > "$REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md"
     RES_STR=
     SUM_STR=
     if [ $? -eq 0 ]
@@ -59,13 +72,13 @@ check_component()
     fi
     log " $RES_STR"
 
-    summarize "$COMPONENT_NAME:$SUM_STR"
+    summarize "$COMPONENT_FILE:$SUM_STR"
     
-    logn "   * convert report to: "
+    logn "    report formatted to: "
     for fmt in $FORMATS
     do
         logn "$fmt "
-        pandoc $REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.md -o $REPORTS_DIR/$COMPONENT_NAME/report-${COMPONENT_NAME}.$fmt
+        pandoc $REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md -o $REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.$fmt
     done
     log
 }
@@ -73,7 +86,8 @@ check_component()
 
 check_components()
 {
-    log "Check components:"
+    log
+    log "Checking components:"
     log "==========================="
     mkdir -p $REPORTS_DIR
     NR_COMPONENTS=$(ls -1 $COMPONENTS_DIR/*.json | wc -l)
@@ -100,32 +114,32 @@ log " *   gitlab.com/sandklef/foss-license-checker"
 log " *   version:      $($FLC_BIN --version | head -1)"
 log " * " 
 log " * Information about current check:" 
-log " *   date:   $(date)"
-log " *   os:     $(uname -a)"
-log " * " 
+log " *   date:     $(date)"
+log " *   os:       $(uname -a)"
 if [ "$IN_DOCKER" = "true" ]
 then
-    log " *   docker: yes" 
+    log " *   executed: run inside docker" 
 else
-    log " *   docker: not used" 
+    log " *   executed: run natively" 
 fi
 log " * " 
-log " * ..... thanks for using FOSS License Checker" 
-log " * " 
-log ""
+log " *****************************************************"
+log "  "
 check_components
-log " *" 
-log " *" 
+log "" 
+log "" 
+log "Summary:"
+log "==========================="
+log "" 
 if [ $NR_COMPONENTS -eq 0 ]
 then
-    log " * No components could be found - no checks performed"
+    log "No components could be found - no checks performed"
+elif [ $NR_COMPONENTS -eq 1 ]
+then
+    log "$NR_COMPONENTS component have been checked. Report is available in $COMPONENTS_DIR/reports"
 else
-    log " * $NR_COMPONENTS components have been checked"
-    log " * "
-    log " * Reports are available in $COMPONENTS_DIR/reports"
-    log " * "
+    log "$NR_COMPONENTS components have been checked. Reports are available in $COMPONENTS_DIR/reports"
 fi
-log " * "
-log " * " 
-log
-
+log "" 
+log "..... thanks for using FOSS License Checker" 
+exit 0
