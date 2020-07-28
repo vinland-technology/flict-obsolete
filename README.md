@@ -383,7 +383,7 @@ As with previous example you can for now skip the meta section. A later definiti
 
 ```spdx``` - the license (SPDX short name) this later definition is valid for
 
-``later``` - a list of licenses (SPDX short name) that the above license can be turned into
+```later``` - a list of licenses (SPDX short name) that the above license can be turned into
 
 In the above example we state that GPL-2.0-or-later also can be "GPL-3.0-only". If you want to use your own later definition file or disable later definitions by providing an empty file you can use the option ```--later-file```.
 
