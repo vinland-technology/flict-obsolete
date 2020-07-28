@@ -415,9 +415,26 @@ format that can be used.
 
 This is currently rewritten and not available.
 
-### Markdown (pdf, html ..)
+### Markdown
 
 Using this format you can create txt, html, pdf and what format pandoc can create from markdown.
+
+# Complementary tools
+
+## check-components.sh
+
+This script was initially written to be used, and still is used, with
+our docker image but the script turned out to be useful for other
+stuff. Create a directory or place yourself where you can find a
+directory name ```components``` and simply run the scripts. The script
+will go through all the components in the ```components``` directory
+and create reports for you. The reports can be found in the directory
+```components/reports/```.
+
+## demo.sh
+
+A simple script to create a diretory, name ```components```, with a
+sample component defined in a file called ```example.json```.
 
 # License of the FOSS License Compatibility Tool
 
