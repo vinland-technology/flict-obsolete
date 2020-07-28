@@ -1,8 +1,5 @@
 #!/bin/bash
 
-export VERSION="$1"
-
-LOG_FILE=`pwd`/release-$VERSION.log
 
 #echo "Version: $VERSION"
 
@@ -173,10 +170,18 @@ do
             ;;
         "--docker-push" | "-dp")
             DOCKER_PUSH=true
+            DOCKER=true
+            ;;
+        *)
+            break
             ;;
     esac
     shift
 done
+
+export VERSION="$1"
+
+LOG_FILE=`pwd`/release-$VERSION.log
 
 do_check
 do_build
