@@ -26,20 +26,24 @@ check_dependencies()
 }
 
 # User preset
-USER_INSTALL_BIN_DIR=\~/.local/bin
-USER_INSTALL_DATA_DIR=\~/.local/share
+USER_INSTALL_BIN_DIR=\~/.local/bin/
+USER_INSTALL_DATA_DIR=\~/.local/share/
 
 # Multi user preset
-MULTI_USER_BIN_DIR=/usr/bin
-MULTI_USER_DATA_DIR=/usr/share
+MULTI_USER_BIN_DIR=/usr/bin/
+MULTI_USER_DATA_DIR=/usr/share/
 
 # Docker preset
-DOCKER_BIN_DIR=.
-DOCKER_DATA_DIR=.
+DOCKER_BIN_DIR=./
+DOCKER_DATA_DIR=./
+
+# Dist preset
+DIST_BIN_DIR=
+DIST_DATA_DIR=
 
 #
-DEVEL_BIN_DIR=.
-DEVEL_DATA_DIR=.
+DEVEL_BIN_DIR=./
+DEVEL_DATA_DIR=./
 
 #
 # Default
@@ -57,10 +61,16 @@ usage()
     echo "      BIN_DIR=$USER_INSTALL_BIN_DIR"
     echo "      DATA_DIR=$USER_INSTALL_DATA_DIR"
     echo "    This is default"
+    echo 
     echo "  --multi-user-installation"
     echo "    Set installation directories to:"
     echo "      BIN_DIR=$MULTI_USER_INSTALL_BIN_DIR"
     echo "      DATA_DIR=$MULTI_USER_INSTALL_DATA_DIR"
+    echo ""
+    echo "  --dist-installation"
+    echo "    Set installation directories to:"
+    echo "      BIN_DIR=$DIST_BIN_DIR"
+    echo "      DATA_DIR=$DIST_DATA_DIR"
     echo ""
     echo "  --docker-installation"
     echo "    Set installation directories to:"
@@ -104,6 +114,10 @@ parse()
         then
             BIN_DIR="$DEVEL_BIN_DIR"
             DATA_DIR="$DEVEL_DATA_DIR"
+        elif [[ "$1" =~ "--dist-installation" ]]
+        then
+            BIN_DIR="$DIST_BIN_DIR"
+            DATA_DIR="$DIST_DATA_DIR"
         elif [[ "$1" =~ "--bin-dir=" ]]
         then
             BIN_DIR=$(echo $1 | sed 's,--bin-dir=,,g')
@@ -128,12 +142,6 @@ parse $*
 
 
 echo -n "Preparing Makefile: "
-if [ "$BIN_DIR" = "" ] || [ "$DATA_DIR" = "" ]
-then
-    MSG="    (BIN_DIR and/or DATA_DIR not set, using .)";
-    BIN_DIR=./bin
-    DATA_DIR=./share
-fi
 cat Makefile.in | \
     sed "s,__PROGRAM_NAME__,$PROGRAM_NAME,g" | \
     sed "s,__BIN_DIR__,$BIN_DIR,g" | \

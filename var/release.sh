@@ -80,8 +80,20 @@ build()
     make test >> $LOG_FILE 2>&1
     handle_ret $?  "make test"
 
+    printf "%-40s" " * configure for dist: "
+    ./configure --dist-installation >> $LOG_FILE 2>&1
+    handle_ret $?  "make clean"
+
+    printf "%-40s" " * all: "
+    make all >> $LOG_FILE 2>&1
+    handle_ret $?  "make all"
+
     printf "%-40s" " * dist: "
     make dist >> $LOG_FILE 2>&1
+    handle_ret $?  "make dist"
+
+    printf "%-40s" " * test dist: "
+    make test-dist >> $LOG_FILE 2>&1
     handle_ret $?  "make dist"
 
     printf "%-40s" " * rename dist: "
@@ -143,18 +155,37 @@ don_dokker()
     docker tag $IMAGE_NAME:$VERSION $IMAGE_NAME:latest
     handle_ret $?  "run image"
 
-    printf "%-40s" " * pushd docker image: "
-    docker push $IMAGE_NAME:$VERSION
-    handle_ret $?  "docker push sandklef/foss-license-checker:$VERSION"
-
+    if [ "$DOCKER_PUSH" = "true" ]
+    then
+        printf "%-40s" " * pushd docker image: "
+        docker push $IMAGE_NAME:$VERSION
+        handle_ret $?  "docker push sandklef/foss-license-checker:$VERSION"
+    fi
     popd  > /dev/null 2>&1
 }
 
+
+while [ "$1" != "" ]
+do
+    case "$1" in
+        "--docker" | "-d")
+            DOCKER=true
+            ;;
+        "--docker-push" | "-dp")
+            DOCKER_PUSH=true
+            ;;
+    esac
+    shift
+done
 
 do_check
 do_build
 ##### do_tag
 
-don_dokker
-
+if [ "$DOCKER" = "true" ]
+then
+    don_dokker
+else
+    echo "No docker stuff made"
+fi
 

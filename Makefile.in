@@ -175,7 +175,7 @@ $(OUT_DIR):
 $(JAR_FILE): $(CLASSES)
 	jar cvf $(JAR_FILE) com
 
-dist: $(OUT_DIR) $(JAR_FILE) bin/$(CLI)
+dist: $(OUT_DIR) 
 	@echo Creating doc
 	@make doc
 
@@ -195,9 +195,6 @@ dist: $(OUT_DIR) $(JAR_FILE) bin/$(CLI)
 	@cp -r LICENSE $(OUT_DIR)/share
 	@echo " * COPYING"
 	@cp -r COPYING $(OUT_DIR)/share
-
-	@echo Copy docker stuff
-	@cp -r docker/*.sh $(OUT_DIR)/share
 
 	@echo Copy jar file
 	@-mkdir -p $(OUT_DIR)/lib
