@@ -79,9 +79,11 @@ WINSTONE_JAR=$(LIB_DIR)/winstone.jar
 CLASSPATH=.:$(LIB_DIR)/$(CLI_JAR):$(LIB_DIR)/$(GSON_JAR)
 TEST_CLASSPATH=$(CLASSPATH):$(JUNIT_JAR)
 OUT_DIR=result
-JAR_FILE=foss-license-checker.jar
-DIST_FILE=foss-license-checker.zip
-CLI=foss-license-checker.sh
+JAR_FILE=$(PROGRAM_NAME).jar
+DIST_FILE=$(PROGRAM_NAME).zip
+CLI=$(PROGRAM_NAME)
+
+TMP_TEST_DIR=/tmp/foss-license-check-test
 
 %.class:%.java 
 	javac  -Xdiags:verbose -Xlint:unchecked -cp "$(CLASSPATH)" $<
@@ -212,17 +214,17 @@ dist: $(OUT_DIR)
 $(DIST_FILE): dist
 
 test-dist: $(DIST_FILE)
-	@rm -fr /tmp/foss-license-check-test
-	@mkdir  /tmp/foss-license-check-test/
-	cp $(DIST_FILE) /tmp/foss-license-check-test/
-	cd /tmp/foss-license-check-test/ && unzip $(DIST_FILE)
-	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -h
-	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -v
-	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -c share/components/simple-dep-dual.json
-	cd /tmp/foss-license-check-test/ && bin/foss-license-checker.sh -c share/components/simple-dep-dual.json --pdf
-	test -f /tmp/foss-license-check-test/report.pdf
-	if [ `file /tmp/foss-license-check-test/report.pdf | grep -c "PDF document"` -ne 1 ] ; then echo "PDF report seems broken"; exit 1; fi
-	PATH=$(PATH):/tmp/foss-license-check-test/bin && foss-license-checker.sh -c share/components/simple-dep-dual.json --pdf
+	@rm -fr $(TMP_TEST_DIR)
+	@mkdir  $(TMP_TEST_DIR)/
+	cp $(DIST_FILE) $(TMP_TEST_DIR)/
+	cd $(TMP_TEST_DIR)/ && unzip $(DIST_FILE)
+	cd $(TMP_TEST_DIR)/$(PROGRAM_NAME) && bin/flict -h
+	cd $(TMP_TEST_DIR)/$(PROGRAM_NAME) && bin/flict -v
+	cd $(TMP_TEST_DIR)/$(PROGRAM_NAME) && bin/flict -c share/components/simple-dep-dual.json
+	cd $(TMP_TEST_DIR)/$(PROGRAM_NAME) && bin/flict -c share/components/simple-dep-dual.json --pdf
+	test -f $(TMP_TEST_DIR)/$(PROGRAM_NAME)/report.pdf
+	if [ `file $(TMP_TEST_DIR)/$(PROGRAM_NAME)/report.pdf | grep -c "PDF document"` -ne 1 ] ; then echo "PDF report seems broken"; exit 1; fi
+	PATH=$(PATH):$(TMP_TEST_DIR)/$(PROGRAM_NAME)/bin && flict -c share/components/simple-dep-dual.json --pdf
 	if [ `file report.pdf | grep -c "PDF document"` -ne 1 ] ; then echo "PDF report seems broken"; exit 1; fi
 	@echo ""
 	@echo "Dist file $(DIST_FILE) seems to be valid :)"
@@ -240,6 +242,6 @@ install: dist
 	@echo "Installed to $(BIN_DIR) "
 	@echo
 	@echo "Try it out:"
-	@echo "   $(BIN_DIR)/foss-license-checker.sh -c $(DATA_DIR)/$(PROGRAM_NAME)/components/simple-dep-dual.json"
+	@echo "   $(BIN_DIR)/$(CLI) -c $(DATA_DIR)/$(PROGRAM_NAME)/components/simple-dep-dual.json"
 
 test-all: clean all doc test dist test-dist

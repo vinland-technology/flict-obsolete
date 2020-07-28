@@ -4,22 +4,22 @@ SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# FOSS License Checker
+# FOSS License Compatibility Tool
 
 # Introduction
 
-FOSS License Checker is a Free and Open Source Software tool to verify
-license compliance in and between [_components_](#component). You can
-use the tool to automate the license compliance in the compliance work
-flow.
+FOSS License Compatibility Tool (flict) is a Free and Open Source
+Software tool to verify license compliance in and between
+[_components_](#component). You can use the tool to automate the
+license compliance in the compliance work flow.
 
-FOSS License Checker checks components, with a defined license and
+flict checks components, with a defined license and
 with dependencies (themselves being components), so you need to tweak
 your other tools into providing this information in the correct [format](#component). 
 
 ## Extensible and tweakable
 
-FOSS License Checker does not come with any knowledge about certain
+flict does not come with any knowledge about certain
 policies, licenses and their compatibilities. These things are
 specified outside the program. By default the tool uses the licenses
 that comes with the tool. This makes it easy to extend the program
@@ -49,18 +49,18 @@ You can chose between two ways of installing and using this tool:
 
 We have a small script that you can use to create a directory and a
 component. The script also instructs you how to do a scan of the
-component, using either a normally install FOSS License Checker or a
+component, using either a normally install flict or a
 docker image.
 
 ```
-curl https://gitlab.com/sandklef/foss-license-checker/-/raw/primary/bin/demo.sh | bash
+curl https://gitlab.com/sandklef/foss-license-compatibility-tool/-/raw/primary/bin/demo.sh | bash
 ```
 
 <a name="install"></a>
 # Installation
 
 <a name="docker_image"></a>
-## Using the FOSS License Checker Docker image
+## Using the FOSS License Compatibility Tool Docker image
 
 ### Required tools
 
@@ -69,10 +69,10 @@ docker - see docker.io for information on how to install docker
 ### Get Foss License Checker docker image
 
 ```
-docker pull sandklef/foss-license-checker
+docker pull sandklef/flict
 ```
 
-### Prepare to run the FOSS License Checker
+### Prepare to run the FOSS License Compatibility Tool
 
 Create a directory for the components
 
@@ -80,12 +80,12 @@ Create a directory for the components
 mkdir components
 ```
 
-### Run FOSS License Checker
+### Run FOSS License Compatibility Tool
 
 Put the components you want checked in the above created folder (```components```). 
 
 ```
-docker run -it -v `pwd`/components/:/components sandklef/foss-license-checker 
+docker run -it -v `pwd`/components/:/components sandklef/flict
 ```
 
 ### Example run
@@ -108,7 +108,7 @@ The component itself looks like this:
 $ cat components/example.json 
 {
     "meta": {
-        "software":"License Policy Checker",
+        "software":"FOSS License Compatibility Tool",
         "version" : "0.1"
     },
     "component": 
@@ -126,8 +126,8 @@ $ cat components/example.json
 
 Let's run the check:
 ```
-$ docker run -it -v `pwd`/components/:/components sandklef/foss-license-checker 
-FOSS License Checker - for use in docker
+$ docker run -it -v `pwd`/components/:/components sandklef/flict
+FOSS License Compatibility Tool - for use in docker
 
 Check components:
 ===========================
@@ -143,7 +143,7 @@ You should be able to see the report in various formats in the ```components/rep
 
 ```
 $ tree components/
-components/
+components/    
 ├── check-components.log
 ├── example.json
 └── reports
@@ -183,7 +183,7 @@ components/
 
 Download the latest released prebuilt package from from gitlab.com:
 
-https://gitlab.com/sandklef/foss-license-checker/-/releases
+https://gitlab.com/sandklef/foss-license-compatibility-tool/-/releases
 
 ### Build from source code
 
@@ -209,7 +209,7 @@ make
 make install
 ~~~
 
-This installs FOSS License Checker in ```~/.local/``` so make sure to update your PATH variable to include ```~/.local/bin```. If you want to install to some other directory you can tweak the configure script (check out how with ```./configure --help```).
+This installs flict in ```~/.local/``` so make sure to update your PATH variable to include ```~/.local/bin```. If you want to install to some other directory you can tweak the configure script (check out how with ```./configure --help```).
 
 #### Example
 
@@ -218,7 +218,7 @@ and its dependencies are specified in the file
 `./meta/license-policy-checker.json` as found in the source code.
 
 ~~~
-foss-license-checker.sh -c ./meta/foss-license-checker.json 
+flict -c ./meta/flict.json 
 ~~~
 
 
@@ -237,7 +237,7 @@ Let's begin with an example component. Let's say we have a program
 ```
 {
     "meta": {
-        "software":"FOSS License Checker",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     },
     "component": {
@@ -276,7 +276,7 @@ Here's an example:
 ```
 {
     "meta": {
-        "software":"FOSS License Checker",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     },
     "license": {
@@ -332,7 +332,7 @@ example policy file:
 ```
 {
     "meta" : {
-        "software":"FOSS License Checker",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     } ,
     "policy": {
@@ -361,7 +361,7 @@ Let's start with a example:
 ```
 {
     "meta": {
-        "software":"FOSS License Checker",
+        "software":"FOSS License Compatibility Tool",
         "type": "later-definitions",
         "version":"0.1"
     },
@@ -388,7 +388,7 @@ In the above example we state that GPL-2.0-or-later also can be "GPL-3.0-only". 
 
 ## Exit code
 
-FOSS License Checker returns:
+FOSS License Compatibility Tool returns:
 
 * ***0*** if your component is fully compliant,
 
@@ -414,11 +414,11 @@ This is currently rewritten and not available.
 
 Using this format you can create txt, html, pdf and what format pandoc can create from markdown.
 
-# License of the FOSS License Checker
+# License of the FOSS License Compatibility Tool
 
-FOSS License Checker is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
+FOSS License Compatibility Tool is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-# The way FOSS License Checker works
+# The way FOSS License Compatibility Tool works
 
 Check out: (doc/how.md)
 

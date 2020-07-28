@@ -1,24 +1,24 @@
-# FOSS License Checker User's Guide
+# FOSS License Compatibility Tool User's Guide
 
 # Introduction
 
-FOSS License Checker is an Free and Open Source Software compliance tool
+FOSS License Compatibility Tool is an Free and Open Source Software compliance tool
 aimed at detecting license violations either with or without a
 policy. It assumes every component has a known license expression.
 
-FOSS License Checker can also conclude outbound licenses for your component.
+FOSS License Compatibility Tool can also conclude outbound licenses for your component.
 
-# Invoking FOSS License Checker
+# Invoking FOSS License Compatibility Tool
 
 ```
-foss-license-checker.sh [OPTIONS]
+flict [OPTIONS]
 ```
 
 ## Options
 
 ### ```--compatibility-file, -cf [FILE]```
 
-Which compatibility graph to use. Default file is ```share/licenses/connections/foss-license-checker.json``` as found in the installtion directory.
+Which compatibility graph to use. Default file is ```share/licenses/connections/compatibilities.json``` as found in the installtion directory.
 
 ### ```--component-file, -c [FILE]```
 
@@ -34,7 +34,7 @@ Check for license compatibility and violations. This is the default mode.
 
 ### ```---policy-file, -p [FILE]```
 
-Set the policy file to use. A policy is optional, without a policy all licenses are considered equal.
+Set the policy file to use. A policy is optional, without a policy all licenses are considered OK to use.
 
 ### ```--license-dir, -ld```
 
@@ -66,7 +66,7 @@ Output the report in pdf format.
 
 ### ```--print-licenses, -pl```
 
-Print the licenses supported by FOSS License Checker.
+Print the licenses supported by FOSS License Compatibility Tool.
 
 ### ```--help, -h```
 
@@ -102,7 +102,7 @@ Let's start of by creating a small component that we can play around with. Save 
 If you want to check a component (as specified in the file ``awesomeprogram.json```), then you'd type:
 
 ```
-$ foss-license-checker.sh -c awesomeprogram.json
+$ flict -c awesomeprogram.json
 
 ```
 

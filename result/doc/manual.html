@@ -1,12 +1,12 @@
-<h1 id="foss-license-checker-users-guide">FOSS License Checker User’s Guide</h1>
+<h1 id="foss-license-compatibility-tool-users-guide">FOSS License Compatibility Tool User’s Guide</h1>
 <h1 id="introduction">Introduction</h1>
-<p>FOSS License Checker is an Free and Open Source Software compliance tool aimed at detecting license violations either with or without a policy. It assumes every component has a known license expression.</p>
-<p>FOSS License Checker can also conclude outbound licenses for your component.</p>
-<h1 id="invoking-foss-license-checker">Invoking FOSS License Checker</h1>
-<pre><code>foss-license-checker.sh [OPTIONS]</code></pre>
+<p>FOSS License Compatibility Tool is an Free and Open Source Software compliance tool aimed at detecting license violations either with or without a policy. It assumes every component has a known license expression.</p>
+<p>FOSS License Compatibility Tool can also conclude outbound licenses for your component.</p>
+<h1 id="invoking-foss-license-compatibility-tool">Invoking FOSS License Compatibility Tool</h1>
+<pre><code>flict [OPTIONS]</code></pre>
 <h2 id="options">Options</h2>
 <h3 id="compatibility-file--cf-file"><code>--compatibility-file, -cf [FILE]</code></h3>
-<p>Which compatibility graph to use. Default file is <code>share/licenses/connections/foss-license-checker.json</code> as found in the installtion directory.</p>
+<p>Which compatibility graph to use. Default file is <code>share/licenses/connections/compatibilities.json</code> as found in the installtion directory.</p>
 <h3 id="component-file--c-file"><code>--component-file, -c [FILE]</code></h3>
 <p>Which component to analyse. No default files.</p>
 <h3 id="expression--e-expr"><code>--expression, -e [EXPR]</code></h3>
@@ -14,7 +14,7 @@
 <h3 id="check-compatibility--cc"><code>--check-compatibility, -cc</code></h3>
 <p>Check for license compatibility and violations. This is the default mode.</p>
 <h3 id="policy-file--p-file"><code>---policy-file, -p [FILE]</code></h3>
-<p>Set the policy file to use. A policy is optional, without a policy all licenses are considered equal.</p>
+<p>Set the policy file to use. A policy is optional, without a policy all licenses are considered OK to use.</p>
 <h3 id="license-dir--ld"><code>--license-dir, -ld</code></h3>
 <p>Set the directory containing the license definitions. Default directory is <code>licenses/json/</code> as found in the installtion directory.</p>
 <h3 id="later-file--lf"><code>--later-file, -lf</code></h3>
@@ -30,7 +30,7 @@
 <h3 id="pdf"><code>--pdf</code></h3>
 <p>Output the report in pdf format.</p>
 <h3 id="print-licenses--pl"><code>--print-licenses, -pl</code></h3>
-<p>Print the licenses supported by FOSS License Checker.</p>
+<p>Print the licenses supported by FOSS License Compatibility Tool.</p>
 <h3 id="help--h"><code>--help, -h</code></h3>
 <p>Print a simple help message.</p>
 <h3 id="version--v"><code>--version, -v</code></h3>
@@ -47,5 +47,5 @@
 <p>*Note: this file can be found in the source code:</p>
 <h1 id="examples">Examples</h1>
 <p>If you want to check a component (as specified in the file ``awesomeprogram.json```), then you’d type:</p>
-<pre><code>$ foss-license-checker.sh -c awesomeprogram.json
+<pre><code>$ flict -c awesomeprogram.json
 </code></pre>

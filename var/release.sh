@@ -40,7 +40,7 @@ check_java()
 
 check_docker()
 {
-    DOCKER_VERSION=$(cat docker/foss-license-checker/Dockerfile | grep "FLC_RELEASE=" | cut -d "=" -f 2 | sed 's,[ ]*,,')
+    DOCKER_VERSION=$(cat docker/foss-license-checker/Dockerfile | grep "FLICT_RELEASE=" | cut -d "=" -f 2 | sed 's,[ ]*,,')
     printf "%-40s" " * version in Dockerfile: " 
     if [ "$VERSION" != "$DOCKER_VERSION" ]
     then

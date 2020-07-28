@@ -3,24 +3,24 @@
 # for demo mode
 COMPONENTS_DIR=components
 DEMO_COMPONENT=$COMPONENTS_DIR/example.json
-DOCKER_IMAGE=sandklef/foss-license-checker
+DOCKER_IMAGE=sandklef/flict
 
-FLC_NAME=foss-license-checker.sh
+FLICT_NAME=flict
 DEMO_BIN_DIR=$(dirname $0)
 #echo "DEMO_BIN_DIR: $DEMO_BIN_DIR"
-FLC_BIN=$DEMO_BIN_DIR/$FLC_NAME
-which $FLC_NAME >/dev/null 2>&1
+FLICT_BIN=$DEMO_BIN_DIR/$FLICT_NAME
+which $FLICT_NAME >/dev/null 2>&1
 WHICH_RET=$?
 
-if [ -x $FLC_BIN ] ||  [ $WHICH_RET -eq 0 ] 
+if [ -x $FLICT_BIN ] ||  [ $WHICH_RET -eq 0 ] 
 then
-    FLC_INSTALLED=true
-    if [ ! -x $FLC_BIN ]
+    FLICT_INSTALLED=true
+    if [ ! -x $FLICT_BIN ]
     then
-        FLC_BIN=$(which $FLC_NAME)
+        FLICT_BIN=$(which $FLICT_NAME)
     fi
 else
-    FLC_INSTALLED=false
+    FLICT_INSTALLED=false
 fi
 
 
@@ -64,9 +64,9 @@ demo_run_info()
     echo
     echo "To run a license check: "
     echo "-------------------------------------------------"
-    if [ "$FLC_INSTALLED" = "true" ]
+    if [ "$FLICT_INSTALLED" = "true" ]
     then
-        echo " $FLC_BIN -c $DEMO_COMPONENT"
+        echo " $FLICT_BIN -c $DEMO_COMPONENT"
     else
         echo " you first need to install FOSS License checkerand/or make sure you the path to the tool is in your PATH variable"
     fi

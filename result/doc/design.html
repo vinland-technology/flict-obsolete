@@ -1,4 +1,4 @@
-<h1 id="how-does-foss-license-checker-work">How does FOSS License Checker work</h1>
+<h1 id="how-does-foss-license-compatibility-tool-work">How does FOSS License Compatibility Tool work</h1>
 <p>We can split the functionality of this tool in to two main parts:</p>
 <ul>
 <li><p>parsing and simplifying the licenses</p></li>
@@ -62,7 +62,7 @@
 <h3 id="debugging-the-transformation">Debugging the transformation</h3>
 <p>If you would like to see how this tool is tranforming your license expression before using it in later phases you try using the option <code>--expression</code>.</p>
 <p>To test the expression <code>MIT &amp; Apache-2.0 | GPL-2.0-only</code>, do:</p>
-<pre><code>foss-license-checker.sh -e &quot;MIT &amp; Apache-2.0 | GPL-2.0-only&quot;
+<pre><code>flict -e &quot;MIT &amp; Apache-2.0 | GPL-2.0-only&quot;
 </code></pre>
 <h2 id="combine-components-and-dependencies-in-to-a-list">Combine components and dependencies in to a list</h2>
 <p>If we’re not having and dependencies for a component we really have an easy task of checking compliance. So let’s assume we have two dependency components. Each component has their own list of possible license combinations. Our approach to this is to create a list of our top level component with all different license combination. Let’s look at the earlier example:</p>

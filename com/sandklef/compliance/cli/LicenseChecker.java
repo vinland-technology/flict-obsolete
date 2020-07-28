@@ -142,7 +142,7 @@ public class LicenseChecker {
 
     public static void help(Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("foss-license-checker.sh", options);
+        formatter.printHelp("flict", options);
     }
 
     private static Options setupOptions() {

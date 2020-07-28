@@ -8,11 +8,11 @@ if [ -f /.dockerenv ]
 then
     IN_DOCKER=true
     COMPONENTS_DIR=/components
-    FLC_BIN=bin/foss-license-checker.sh
+    FLICT_BIN=bin/flict
 else
     IN_DOCKER=false
     COMPONENTS_DIR=./components
-    FLC_BIN=foss-license-checker.sh
+    FLICT_BIN=flict
 fi
 
 REPORTS_DIR=${COMPONENTS_DIR}/reports
@@ -55,7 +55,7 @@ check_component()
     log " -------------------------"
     mkdir -p "$REPORTS_DIR/$COMPONENT_NAME"
     logn "    compliant:         "
-    $FLC_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown > "$REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md"
+    $FLICT_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown > "$REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md"
     RES_STR=
     SUM_STR=
     if [ $? -eq 0 ]
@@ -105,13 +105,13 @@ fi
 log ""
 log " *****************************************************"
 log " ***                                               ***"
-log " ***            FOSS License Checker               ***"
+log " ***            FOSS License Compatibility Tool               ***"
 log " ***                                               ***"
 log " *****************************************************"
 log " * " 
-log " * Information about FOSS License Checker:" 
-log " *   gitlab.com/sandklef/foss-license-checker"
-log " *   version:      $($FLC_BIN --version | head -1)"
+log " * Information about FOSS License Compatibility Tool:" 
+log " *   gitlab.com/sandklef/foss-license-compatibility-tool"
+log " *   version:      $($FLICT_BIN --version | head -1)"
 log " * " 
 log " * Information about current check:" 
 log " *   date:     $(date)"
@@ -141,5 +141,5 @@ else
     log "$NR_COMPONENTS components have been checked. Reports are available in $COMPONENTS_DIR/reports"
 fi
 log "" 
-log "..... thanks for using FOSS License Checker" 
+log "..... thanks for using FOSS License Compatibility Tool" 
 exit 0

@@ -1,4 +1,4 @@
-# Instructions on releasing FOSS License Checker
+# Instructions on releasing FOSS License Compatibility Tool
 
 ## Commit, clean up ...
 

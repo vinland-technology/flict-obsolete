@@ -1,7 +1,7 @@
 #!/bin/bash
 
-P_NAME="FOSS License Checker"
-PROGRAM_NAME=foss-license-checker
+P_NAME="FOSS License Compatibility Tool"
+PROGRAM_NAME=flict
 LOG_FILE=configure.log
 
 check_dependency()
@@ -150,11 +150,11 @@ if [ $? -ne 0 ] ; then
     echo "Failed creating Makefile"; exit 1;
 fi
 
-cat bin/foss-license-checker.sh.in | \
+cat bin/flict.in | \
     sed "s,__PROGRAM_NAME__,$PROGRAM_NAME,g" | \
     sed "s,__BIN_DIR__,$BIN_DIR,g" | \
-    sed "s,__DATA_DIR__,$DATA_DIR,g" > bin/foss-license-checker.sh
-chmod a+x bin/foss-license-checker.sh
+    sed "s,__DATA_DIR__,$DATA_DIR,g" > bin/flict
+chmod a+x bin/flict
 if [ $? -ne 0 ] ; then
     echo "Failed creating script"; exit 1;
 fi

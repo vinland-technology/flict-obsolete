@@ -33,9 +33,9 @@ test_combination_count()
     POLICY_ARGS="$5"
     
     printf " * %-50s\n" "$(basename $COMPONENT)"
-    ${INSTALL_DIR}/bin/foss-license-checker.sh \
+    ${INSTALL_DIR}/bin/flict \
                                  -ld "${INSTALL_DIR}/share/licenses/json" \
-                                 -cf "${INSTALL_DIR}/share/licenses/connections/foss-license-checker.json" \
+                                 -cf "${INSTALL_DIR}/share/licenses/connections/compatibilities.json" \
                                  -lf "${INSTALL_DIR}/share/licenses/later/later-definitions.json" \
                                  -c "${COMPONENT_DIR}/var/test/combination-components/${COMPONENT}" \
                                  ${POLICY_ARGS} > $TMP_FILE

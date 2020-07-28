@@ -115,7 +115,7 @@ fi
 
 if [ "$TMP_MD" != "" ]
 then
-    echo "$ARGS"
+#    echo "$ARGS"
     run > $TMP_MD
     pandoc $TMP_MD -o tmp.pdf
     printf "# License Compatibility graph\n\nThe following license graph have been used" > tmp-graph.md

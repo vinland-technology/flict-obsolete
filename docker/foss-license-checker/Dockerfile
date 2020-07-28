@@ -1,30 +1,35 @@
 FROM sandklef/foss-license-checker-base
 
-#
+# Update per release
 # 
-ENV FLC_RELEASE=0.1-beta10
-ENV FLC=foss-license-checker
-ENV FLC_DIR=foss-license-checker
-ENV FLC_BASE_URL=https://gitlab.com/sandklef/foss-license-checker/-/archive/$FLC_RELEASE
-ENV FLC_ZIP=foss-license-checker-$FLC_RELEASE.zip
-ENV FLC_BIN=bin/foss-license-checker.sh
+ENV FLICT_RELEASE=0.1-beta10
 
-# Fetch FOSS License Checker from server
-ADD  $FLC_BASE_URL/$FLC_ZIP .
+#
+#
+#
+#
+ENV FLICT_NAME=foss-license-compatibility-tool
+ENV FLICT_DIR=foss-license-compatibility-tool
+ENV FLICT_BASE_URL=https://gitlab.com/sandklef/foss-license-compatibility-tool/-/archive/$FLICT_RELEASE
+ENV FLICT_ZIP=$FLICT_NAME-$FLICT_RELEASE.zip
+ENV FLICT_BIN=bin/flict
+
+# Fetch FOSS License Compatibility Tool from server
+ADD  $FLICT_BASE_URL/$FLICT_ZIP .
 
 # Unpack
-RUN mkdir $FLC_DIR && cd $FLC_DIR && unzip ../$FLC_ZIP && cd foss-license-checker-$FLC_RELEASE && ./configure --devel && make 
+RUN mkdir $FLICT_DIR && cd $FLICT_DIR && unzip ../$FLICT_ZIP && cd $FLICT_NAME-$FLICT_RELEASE && ./configure --devel && make 
 
 # Set working dir
-WORKDIR $FLC_DIR
+WORKDIR $FLICT_DIR
 
 # Basic test
 ENV LICENSE_DIR="share/licenses/json "
-ENV COMPAT_FILE="share/licenses/connections/foss-license-checker.json "
+ENV COMPAT_FILE="share/licenses/connections/compatibilities.json "
 ENV LATER_FILE="share/licenses/later/later-definitions.json "
 
 ENV LICENSE_ARGS=" --license-dir $LICENSE_DIR"
 ENV COMPAT_ARGS=" --compatibility-file $COMPAT_FILE "
 ENV LATER_ARGS=" --later-file $LATER_FILE "
 
-CMD cd foss-license-checker-$FLC_RELEASE && bin/check-components.sh 
+CMD cd $FLICT_NAME-$FLICT_RELEASE && bin/check-components.sh 

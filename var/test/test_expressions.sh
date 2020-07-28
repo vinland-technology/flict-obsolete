@@ -28,9 +28,9 @@ test_expression()
     EXPECTED_EXPR=$2
 
     printf " * %-50s" $(echo "$EXPR:" | sed 's, ,,g')
-    ACTUAL_EXPR=$(${INSTALL_DIR}/bin/foss-license-checker.sh \
+    ACTUAL_EXPR=$(${INSTALL_DIR}/bin/flict \
                                 -ld "${INSTALL_DIR}/share/licenses/json/" \
-                                -cf "${INSTALL_DIR}/share/licenses/connections/foss-license-checker.json" \
+                                -cf "${INSTALL_DIR}/share/licenses/connections/compatibilities.json" \
                                 -lf "${INSTALL_DIR}/share/licenses/later/later-definitions.json" \
                                 -e "$EXPR" | \
                       grep -A 10 "List of License Lists" | \

@@ -28,9 +28,9 @@ test_compliance()
     EXPECTED_COUNT=$2
     EXPECTED_RET=$3
     printf " * %-50s" "$(basename $COMPONENT): "
-    CMD="${INSTALL_DIR}/bin/foss-license-checker.sh \
+    CMD="${INSTALL_DIR}/bin/flict \
                            -ld \""${INSTALL_DIR}/share/licenses/json\"" \
-                           -cf "${INSTALL_DIR}/share/licenses/connections/foss-license-checker.json" \
+                           -cf "${INSTALL_DIR}/share/licenses/connections/compatibilities.json" \
                            -lf "${INSTALL_DIR}/share/licenses/later/later-definitions.json" \
                            -c  \""${COMPONENT_DIR}/var/test/compliance-components/${COMPONENT}\"" "
     $CMD > $TMP_FILE
