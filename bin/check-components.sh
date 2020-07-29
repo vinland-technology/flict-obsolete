@@ -53,9 +53,9 @@ check_component()
     log " "
     log " $COMPONENT_NAME ($COMPONENT_FILE.json)"
     log " -------------------------"
-    mkdir -p "$REPORTS_DIR/$COMPONENT_NAME"
+    mkdir -p "$REPORTS_DIR/$COMPONENT_FILE"
     logn "    compliant:         "
-echo    $FLICT_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown > "$REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md"
+#echo    $FLICT_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown ">" "$REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md"
     $FLICT_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown > "$REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md"
     RES_STR=
     SUM_STR=
