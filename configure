@@ -106,7 +106,7 @@ parse()
         then
             BIN_DIR="$MULTI_USER_BIN_DIR"
             DATA_DIR="$MULTI_USER_DATA_DIR"
-        elif [[ "$1" =~ "--docker-installation" ]]
+        elif [[ "$1" =~ "--docker" ]]
         then
             BIN_DIR="$DOCKER_BIN_DIR"
             DATA_DIR="$DOCKER_DATA_DIR"
