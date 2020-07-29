@@ -18,10 +18,14 @@ ENV FLICT_BIN=bin/flict
 ADD  $FLICT_BASE_URL/$FLICT_ZIP .
 
 # Unpack
-RUN mkdir $FLICT_DIR && cd $FLICT_DIR && unzip ../$FLICT_ZIP && cd $FLICT_NAME-$FLICT_RELEASE && ./configure --devel && make 
+RUN mkdir $FLICT_DIR && cd $FLICT_DIR && unzip ../$FLICT_ZIP && cd $FLICT_NAME-$FLICT_RELEASE && ./configure --docker && make all flict.jar
+
 
 # Set working dir
 WORKDIR $FLICT_DIR
+
+RUN find $FLICT_NAME-$FLICT_RELEASE -name "*.jar"
+
 
 # Basic test
 ENV LICENSE_DIR="share/licenses/json "
@@ -32,4 +36,5 @@ ENV LICENSE_ARGS=" --license-dir $LICENSE_DIR"
 ENV COMPAT_ARGS=" --compatibility-file $COMPAT_FILE "
 ENV LATER_ARGS=" --later-file $LATER_FILE "
 
-CMD cd $FLICT_NAME-$FLICT_RELEASE && bin/check-components.sh 
+#CMD cd $FLICT_NAME-$FLICT_RELEASE && bin/check-components.sh 
+CMD bash
