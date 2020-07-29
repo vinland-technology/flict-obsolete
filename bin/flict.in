@@ -9,17 +9,19 @@ PROGRAM_NAME=__PROGRAM_NAME__
 DATA_DIR=__DATA_DIR__
 
 PROGRAM_DATA_PATH=$PROGRAM_NAME
+JAR_DIR=$INSTALL_DIR/share/lib
 if [ "$DATA_DIR" = "" ]
 then
     INSTALL_DIR=$(dirname $(realpath $(which $0)) | sed 's,\/bin,,g')
     PROGRAM_DATA_PATH=
     DATA_DIR=$INSTALL_DIR/share
+    JAR_DIR=$INSTALL_DIR/lib
 fi
 
-DOCKER_DEVEL_CLASSPATH="lib/gson-2.2.2.jar:lib/commons-cli-1.4.jar:lib/foss-license-checker.jar:."
-CLASSPATH="$JAR_DIR/gson-2.2.2.jar:$JAR_DIR/commons-cli-1.4.jar:$JAR_DIR/foss-license-checker.jar:$DOCKER_DEVEL_CLASSPATH"
+DOCKER_DEVEL_CLASSPATH="lib/gson-2.2.2.jar:lib/commons-cli-1.4.jar:lib/flict.jar:."
+CLASSPATH="$JAR_DIR/gson-2.2.2.jar:$JAR_DIR/commons-cli-1.4.jar:$JAR_DIR/flict.jar:$DOCKER_DEVEL_CLASSPATH"
 DEFAULT_LICENSE_ARGS=" --license-dir ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/json "
-DEFAULT_COMPAT_ARGS=" --compatibility-file ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/connections/foss-license-checker.json"
+DEFAULT_COMPAT_ARGS=" --compatibility-file ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/connections/compatibilities.json"
 DEFAULT_LATER_ARGS=" --later-file ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/later/later-definitions.json"
 CLASS="com.sandklef.compliance.cli.LicenseChecker"
 
