@@ -1,14 +1,14 @@
-# FOSS License Compatibility Tool User's Guide
+# FOSS License Compliance Tool User's Guide
 
 # Introduction
 
-FOSS License Compatibility Tool is an Free and Open Source Software compliance tool
+FOSS License Compliance Tool is an Free and Open Source Software compliance tool
 aimed at detecting license violations either with or without a
 policy. It assumes every component has a known license expression.
 
-FOSS License Compatibility Tool can also conclude outbound licenses for your component.
+FOSS License Compliance Tool can also conclude outbound licenses for your component.
 
-# Invoking FOSS License Compatibility Tool
+# Invoking FOSS License Compliance Tool
 
 ```
 flict [OPTIONS]
@@ -66,7 +66,7 @@ Output the report in pdf format.
 
 ### ```--print-licenses, -pl```
 
-Print the licenses supported by FOSS License Compatibility Tool.
+Print the licenses supported by FOSS License Compliance Tool.
 
 ### ```--help, -h```
 

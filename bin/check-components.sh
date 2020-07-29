@@ -105,12 +105,12 @@ fi
 log ""
 log " *****************************************************"
 log " ***                                               ***"
-log " ***       FOSS License Compatibility Tool         ***"
+log " ***        FOSS License Compliance Tool           ***"
 log " ***                                               ***"
 log " *****************************************************"
 log " * " 
-log " * Information about FOSS License Compatibility Tool:" 
-log " *   gitlab.com/sandklef/foss-license-compatibility-tool"
+log " * Information about FOSS License Compliance Tool:" 
+log " *   web site:     https://gitlab.com/sandklef/flict"
 log " *   version:      $($FLICT_BIN --version | head -1)"
 log " * " 
 log " * Information about current check:" 
@@ -141,5 +141,5 @@ else
     log "$NR_COMPONENTS components have been checked. Reports are available in $COMPONENTS_DIR/reports"
 fi
 log "" 
-log "..... thanks for using FOSS License Compatibility Tool" 
+log "..... thanks for using FOSS License Compliance Tool" 
 exit 0

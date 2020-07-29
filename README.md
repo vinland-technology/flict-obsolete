@@ -4,11 +4,11 @@ SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# FOSS License Compatibility Tool
+# FOSS License Compliance Tool
 
 # Introduction
 
-***FOSS License Compatibility Tool*** (***flict***) is a Free and Open
+***FOSS License Compliance Tool*** (***flict***) is a Free and Open
 Source Software tool to verify license compliance in and between
 [_components_](#component). You can use the tool to automate license
 compliance verification in the compliance work flow.
@@ -62,7 +62,7 @@ curl https://gitlab.com/sandklef/foss-license-compatibility-tool/-/raw/primary/b
 # Installation
 
 <a name="docker_image"></a>
-## Using the FOSS License Compatibility Tool Docker image
+## Using the FOSS License Compliance Tool Docker image
 
 ### Required tools
 
@@ -74,7 +74,7 @@ docker - see docker.io for information on how to install docker
 docker pull sandklef/flict
 ```
 
-### Prepare to run the FOSS License Compatibility Tool
+### Prepare to run the FOSS License Compliance Tool
 
 Create a directory for the components
 
@@ -85,7 +85,7 @@ mkdir components
 Put the components you want checked in the above created folder (```components```). If you want to try out ```flict``` with a sample component, you can try the following command ```curl "https://gitlab.com/sandklef/foss-license-compatibility-tool/-/raw/primary/meta/flict.json" -o components/flict.json```.
 
 
-### Run FOSS License Compatibility Tool
+### Run FOSS License Compliance Tool
 
 ```
 docker run -it -v `pwd`/components/:/components sandklef/flict
@@ -111,7 +111,7 @@ The component itself looks like this:
 $ cat components/example.json 
 {
     "meta": {
-        "software":"FOSS License Compatibility Tool",
+        "software":"FOSS License Compliance Tool",
         "version" : "0.1"
     },
     "component": 
@@ -130,7 +130,7 @@ $ cat components/example.json
 Let's run the check:
 ```
 $ docker run -it -v `pwd`/components/:/components sandklef/flict
-FOSS License Compatibility Tool - for use in docker
+FOSS License Compliance Tool - for use in docker
 
 Check components:
 ===========================
@@ -240,7 +240,7 @@ Let's begin with an example component. Let's say we have a program
 ```
 {
     "meta": {
-        "software":"FOSS License Compatibility Tool",
+        "software":"FOSS License Compliance Tool",
         "version":"0.1"
     },
     "component": {
@@ -279,7 +279,7 @@ Here's an example:
 ```
 {
     "meta": {
-        "software":"FOSS License Compatibility Tool",
+        "software":"FOSS License Compliance Tool",
         "version":"0.1"
     },
     "license": {
@@ -335,7 +335,7 @@ example policy file:
 ```
 {
     "meta" : {
-        "software":"FOSS License Compatibility Tool",
+        "software":"FOSS License Compliance Tool",
         "version":"0.1"
     } ,
     "policy": {
@@ -364,7 +364,7 @@ Let's start with a example:
 ```
 {
     "meta": {
-        "software":"FOSS License Compatibility Tool",
+        "software":"FOSS License Compliance Tool",
         "type": "later-definitions",
         "version":"0.1"
     },
@@ -393,7 +393,7 @@ flict outputs a report as well as an exit code.
 
 ## Exit code
 
-FOSS License Compatibility Tool returns:
+FOSS License Compliance Tool returns:
 
 * ***0*** if your component is fully compliant,
 
@@ -436,11 +436,11 @@ and create reports for you. The reports can be found in the directory
 A simple script to create a diretory, name ```components```, with a
 sample component defined in a file called ```example.json```.
 
-# License of the FOSS License Compatibility Tool
+# License of the FOSS License Compliance Tool
 
-FOSS License Compatibility Tool is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
+FOSS License Compliance Tool is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-# The way FOSS License Compatibility Tool works
+# The way FOSS License Compliance Tool works
 
 Check out: (doc/how.md)
 

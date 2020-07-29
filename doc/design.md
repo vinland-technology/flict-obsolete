@@ -1,4 +1,4 @@
-# How does FOSS License Compatibility Tool work
+# How does FOSS License Compliance Tool work
 
 We can split the functionality of this tool in to two main parts:
 

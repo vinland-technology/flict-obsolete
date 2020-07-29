@@ -36,7 +36,7 @@ demo_create_component()
     cat << END_OF_JSON > $DEMO_COMPONENT
 {
     "meta": {
-        "software":"FOSS License Compatibility Tool",
+        "software":"FOSS License Compliance Tool",
         "version" : "0.1"
     },
     "component": 

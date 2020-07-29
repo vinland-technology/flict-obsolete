@@ -8,13 +8,13 @@ ENV FLICT_RELEASE=0.1-beta11
 #
 #
 #
-ENV FLICT_NAME=foss-license-compatibility-tool
-ENV FLICT_DIR=foss-license-compatibility-tool
-ENV FLICT_BASE_URL=https://gitlab.com/sandklef/foss-license-compatibility-tool/-/archive/$FLICT_RELEASE
+ENV FLICT_NAME=flict
+ENV FLICT_DIR=flict
+ENV FLICT_BASE_URL=https://gitlab.com/sandklef/flict/-/archive/$FLICT_RELEASE
 ENV FLICT_ZIP=$FLICT_NAME-$FLICT_RELEASE.zip
 ENV FLICT_BIN=bin/flict
 
-# Fetch FOSS License Compatibility Tool from server
+# Fetch FOSS License Compliance Tool from server
 ADD  $FLICT_BASE_URL/$FLICT_ZIP .
 
 # Unpack

@@ -1,6 +1,6 @@
 {
     "component": {
-        "name": "FOSS License Compatibility Tool",
+        "name": "FOSS License Compliance Tool",
         "license": "GPL-3.0-only",
         "dependencies": [
             {

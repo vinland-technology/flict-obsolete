@@ -1,4 +1,4 @@
-# Instructions on releasing FOSS License Compatibility Tool
+# Instructions on releasing FOSS License Compliance Tool
 
 ## Commit, clean up ...
 
@@ -28,7 +28,7 @@ Define the version and update the version in the following files:
 
 ## Create new release at gitlab
 
-Click "New release"(https://gitlab.com/sandklef/foss-license-compatibility-tool/-/tags/new) and fill in the version name above.
+Click "New release"(https://gitlab.com/sandklef/flict/-/tags/new) and fill in the version name above.
 
 ### Upload binary release
 
