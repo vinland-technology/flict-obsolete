@@ -36,5 +36,5 @@ ENV LICENSE_ARGS=" --license-dir $LICENSE_DIR"
 ENV COMPAT_ARGS=" --compatibility-file $COMPAT_FILE "
 ENV LATER_ARGS=" --later-file $LATER_FILE "
 
-#CMD cd $FLICT_NAME-$FLICT_RELEASE && bin/check-components.sh 
-CMD bash
+CMD cd $FLICT_NAME-$FLICT_RELEASE && bin/check-components.sh 
+#CMD bash
