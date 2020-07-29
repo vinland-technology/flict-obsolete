@@ -34,8 +34,8 @@ MULTI_USER_BIN_DIR=/usr/bin/
 MULTI_USER_DATA_DIR=/usr/share/
 
 # Docker preset
-DOCKER_BIN_DIR=./
-DOCKER_DATA_DIR=./
+DOCKER_BIN_DIR=
+DOCKER_DATA_DIR=
 
 # Dist preset
 DIST_BIN_DIR=
@@ -72,8 +72,8 @@ usage()
     echo "      BIN_DIR=$DIST_BIN_DIR"
     echo "      DATA_DIR=$DIST_DATA_DIR"
     echo ""
-    echo "  --docker-installation"
-    echo "    Set installation directories to:"
+    echo "  --docker"
+    echo "    Set directories to:"
     echo "      BIN_DIR=$DOCKER_INSTALL_BIN_DIR"
     echo "      DATA_DIR=$DOCKER_INSTALL_DATA_DIR"
     echo ""

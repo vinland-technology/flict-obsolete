@@ -177,6 +177,8 @@ $(OUT_DIR):
 $(JAR_FILE): $(CLASSES)
 	jar cvf $(JAR_FILE) com
 
+jar: $(JAR_FILE)
+
 dist: $(OUT_DIR) 
 	@echo Creating doc
 	@make doc
