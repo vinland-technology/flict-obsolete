@@ -2,7 +2,7 @@ FROM sandklef/foss-license-checker-base
 
 # Update per release
 # 
-ENV FLICT_RELEASE=0.1-beta11
+ENV FLICT_RELEASE=0.1-beta12
 
 #
 #
