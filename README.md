@@ -22,7 +22,7 @@ Compatibility Tool [format](#component).
 flict does not come with any knowledge about certain policies,
 licenses and their compatibilities. These things are specified outside
 the tool. By default flict has files defining licenses and
-compatibilities which probably gets mos of our users going. Having
+compatibilities which probably gets most of our users going. Having
 licenses and compatibilities (and even more stuff) defined outside the
 tool makes it easy to extend the tool with new licenses etc without
 modifying the code.
@@ -224,10 +224,6 @@ and its dependencies are specified in the file
 flict -c ./meta/flict.json 
 ~~~
 
-
-
-
-
 # Syntax
 
 <a name="component"></a>
@@ -316,10 +312,10 @@ and these are interpreted according to boolean algebra. A license expression exa
 <a name="license_graph"></a>
 ## License graph (built in or custom)
 
-To decide wether a license is compatible with another a graph of
-license compatibilities is used. Bye default License checker uses
+To decide wether a license is compatible with another a graph of the
+license compatibilities is created. By default License checker uses
 licenses as specified FLOSS License Compatibility Graph project. Using
-this graph is recommended and if you lack some license we suggest you
+this graph is recommended and if you're missing licenses we suggest you
 get in contact with that project to update their graph. If you still
 would like to use your own graph you can use the command line option
 ```--compatibility-file```.
@@ -328,9 +324,8 @@ would like to use your own graph you can use the command line option
 <a name="policy"></a>
 ## Policy (no built in, optional)
 
-With a policy file you can tell this tool which licenses you're not
-allowing (denied) and which you preferr not to use (avoid). Here's an
-example policy file:
+With a policy file you can tell this tool which licenses you disallow
+and which you prefer not to avoid. Here's an example policy file:
 
 ```
 {
@@ -354,7 +349,7 @@ example policy file:
 <a name="later"></a>
 ## License later defininitions (built in or custom)
 
-Some licenses can be specifed saying "or-later", e g
+Some licenses can be specifed saying "or-later", e.g.
 GPL-2.0-or-later. You can provide a list of definitions for this tool
 to decide how these licenses should be interpreted.
 
@@ -433,14 +428,14 @@ and create reports for you. The reports can be found in the directory
 
 ## demo.sh
 
-A simple script to create a diretory, name ```components```, with a
+A simple script to create a diretory, named ```components```, with a
 sample component defined in a file called ```example.json```.
 
 # License of the FOSS License Compliance Tool
 
 FOSS License Compliance Tool is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-# The way FOSS License Compliance Tool works
+# How the FOSS License Compliance Tool works
 
 Check out: (doc/how.md)
 
