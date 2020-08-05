@@ -460,5 +460,5 @@ You're probably having SELinux enabled. To work around this, run docker like thi
 $ docker run -it -v /tmp/components/:/components:z sandklef/flict
 ```
 
-*Note: there's a 'z' at the end of the ```-v``` option*
+*Note: there is now ':z' at the end of the ```-v``` option*
 
