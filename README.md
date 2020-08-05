@@ -439,3 +439,26 @@ FOSS License Compliance Tool is released under GPLv3 (https://www.gnu.org/licens
 
 Check out: (doc/how.md)
 
+# FAQ
+
+## I am having problems starting docker
+
+I have a component in the components directory (```components/example.json```) but when I run docker I get:
+
+```
+$ docker run -it -v /tmp/components/:/components sandklef/flict:0.1-beta12
+
+bin/check-components.sh: 33: bin/check-components.sh: cannot create /components/check-components.log: Permission denied
+ *****************************************************
+bin/check-components.sh: 33: bin/check-components.sh: cannot create /components/check-components.log: Permission denied
+```
+... and so on.
+
+You're probably having SELinux enabled. To work around this, run docker like this:
+
+```
+$ docker run -it -v /tmp/components/:/components:z sandklef/flict
+```
+
+*Note: there's a 'z' at the end of the ```-v``` option*
+
