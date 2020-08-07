@@ -51,11 +51,8 @@ You can chose between two ways of installing and using this tool:
 
 ```
 mkdir components
-
 curl https://gitlab.com/sandklef/flict/-/raw/primary/meta/flict.json -o components/flict.json
-
 docker pull sandklef/flict
-
 docker run -it -v \`pwd\`/comonents/:/$COMPONENTS_DIR sandklef/flict
 ```
 
