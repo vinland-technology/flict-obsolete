@@ -57,19 +57,24 @@ check_component()
     logn "    compliant:         "
 #echo    $FLICT_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown ">" "$REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md"
     $FLICT_BIN $LICENSE_ARGS $COMPAT_ARGS $LATER_ARGS -c $COMPONENT --markdown > "$REPORTS_DIR/$COMPONENT_FILE/report-${COMPONENT_FILE}.md"
+    RET=$?
     RES_STR=
     SUM_STR=
-    if [ $? -eq 0 ]
+    if [ $RET -eq 0 ]
     then
         RES_STR=" yes"
         SUM_STR="compliant"
-    elif [ $? -eq 1 ]
+    elif [ $RET -eq 1 ]
     then
         RES_STR=" yes, with gray policy"
         SUM_STR="compliant, with gray policy"
-    else
+    elif [ $RET -eq 0 ]
+    then
         RES_STR=" no"
         SUM_STR="not compliant"
+    else
+        RES_STR=" Error while executing flict"
+        SUM_STR=" Undetermined"
     fi
     log " $RES_STR"
 

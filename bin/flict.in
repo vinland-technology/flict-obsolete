@@ -43,7 +43,7 @@ then
             if [ $RET -ne 0 ]
             then
                 echo "File \"$FILE\" does not seem to be a valid JSON file"
-                exit 1
+                exit 30
             fi
         fi
     done
