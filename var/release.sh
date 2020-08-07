@@ -154,8 +154,12 @@ don_dokker()
 
     if [ "$DOCKER_PUSH" = "true" ]
     then
-        printf "%-40s" " * pushd docker image: "
+        printf "%-40s" " * push docker image: "
         docker push $IMAGE_NAME:$VERSION
+        handle_ret $?  "docker push $IMAGE_NAME:$VERSION"
+
+        printf "%-40s" " * push docker image: "
+        docker push $IMAGE_NAME:latest
         handle_ret $?  "docker push $IMAGE_NAME:$VERSION"
     fi
     popd  > /dev/null 2>&1
