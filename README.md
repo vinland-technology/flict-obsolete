@@ -49,13 +49,14 @@ You can chose between two ways of installing and using this tool:
 
 # Try it out with docker
 
-We have a small script that you can use to create a directory and a
-component. The script also instructs you how to do a scan of the
-component, using either a normally installed flict or a
-docker image.
-
 ```
-curl https://gitlab.com/sandklef/foss-license-compatibility-tool/-/raw/primary/bin/demo.sh | bash
+mkdir components
+
+curl https://gitlab.com/sandklef/flict/-/raw/primary/meta/flict.json -o components/flict.json
+
+docker pull sandklef/flict
+
+docker run -it -v \`pwd\`/comonents/:/$COMPONENTS_DIR sandklef/flict
 ```
 
 <a name="install"></a>
