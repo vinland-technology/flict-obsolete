@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# FOSS License Compliance Tool
+# flict / FOSS License Compliance Tool
 
 # Introduction
 
@@ -60,7 +60,7 @@ docker run -it -v `pwd`/components/:/components sandklef/flict
 # Installation
 
 <a name="docker_image"></a>
-## Using the FOSS License Compliance Tool Docker image
+## Using the flict Docker image
 
 ### Required tools
 
@@ -72,7 +72,7 @@ docker - see docker.io for information on how to install docker
 docker pull sandklef/flict
 ```
 
-### Prepare to run the FOSS License Compliance Tool
+### Prepare to run the flict
 
 Create a directory for the components
 
@@ -83,7 +83,7 @@ mkdir components
 Put the components you want checked in the above created folder (```components```). If you want to try out ```flict``` with a sample component, you can try the following command ```curl "https://gitlab.com/sandklef/foss-license-compatibility-tool/-/raw/primary/meta/flict.json" -o components/flict.json```.
 
 
-### Run FOSS License Compliance Tool
+### Run flict
 
 ```
 docker run -it -v `pwd`/components/:/components sandklef/flict
@@ -386,7 +386,7 @@ flict outputs a report as well as an exit code.
 
 ## Exit code
 
-FOSS License Compliance Tool returns:
+flict returns:
 
 * ***0*** if your component is fully compliant,
 
@@ -429,11 +429,11 @@ and create reports for you. The reports can be found in the directory
 A simple script to create a diretory, named ```components```, with a
 sample component defined in a file called ```example.json```.
 
-# License of the FOSS License Compliance Tool
+# License of flict
 
-FOSS License Compliance Tool is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
+flict is released under GPLv3 (https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-# How the FOSS License Compliance Tool works
+# How the flict works
 
 Check out: (doc/how.md)
 
