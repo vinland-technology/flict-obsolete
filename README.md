@@ -214,7 +214,7 @@ This installs flict in ```~/.local/``` so make sure to update your PATH variable
 
 #### Example
 
-The below checks license checker itself. The component License Checker
+The below checks floct itself. The component flict
 and its dependencies are specified in the file
 `./meta/license-policy-checker.json` as found in the source code.
 
@@ -311,11 +311,11 @@ and these are interpreted according to boolean algebra. A license expression exa
 ## License graph (built in or custom)
 
 To decide wether a license is compatible with another a graph of the
-license compatibilities is created. By default License checker uses
-licenses as specified FLOSS License Compatibility Graph project. Using
-this graph is recommended and if you're missing licenses we suggest you
-get in contact with that project to update their graph. If you still
-would like to use your own graph you can use the command line option
+license compatibilities is created. By default flict uses licenses as
+specified FLOSS License Compatibility Graph project. Using this graph
+is recommended and if you're missing licenses we suggest you get in
+contact with that project to update their graph. If you still would
+like to use your own graph you can use the command line option
 ```--compatibility-file```.
 
 
