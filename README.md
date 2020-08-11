@@ -81,7 +81,7 @@ mkdir components
 
 Put the components you want checked in the above created folder (```components```). If you want to try out ```flict``` with a sample component, you can try the following command:
 
-``
+```
 curl "https://gitlab.com/sandklef/foss-license-compatibility-tool/-/raw/primary/meta/flict.json" -o components/flict.json
 ```
 
