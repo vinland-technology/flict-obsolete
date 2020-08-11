@@ -63,7 +63,7 @@ docker run -it -v `pwd`/components/:/components sandklef/flict
 
 ### Required tools
 
-docker - see docker.io for information on how to install docker
+docker - see https://docker.io 
 
 ### Get flict docker image
 
