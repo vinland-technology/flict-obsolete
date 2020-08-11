@@ -455,6 +455,8 @@ bin/check-components.sh: 33: bin/check-components.sh: cannot create /components/
 ```
 ... and so on.
 
+### Answer
+
 You're probably having SELinux enabled. To work around this, run docker like this:
 
 ```
