@@ -14,8 +14,7 @@ Source Software tool to verify license compliance in and between
 compliance verification in the compliance work flow.
 
 flict checks components, with a defined license and with dependencies
-(themselves being components), provided in the FOSS License
-Compatibility Tool [format](#component).
+(themselves being components), provided in the flict [format](#component).
 
 ## Extensible and tweakable
 
@@ -66,7 +65,7 @@ docker run -it -v `pwd`/components/:/components sandklef/flict
 
 docker - see docker.io for information on how to install docker
 
-### Get Foss License Compatibility Tool docker image
+### Get flict docker image
 
 ```
 docker pull sandklef/flict
@@ -184,7 +183,7 @@ components/
 
 Download the latest released prebuilt package from from gitlab.com:
 
-https://gitlab.com/sandklef/foss-license-compatibility-tool/-/releases
+https://gitlab.com/sandklef/flict/-/releases
 
 ### Build from source code
 
