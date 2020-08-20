@@ -1,0 +1,16 @@
+{
+    "meta" : {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    } ,
+    "policy": {
+        "allowlist": [
+        ],
+        "graylist": [
+            "Apache-2.0"
+        ],
+        "deniedlist": [
+            "MPL-1.1"
+        ]
+    }
+}

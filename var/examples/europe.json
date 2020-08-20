@@ -1,0 +1,47 @@
+{
+    "meta": {
+        "software":"License Policy Checker",
+        "version":"0.1"
+    },
+    "component": {
+        "name": "Europe - a flict example",
+        "license": "GPL-2.0-or-later",
+        "dependencies": [
+            {
+                "name": "Sweden",
+                "license": "GPL-2.0-only | Apache-2.0",
+                "dependencies": [
+                    {
+                        "name": "Gothenburg",
+                        "license": "BSD-3-Clause",
+                        "dependencies": [
+                        ]
+                    },
+                    {
+                        "name": "Stockholm",
+                        "license": "MIT",
+                        "dependencies": []
+                    }
+                    
+                ]
+            },
+            {
+                "name": "Germany",
+                "license": "GPL-2.0-or-later | MIT & BSD-3-Clause | Apache-2.0",
+                "dependencies": [
+                    {
+                        "name": "Dusseldorf",
+                        "license": "GPL-2.0-or-later",
+                        "dependencies": [
+                        ]
+                    },
+                    {
+                        "name": "Berlin",
+                        "license": "MIT | MPL-1.1",
+                        "dependencies": []
+                    }
+                ]
+            }
+        ]
+    }
+}
