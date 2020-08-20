@@ -118,8 +118,8 @@ public class MDExporter implements ReportExporter {
         sb.append("\n\n");
 
 
-        sb.append(BOLD_START + "Compliant allowed license choices per component: " + BOLD_END);
         List<Report.ComponentResult> results = report.complianAllowedtPaths();
+        sb.append(BOLD_START + "Compliant allowed license choices per component: " + BOLD_END);
         sb.append("\n\n");
         if (results.size()==0) {
             sb.append(" none found");
@@ -136,13 +136,13 @@ public class MDExporter implements ReportExporter {
         }
         sb.append("\n\n");
 
-        sb.append(BOLD_START + "Compliant gray license choices per component: " + BOLD_END);
         results = report.compliantGrayPaths();
+        sb.append(BOLD_START + "Compliant gray license choices per component: " + BOLD_END);
         sb.append("\n\n");
         if (results.size()==0) {
             sb.append(" none found");
         } else {
-            for (Report.ComponentResult cr : report.compliantGrayPaths()) {
+            for (Report.ComponentResult cr : results) {
                 sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
                 for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
                     sb.append(", ");

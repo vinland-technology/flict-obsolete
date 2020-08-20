@@ -143,10 +143,10 @@ public class TextReportExporter implements ReportExporter {
         sb.append("Allowed combinations:\n-------------------------------------\n");
         sb.append(report.complianAllowedtPaths());
         sb.append("\n\n");
-        sb.append("Allowed and gray combinations:\n-------------------------------------\n");
+        sb.append("Gray combinations:\n-------------------------------------\n");
         sb.append(report.compliantGrayPaths());
         sb.append("\n\n");
-        sb.append("Allowed but denied combinations:\n-------------------------------------\n");
+        sb.append("Denied combinations:\n-------------------------------------\n");
         sb.append(report.nonCompliantPaths());
         sb.append("\n");
     }
