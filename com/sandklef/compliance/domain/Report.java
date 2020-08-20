@@ -90,34 +90,34 @@ public class Report {
     public List<ComponentResult> complianAllowedtPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant).
-                filter(c -> c.type ==ListType.ALLOWED_LIST).
+                filter(c -> c.type == ListType.ALLOWED_LIST).
                 collect(Collectors.toList());
     }
 
     public List<ComponentResult> compliantPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant).
-                filter(c -> c.type !=ListType.DENIED_LIST).
+                filter(c -> c.type != ListType.DENIED_LIST).
                 collect(Collectors.toList());
     }
 
     public List<ComponentResult> compliantGrayPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant()).
-                filter(c -> c.type ==ListType.GRAY_LIST).
+                filter(c -> c.type == ListType.GRAY_LIST).
                 collect(Collectors.toList());
     }
 
     public List<ComponentResult> compliantDeniedPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant()).
-                filter(c -> c.type ==ListType.DENIED_LIST).
+                filter(c -> c.type == ListType.DENIED_LIST).
                 collect(Collectors.toList());
     }
 
     public List<ComponentResult> nonCompliantPaths() {
         return componentResults.stream().
-                filter(c -> !c.compliant() || c.type ==ListType.DENIED_LIST).
+                filter(c -> !c.compliant() || c.type == ListType.DENIED_LIST).
                 collect(Collectors.toList());
     }
 
