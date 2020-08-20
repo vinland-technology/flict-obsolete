@@ -72,7 +72,7 @@ public class LicenseChecker {
             if (session.policyFile() != null) {
                 JsonPolicyParser jp = new JsonPolicyParser();
                 values.put("policy", jp.readLicensePolicy(session.policyFile()));
-                System.out.println("   policy file: " + session.policyFile());
+                //                System.out.println("   policy file: " + session.policyFile());
             }
 
             String outFileName = (String) values.get("output");
