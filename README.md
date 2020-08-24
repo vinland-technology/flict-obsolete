@@ -203,7 +203,7 @@ You can install required tools using the script:
 ./var/setup.sh
 ~~~
 
-*Note: we're currently only supporting Debian, Ubuntu, Fedora, Redhat GNU/Linux. If you're usong something else, please manually install the required tools* 
+*Note: we're currently supporting Debian, Ubuntu, Fedora, Redhat GNU/Linux. If you're using something else, please manually install the required tools* 
 
 ### Build and install
 
