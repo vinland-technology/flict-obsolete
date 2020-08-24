@@ -219,7 +219,7 @@ This installs flict in ```~/.local/``` so make sure to update your PATH variable
 
 The below checks floct itself. The component flict
 and its dependencies are specified in the file
-`./meta/license-policy-checker.json` as found in the source code.
+`./meta/flict.json` as found in the source code.
 
 ~~~
 flict -c ./meta/flict.json 
