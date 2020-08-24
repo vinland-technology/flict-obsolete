@@ -311,7 +311,15 @@ and these are interpreted according to boolean algebra. A license expression exa
 ```
 
 <a name="license_graph"></a>
-## License graph (built in or custom)
+
+## License compatibilty strategies
+
+### License matrix
+
+This is a new feature, mist likely replacing the graph below,
+currently being implemented. More information soon.
+
+### License graph (built in or custom)
 
 To decide wether a license is compatible with another a graph of the
 license compatibilities is created. By default flict uses licenses as
