@@ -5,7 +5,7 @@
 package com.sandklef.compliance.exporter;
 
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.utils.LicenseArbiter;
+import com.sandklef.compliance.utils.ComponentArbiter;
 import com.sandklef.compliance.utils.LicenseUtils;
 
 import java.net.InetAddress;
@@ -85,7 +85,7 @@ public class MDExporter implements ReportExporter {
         }
         sb.append("\n\n");
 
-        sb.append(BOLD_START + "Liceneses: " + BOLD_END);
+        sb.append(BOLD_START + "Licenses: " + BOLD_END);
         sb.append("\n\n");
         for (String s : licenseSet) {
             sb.append(" * ");
@@ -126,7 +126,7 @@ public class MDExporter implements ReportExporter {
         } else {
             for (Report.ComponentResult cr : results) {
                 sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
-                for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
+                for (ComponentArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
                     sb.append(", ");
                     sb.append(ic.name() + " (" +
                             beautifyLicense(ic.licenses().toString()) + ")");
@@ -144,7 +144,7 @@ public class MDExporter implements ReportExporter {
         } else {
             for (Report.ComponentResult cr : results) {
                 sb.append(" * " + cr.component().name() + " (" + beautifyLicense(cr.component().licenses().toString()) + ")");
-                for (LicenseArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
+                for (ComponentArbiter.InterimComponent ic : cr.component().allDependenciesImpl()) {
                     sb.append(", ");
                     sb.append(ic.name() + " (" +
                             beautifyLicense(ic.licenses().toString()) + ")");
@@ -254,7 +254,7 @@ public class MDExporter implements ReportExporter {
         sb.append("\n\n");
 
         sb.append(BOLD_START + "License dir: " + BOLD_END);
-        sb.append(session.lLicenseDir());
+        sb.append(session.licenseDir());
         sb.append("\n\n");
 
         sb.append(BOLD_START + "Connector file: " + BOLD_END);
