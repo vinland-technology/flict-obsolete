@@ -246,4 +246,14 @@ install: dist
 	@echo "Try it out:"
 	@echo "   $(BIN_DIR)/$(CLI) -c $(DATA_DIR)/$(PROGRAM_NAME)/components/simple-dep-dual.json"
 
+add-header:
+	for file in `reuse lint | sed -n '/MISSING COPYRIGHT/,/SUMMARY/p' | grep "\*" | sort -u | sed 's,^\*[ ]*,,g' | grep -v json `; \
+	do \
+		reuse addheader -c "Henrik Sandklef <hesa@sandklef.com>" -y 2020 -l "GPL-3.0-or-later" $${file} ; \
+	done	
+
+reuse-lint:
+	reuse lint | sed -n '/MISSING COPYRIGHT/,/SUMMARY/p' | grep "\*" | sort -u | sed 's,^\*[ ]*,,g'
+
+
 test-all: clean all doc test dist test-dist
