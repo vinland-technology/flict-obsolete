@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # FOSS License Compliance Tool User's Guide
 
 # Introduction
@@ -105,6 +111,3 @@ If you want to check a component (as specified in the file ``awesomeprogram.json
 $ flict -c awesomeprogram.json
 
 ```
-
-
-

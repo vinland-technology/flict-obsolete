@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # for demo mode
 COMPONENTS_DIR=components
 DEMO_COMPONENT=$COMPONENTS_DIR/example.json
@@ -89,5 +93,3 @@ demo()
 }
 
 demo
-
-

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # How does FOSS License Compliance Tool work
 
 We can split the functionality of this tool in to two main parts:

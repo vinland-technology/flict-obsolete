@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 if [ "$1" != "" ]
 then
     OUT_FILE=$(echo $1 | sed 's,\.json,-fixed\.json,'g)

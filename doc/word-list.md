@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # Word list (OBSOLETE FOR NOW)
 
 * component - a collection of source code as packaged and released by a project (e g gstreamer)
@@ -17,4 +23,3 @@ The list of words below is dervied from Wikipedia's article "Comparison of free 
 * Sublicensing - whether modified code may be licensed under a different license (for example a copyright) or must retain the same license under which it was provided
 
 * TM grant - use of trademarks associated with the licensed code or its contributors by a licensee
-

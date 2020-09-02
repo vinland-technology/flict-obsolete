@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 LIB_DIR=lib
 
 exit_on_error()
