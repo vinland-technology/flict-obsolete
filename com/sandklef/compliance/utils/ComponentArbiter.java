@@ -11,27 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.sandklef.compliance.domain.*;
 
 
-public class LicenseArbiter {
+public class ComponentInflater implements LicenseArbiter {
 
-    public static String LOG_TAG = LicenseArbiter.class.getSimpleName();
+    public static String LOG_TAG = ComponentInflater.class.getSimpleName();
 
     public static void debug(String msg, int indent) {
         Log.d(LOG_TAG, indent(indent) + msg);
-    }
-
-    public static String indent(int indents) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < indents; i++) {
-            sb.append(" ");
-        }
-        return sb.toString();
-    }
-
-    private static int counter = 200;
-
-    public static int nextId() {
-        counter++;
-        return counter;
     }
 
     public static class InterimComponent {
@@ -39,6 +24,13 @@ public class LicenseArbiter {
         List<License> licenses; // one of the Component's List of licenses, so they should be AND:ed
         List<InterimComponent> dependencies;
         int id;
+
+        private static int counter = 200;
+        public static int nextId() {
+            counter++;
+            return counter;
+        }
+
 
         public List<License> licenses() {
             return licenses;
@@ -116,6 +108,14 @@ public class LicenseArbiter {
 //            return "{ \"" + component + "\", \"" + licenses + "\"  " + dependencies + "}";
             return toStringHelper(this, "  ");
         }
+    }
+
+    private static String indent(int indents) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < indents; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
 
@@ -337,107 +337,6 @@ public class LicenseArbiter {
     }
 
 
-    public static boolean aCanUseB(License a, List<License> bLicenses) throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
-        //Log.level(Log.DEBUG);
-        Log.d(LOG_TAG, "aCanUseB " + a + " " + bLicenses);
-        if (a == null || bLicenses == null) {
-            throw new IllegalLicenseExpression("Illegal (null) licenses found");
-        }
-
-        for (License l : bLicenses) {
-            if (!aCanUseB(a, l)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    public static boolean aCanUseB(License a, License b) throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
-        //Log.level(Log.DEBUG);
-        Log.d(LOG_TAG, "aCanUseB " + a + " " + b);
-        if (a == null || b == null) {
-            throw new IllegalLicenseExpression("Illegal (null) license found");
-        }
-
-        Log.d(LOG_TAG, "aCanUseB spdx: " + a.spdx() + " " + b.spdx());
-        Log.d(LOG_TAG, "aCanUseB conns " + LicenseStore.getInstance().connectors());
-        Log.d(LOG_TAG, "aCanUseB a " + LicenseStore.getInstance().connectors().get(a.spdx()));
-        Log.d(LOG_TAG, "aCanUseB a " + LicenseStore.getInstance().connector(a));
-        Log.d(LOG_TAG, "aCanUseB b " + LicenseStore.getInstance().connectors().get(b.spdx()));
-        Log.d(LOG_TAG, "aCanUseB b " + LicenseStore.getInstance().connector(b));
-        return aCanUseB(LicenseStore.getInstance().connector(a),
-                LicenseStore.getInstance().connector(b));
-    }
-
-    private static boolean directMatch(LicenseCompatibility a, LicenseCompatibility b) throws LicenseCompatibility.LicenseConnectorException {
-        // a contains a license
-        if (a.hasLicense()) {
-            // b contains a license
-            // - both contains licenses, check if same license
-            if (b.hasLicense()) {
-                return a.license().spdx().equals(b.license().spdx());
-            }
-        }
-        return false;
-    }
-
-    private static boolean aCanUseBImpl(LicenseCompatibility a, LicenseCompatibility b, List<LicenseCompatibility> visited) throws LicenseCompatibility.LicenseConnectorException {
-        Log.d(LOG_TAG, " aCanUseBImp  ---> check lic: " + a + " and " + b + "    { " + visited + " }");
-
-        // If a and b are the same object, then they're (for sure) compliant
-        if (a==b) {
-            Log.d(LOG_TAG, " aCanUseBImp <--- same licensecompat, true");
-            return true;
-        }
-
-        // Check if we've visited this connector already. If so, false
-        //     Log.d(LOG_TAG, " ***************** ALREADY BEEN IN " + b + " ******** " + visited.contains(b));
-        if (visited.contains(b)) {
-            // already checked b
-            Log.d(LOG_TAG, " aCanUseBImp <--- already been there, false");
-            return false;
-        } else if (b == null) {
-            Log.d(LOG_TAG, " aCanUseBImp <--- b null, false");
-            // probably a violation in "lower" components
-            return false;
-        } else {
-            Log.d(LOG_TAG, " aCanUseBImp  --- add to visited: " + b);
-            // not visited, mark it as visited
-            visited.add(b);
-        }
-
-        if (directMatch(a, b)) {
-            Log.d(LOG_TAG, " aCanUseBImp <--- direct match, true");
-            return true;
-        }
-
-        if (a.canUse().contains(b)) {
-            Log.d(LOG_TAG, " aCanUseBImp <--- contains, true");
-            return true;
-        }
-        //      System.out.println(" Try 1 <--- : " + a.license().spdxTag() + " " + a.canUse() + " contains " + b.license());
-
-        // Loop through all b's canBeUsed licenses
-        for (LicenseCompatibility l : b.canBeUsedBy()) {
-
-            if (directMatch(a, b)) {
-                return true;
-            }
-
-            if (aCanUseBImpl(a, l, visited)) {
-                //  System.out.println(" Try 3 <--- : " + a.license().spdx() + "   CHECK: " + l.license().spdx());
-                return true;
-            }
-        }
-
-        Log.d(LOG_TAG, "aCanUseBImpl: <--- end of method ... false: " + a + "  " + b);
-        return false;
-    }
-
-    private static boolean aCanUseB(LicenseCompatibility a, LicenseCompatibility b) throws LicenseCompatibility.LicenseConnectorException {
-        return aCanUseBImpl(a, b, new ArrayList<>());
-    }
 
     public static String componentsWithLicenses(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
         Report report = new Report(c, policy);
