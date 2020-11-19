@@ -3,16 +3,18 @@ package com.sandklef.compliance.arbiter;
 import com.sandklef.compliance.domain.IllegalLicenseExpression;
 import com.sandklef.compliance.domain.License;
 import com.sandklef.compliance.domain.LicenseCompatibility;
+import com.sandklef.compliance.domain.LicenseMatrix;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class GraphLicenseArbiter implements LicenseArbiter {
+public class MatrixLicenseArbiter implements LicenseArbiter {
 
-
-    private static final String LOG_TAG = GraphLicenseArbiter.class.getSimpleName();
+    private static final String LOG_TAG = MatrixLicenseArbiter.class.getSimpleName();
 
     public boolean aCanUseB(License a, List<License> bLicenses) throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
         //Log.level(Log.DEBUG);
@@ -37,14 +39,24 @@ public class GraphLicenseArbiter implements LicenseArbiter {
             throw new IllegalLicenseExpression("Illegal (null) license found");
         }
 
-        Log.d(LOG_TAG, "aCanUseB spdx: " + a.spdx() + " " + b.spdx());
-        Log.d(LOG_TAG, "aCanUseB conns " + LicenseStore.getInstance().connectors());
-        Log.d(LOG_TAG, "aCanUseB a " + LicenseStore.getInstance().connectors().get(a.spdx()));
-        Log.d(LOG_TAG, "aCanUseB a " + LicenseStore.getInstance().connector(a));
-        Log.d(LOG_TAG, "aCanUseB b " + LicenseStore.getInstance().connectors().get(b.spdx()));
-        Log.d(LOG_TAG, "aCanUseB b " + LicenseStore.getInstance().connector(b));
-        return aCanUseB(LicenseStore.getInstance().connector(a),
-                LicenseStore.getInstance().connector(b));
+
+
+        LicenseMatrix matrix = LicenseStore.getInstance().licenseMatrix();
+
+//        matrix.verifyMatrix();
+
+        int aIndex = matrix.indexOfLicense(a);
+        int bIndex = matrix.indexOfLicense(b);
+       // System.out.println("   " + LicenseStore.getInstance().licenseMatrix());
+       // System.out.println(" a: [\"" + a + "\" / " + aIndex  + "]");
+        System.out.println("aCanUseB a: [\"" + a + "\" / " + aIndex  + "]");
+        System.out.println("aCanUseB a: [\"" + b + "\" / " + bIndex  + "]");
+        return (matrix.valueAt(aIndex,bIndex)==LicenseMatrix.LICENSE_MATRIX_TRUE);
+    }
+
+    @Override
+    public String name() {
+        return "Matrix based license arbiter";
     }
 
     private boolean directMatch(LicenseCompatibility a, LicenseCompatibility b) throws LicenseCompatibility.LicenseConnectorException {

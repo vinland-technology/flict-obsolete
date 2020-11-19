@@ -64,7 +64,7 @@ public class MDExporter implements ReportExporter {
         switch (type) {
             case ALLOWED_LIST:
                 return "";
-            case GRAY_LIST:
+            case AVOID_LIST:
                 return " (gray listed)";
             case DENIED_LIST:
                 return " (denied)";
@@ -106,7 +106,7 @@ public class MDExporter implements ReportExporter {
         sb.append("\n\n");
 
         sb.append(BOLD_START + "Compliant gray license combinations: " + BOLD_END);
-        sb.append(report.compliantGrayPaths().size());
+        sb.append(report.compliantAvoidPaths().size());
         sb.append("\n\n");
 
         sb.append(BOLD_START + "Compliant denied license combinations: " + BOLD_END);
@@ -136,7 +136,7 @@ public class MDExporter implements ReportExporter {
         }
         sb.append("\n\n");
 
-        results = report.compliantGrayPaths();
+        results = report.compliantAvoidPaths();
         sb.append(BOLD_START + "Compliant gray license choices per component: " + BOLD_END);
         sb.append("\n\n");
         if (results.size()==0) {
@@ -176,7 +176,7 @@ public class MDExporter implements ReportExporter {
         sb.append("\n\n");
 
         sb.append(BOLD_START + "Compliant (with gray licenses): " + BOLD_END);
-        sb.append(pathComment(report.compliantGrayPaths().size()));
+        sb.append(pathComment(report.compliantAvoidPaths().size()));
         sb.append("\n\n");
 
         sb.append(BOLD_START + "Policy: " + BOLD_END);

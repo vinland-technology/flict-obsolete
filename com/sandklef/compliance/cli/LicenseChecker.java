@@ -4,7 +4,12 @@
 
 package com.sandklef.compliance.cli;
 
+import com.sandklef.compliance.arbiter.LicenseArbiter;
+import com.sandklef.compliance.arbiter.LicenseArbiterFactory;
+import com.sandklef.compliance.csv.LicenseMatrixReader;
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.exporter.PileComplianceReportExporter;
+import com.sandklef.compliance.exporter.PileComplianceReportExporterFactory;
 import com.sandklef.compliance.exporter.ReportExporterFactory;
 import com.sandklef.compliance.json.*;
 import com.sandklef.compliance.utils.*;
@@ -14,6 +19,7 @@ import java.io.*;
 import java.util.*;
 
 import com.sandklef.compliance.utils.LicenseStore;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 public class LicenseChecker {
 
@@ -27,12 +33,14 @@ public class LicenseChecker {
     }
 
     private static final String CHECK_COMPATIBILITY_CLI = "check-compatibility";
-    private static final String COMPATIBILITIES_FILE_CLI = "compatibility-file";
+    private static final String COMPATIBILITIES_GRAPH_CLI = "compatibility-graph-file";
     private static final String COMPONENT_FILE_CLI = "component-file";
     private static final String POLICY_FILE_CLI = "policy-file";
     private static final String LICENSE_DIR = "license-dir";
     private static final String LATER_FILE_CLI = "later-file";
+    private static final String NO_LATER_FILE_CLI = "no-later-file";
     private static final String VERSION_CLI = "version";
+    private static final String COMPATIBILITIES_MATRIX_CLI = "compatibility-matrix-file";
 
     private static final String LOG_TAG = LicenseChecker.class.getSimpleName();
     private static PrintStream writer;
@@ -50,23 +58,35 @@ public class LicenseChecker {
             parseArguments(args, options, values);
 
             Session session = Session.getInstance();
-            session.lLicenseDir((String)values.get(LICENSE_DIR));
-            session.connectorFile((String)values.get(COMPATIBILITIES_FILE_CLI));
+            session.licenseDir((String)values.get(LICENSE_DIR));
+            session.connectorFile((String)values.get(COMPATIBILITIES_GRAPH_CLI));
             session.policyFile((String)values.get(POLICY_FILE_CLI));
             session.componentFile((String)values.get(COMPONENT_FILE_CLI));
+            session.matrixFile((String)values.get(COMPATIBILITIES_MATRIX_CLI));
             session.laterFile((String)values.get(LATER_FILE_CLI));
+            session.arbiterMode((LicenseArbiterFactory.LICENSE_ARBITER_MODE)values.get("arbiter"));
 
 
             // Read all licenses
-            Log.d(LOG_TAG, "license dir: " + values.get("licenseDir"));
+            Log.d(LOG_TAG, "license dir:    " + values.get("licenseDir"));
             Log.d(LOG_TAG, "Connector file: " + session.connectorFile());
-            LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir(session.lLicenseDir()));
-            LicenseStore.getInstance().addLicenseGroups(new JsonLicenseParser().readLicenseGroupDir(session.lLicenseDir()));
-            LicenseStore.getInstance().connector(new JsonLicenseCompatibilityParser().readLicenseConnection(session.connectorFile()));
+            Log.d(LOG_TAG, "Arbiter:        " + session.arbiterMode());
+            LicenseStore.getInstance().addLicenses(new JsonLicenseParser().readLicenseDir(session.licenseDir()));
+            LicenseStore.getInstance().addLicenseGroups(new JsonLicenseParser().readLicenseGroupDir(session.licenseDir()));
+            if (session.arbiterMode()==LicenseArbiterFactory.LICENSE_ARBITER_MODE.LICENSE_ARBITER_MODE_GRAPH) {
+                LicenseStore.getInstance().connector(new JsonLicenseCompatibilityParser().readLicenseConnection(session.connectorFile()));
+            } else if (session.arbiterMode()==LicenseArbiterFactory.LICENSE_ARBITER_MODE.LICENSE_ARBITER_MODE_MATRIX) {
+                LicenseStore.getInstance().licenseMatrix(LicenseMatrixReader.readMatrix(session.matrixFile()));
+                LicenseStore.getInstance().licenseMatrix(LicenseMatrixReader.readMatrix(session.matrixFile()));
+                System.out.println("  setting matrix: " + LicenseStore.getInstance().licenseMatrix());
+            }
+
             LicenseStore.getInstance().laterLicenses((new JsonLaterDefinitionParser()).readLaterDefinition(session.laterFile()));
             Log.d(LOG_TAG, "licenses read: " + LicenseStore.getInstance().licenses().size());
 
-            LicenseUtils.verifyLicenses();
+            if (session.arbiterMode()==LicenseArbiterFactory.LICENSE_ARBITER_MODE.LICENSE_ARBITER_MODE_GRAPH) {
+                LicenseUtils.verifyLicenses();
+            }
 
             // If policy file provided - read it
             if (session.policyFile() != null) {
@@ -88,6 +108,9 @@ public class LicenseChecker {
                 writer = System.out;
             }
 
+            LicenseArbiter arbiter = LicenseArbiterFactory.arbiter(Session.getInstance().arbiterMode());
+            System.out.println("Arbiter: " + arbiter.name());
+
             execMode em = (execMode) values.get("mode");
             //        System.out.println(("  mode: " + values.get("mode")));
             // Take action
@@ -107,7 +130,7 @@ public class LicenseChecker {
                     break;
                 case CHECK_COMPATIBILITY:
                     try {
-                        reportPrint(writer, values, options);
+                        reportPrint(arbiter, writer, values, options);
                     } catch (LicenseExpressionException | IllegalLicenseExpression e) {
                         e.printStackTrace();
                     }
@@ -132,7 +155,7 @@ public class LicenseChecker {
                     throw new IllegalStateException("Unexpected value: " + em);
             }
 
-        } catch (LicenseExpressionException | IllegalLicenseExpression | LicenseCompatibility.LicenseConnectorException e) {
+        } catch (LicenseExpressionException | IllegalLicenseExpression | LicenseCompatibility.LicenseConnectorException | LicenseMatrixException e) {
             System.out.println("Uh oh, something wicked this way comes: " + e);
         }
 
@@ -152,13 +175,15 @@ public class LicenseChecker {
         options.addOption(new Option("o", "output", true, "Output to file."));
         options.addOption(new Option("e", "expression", true, "Parse and print a license expression (for debug)"));
         options.addOption(new Option("cg", "connection-graph", false, "Output dot format over license connections."));
-        options.addOption(new Option("cf", COMPATIBILITIES_FILE_CLI, true, "File with license connectors."));
+        options.addOption(new Option("cgc", COMPATIBILITIES_GRAPH_CLI, true, "File with license compatibility graph."));
+        options.addOption(new Option("cm", COMPATIBILITIES_MATRIX_CLI, true, "File with license compatibility matrix."));
         options.addOption(new Option("cc", CHECK_COMPATIBILITY_CLI, false, "Check for compatibility."));
         options.addOption(new Option("ld", LICENSE_DIR, true, "Directory with license files."));
         options.addOption(new Option("p", POLICY_FILE_CLI, true, "Path to policy file."));
         options.addOption(new Option("pl", "print-licenses", false, "Output list of licenses as found in the files in the provided license directory"));
         options.addOption(new Option("c", COMPONENT_FILE_CLI, true, "Component file to check"));
         options.addOption(new Option("lf", LATER_FILE_CLI, true, "Later license file"));
+        options.addOption(new Option("nl", NO_LATER_FILE_CLI, false, "No later file"));
         options.addOption(new Option("v", VERSION_CLI, false, "Prints version and more"));
         options.addOption(new Option("pc", "print-component", false, "Print component"));
         options.addOption(new Option("h", "help", false, "Print help text"));
@@ -173,14 +198,16 @@ public class LicenseChecker {
         // Prepare map wth default values
         Map<String, Object> values = new HashMap<>();
         values.put(COMPONENT_FILE_CLI, null);
-        values.put(COMPATIBILITIES_FILE_CLI, "share/licenses/connections/license-checker.json");
-        values.put(LATER_FILE_CLI, "share/licenses/later/later-definitions.json");
+        values.put(COMPATIBILITIES_GRAPH_CLI, "share/licenses/connections/license-checker.json");
+        values.put(COMPATIBILITIES_GRAPH_CLI, "share/licenses/csv/matrix.json");
+       // TODO: reintroduce  values.put(LATER_FILE_CLI, "share/licenses/later/later-definitions.json");
         values.put("output", null);
         values.put(LICENSE_DIR, "licenses/json");
         values.put(POLICY_FILE_CLI, null);
-        values.put("policy", null);
         values.put("expression", null);
+        values.put("policy", new LicensePolicy());
         values.put("mode", execMode.CHECK_COMPATIBILITY);
+        values.put("arbiter", LicenseArbiterFactory.LICENSE_ARBITER_MODE.LICENSE_ARBITER_MODE_UNSET);
         return values;
     }
 
@@ -190,6 +217,7 @@ public class LicenseChecker {
         try {
             // parse the command line arguments
             CommandLine line = parser.parse(options, args);
+
 
             if (line.hasOption("debug")) {
                 Log.level(Log.VERBOSE);
@@ -207,9 +235,15 @@ public class LicenseChecker {
             if (line.hasOption("debug-component-licenses")) {
                 values.put("mode", execMode.PRINT_COMPONENT_LICENSES);
             }
-            if (line.hasOption(COMPATIBILITIES_FILE_CLI)) {
-                Log.d(LOG_TAG, "Connector file: " + line.getOptionValue(COMPATIBILITIES_FILE_CLI));
-                values.put(COMPATIBILITIES_FILE_CLI, line.getOptionValue(COMPATIBILITIES_FILE_CLI));
+            if (line.hasOption(COMPATIBILITIES_GRAPH_CLI)) {
+                Log.d(LOG_TAG, "Connector file: " + line.getOptionValue(COMPATIBILITIES_GRAPH_CLI));
+                values.put(COMPATIBILITIES_GRAPH_CLI, line.getOptionValue(COMPATIBILITIES_GRAPH_CLI));
+                values.put("arbiter", LicenseArbiterFactory.LICENSE_ARBITER_MODE.LICENSE_ARBITER_MODE_GRAPH);
+            }
+            if (line.hasOption(COMPATIBILITIES_MATRIX_CLI)) {
+                Log.d(LOG_TAG, "Matrix file: " + line.getOptionValue(COMPATIBILITIES_MATRIX_CLI));
+                values.put(COMPATIBILITIES_MATRIX_CLI, line.getOptionValue(COMPATIBILITIES_MATRIX_CLI));
+                values.put("arbiter", LicenseArbiterFactory.LICENSE_ARBITER_MODE.LICENSE_ARBITER_MODE_MATRIX);
             }
             if (line.hasOption(CHECK_COMPATIBILITY_CLI)) {
                 Log.d(LOG_TAG, " Checking compatibility");
@@ -222,6 +256,10 @@ public class LicenseChecker {
             if (line.hasOption(LATER_FILE_CLI)) {
                 values.put(LATER_FILE_CLI, line.getOptionValue(LATER_FILE_CLI));
                 Log.d(LOG_TAG, " Later definitions file: " + values.get(LATER_FILE_CLI));
+            }
+            if (line.hasOption(NO_LATER_FILE_CLI)) {
+                values.put(NO_LATER_FILE_CLI, null);
+                Log.d(LOG_TAG, " Later definitions file: " + null + ", i.e no later definitions");
             }
             if (line.hasOption("expression")) {
                 values.put("expression", line.getOptionValue("expression"));
@@ -271,13 +309,14 @@ public class LicenseChecker {
         return parser;
     }
 
+
+
     private static void version() {
         System.out.println(Version.LICENSE_CHECKER_NAME + " (" + Version.LICENSE_CHECKER_VERSION + ")");
         System.out.println("Copyright (C) " + Version.LICENSE_CHECKER_COPYRIGHT);
         System.out.println("License " + Version.LICENSE_CHECKER_LICENSE);
         System.out.println("Authors " + Version.LICENSE_CHECKER_AUTHORS);
     }
-
 
     private static void licensePrint(PrintStream writer) {
         Log.d(LOG_TAG, "printing licenses...");
@@ -312,7 +351,7 @@ public class LicenseChecker {
         System.out.println(c.toStringWithLicenses());
 
         try {
-            String str = LicenseArbiter.componentsWithLicenses(c, null);
+            String str = ComponentArbiter.componentsWithLicenses(c, null , null);
             System.out.println(str);
         } catch (LicenseCompatibility.LicenseConnectorException e) {
             e.printStackTrace();
@@ -320,7 +359,7 @@ public class LicenseChecker {
 
     }
 
-    private static void reportPrint(PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
+    private static void reportPrint(LicenseArbiter arbiter, PrintStream writer, Map<String, Object> values, Options options) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
         if (values.get(COMPONENT_FILE_CLI) == null) {
             System.err.println("\n*** Error: missing component file! ***\n\n");
             help(options);
@@ -338,16 +377,39 @@ public class LicenseChecker {
         Log.d(LOG_TAG, "Component read: " + c.name());
         Log.d(LOG_TAG, " * deps: " + c.dependencies().size());
 
-        Report report = null;
+        Log.d(LOG_TAG," arbiter: " + arbiter);
         try {
-            report = LicenseArbiter.report(c, (LicensePolicy) values.get("policy"));
-            writer.print(ReportExporterFactory.getInstance().exporter((ReportExporterFactory.OutputFormat) values.get("format")).exportReport(report) + "\n");
-            if (report.compliantCount()==0) {
-                System.exit(2);
-            }
-            if (report.compliantCount()==report.compliantGrayPaths().size()) {
+            long combinationCount = c.pileCombinations();
+            if (combinationCount > 100000) {
+                System.out.println("Too many combinations: " + combinationCount);
+//                System.out.println("Later file:            " + session.laterFile());
+                int laterCount = LicenseStore.getInstance().laterLicenses().size();
+                System.out.println("Later expressions:       " + laterCount);
+                if (laterCount>0) {
+                    System.out.println("Try excluding later definitions");
+                }
                 System.exit(1);
             }
+            PileComplianceReport report = null;
+            ComponentPileArbiter pileArbiter =
+                    new ComponentPileArbiter(arbiter, c, (LicensePolicy) values.get("policy"), (String)values.get(NO_LATER_FILE_CLI));
+            report = pileArbiter.report();
+
+            PileComplianceReportExporter.OutputRange range = PileComplianceReportExporter.OutputRange.SHORT;
+            PileComplianceReportExporter.OutputFormat format = (PileComplianceReportExporter.OutputFormat) values.get("format");
+            PileComplianceReportExporter exporter = PileComplianceReportExporterFactory.getInstance().exporter(format, range);
+
+            System.out.println("components: " + report.statuses().size());
+
+            writer.print(exporter.exportReport(report, PileComplianceReportExporter.OutputRange.SHORT) + "\n");
+/*            if (report.compliantCount()==0) {
+                System.exit(2);
+            }
+            if (report.compliantCount()==report.compliantAvoidPaths().size()) {
+                System.exit(1);
+            }
+            */
+
             System.exit(0);
         } catch (LicenseCompatibility.LicenseConnectorException e) {
             e.printStackTrace();

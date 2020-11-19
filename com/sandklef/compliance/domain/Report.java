@@ -4,7 +4,8 @@
 
 package com.sandklef.compliance.domain;
 
-import com.sandklef.compliance.utils.LicenseArbiter;
+import com.sandklef.compliance.arbiter.LicenseArbiter;
+import com.sandklef.compliance.utils.ComponentArbiter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +15,10 @@ public class Report {
 
     public static class ComponentResult {
         private final ListType type;
-        private final LicenseArbiter.InterimComponent component;
+        private final ComponentArbiter.InterimComponent component;
         boolean compliant ;
 
-        public ComponentResult(ListType type, LicenseArbiter.InterimComponent component, boolean compliant) {
+        public ComponentResult(ListType type, ComponentArbiter.InterimComponent component, boolean compliant) {
             this.type = type;
             this.component = component;
             this.compliant = compliant;
@@ -31,7 +32,7 @@ public class Report {
             return type;
         }
 
-        public LicenseArbiter.InterimComponent component() {
+        public ComponentArbiter.InterimComponent component() {
             return component;
         }
 
@@ -50,12 +51,14 @@ public class Report {
     private final Component component;
     private final LicensePolicy policy;
     private final MetaData metaData;
+    private final LicenseArbiter arbiter;
     private final List<ComponentResult> componentResults;
 
-    public Report(Component component, LicensePolicy policy) {
+    public Report(Component component, LicensePolicy policy, LicenseArbiter arbiter) {
         this.component = component;
         this.policy = policy;
         this.metaData = new MetaData();
+        this.arbiter = arbiter;
         this.componentResults = new ArrayList<>();
     }
 
@@ -70,6 +73,8 @@ public class Report {
     public MetaData metaData() {
         return metaData;
     }
+
+    public LicenseArbiter arbiter() { return arbiter; }
 
     public void addComponentResult(ComponentResult result) {
         this.componentResults.add(result);
@@ -101,10 +106,10 @@ public class Report {
                 collect(Collectors.toList());
     }
 
-    public List<ComponentResult> compliantGrayPaths() {
+    public List<ComponentResult> compliantAvoidPaths() {
         return componentResults.stream().
                 filter(c -> c.compliant()).
-                filter(c -> c.type == ListType.GRAY_LIST).
+                filter(c -> c.type == ListType.AVOID_LIST).
                 collect(Collectors.toList());
     }
 

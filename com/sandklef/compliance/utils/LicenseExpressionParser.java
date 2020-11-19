@@ -91,10 +91,13 @@ public class LicenseExpressionParser {
 
     public String fixOrLaterExpression(String expr) {
 
+
+
         // If any of the licenses in expr
         // has a "or-later" or similar: look up the licenses and add them with | in between
         // GPL-2.0-or-later
         //  => GPL-2.0-or-later | GPL-3.0-only
+
 
         StringBuilder sb = new StringBuilder();
         expr = expr.trim();
@@ -116,6 +119,8 @@ public class LicenseExpressionParser {
                     for (License later : laterLicenses.get(license.trim()) ) {
                         sb.append("|");
                         sb.append(later);
+                        System.out.println("fixOrLaterExpression(" + expr + ")  => (" + later + ")");
+
 //                        System.out.println(" ------------* \"" + later + "\"  " + sb.toString());
                     }
                     sb.append(")");

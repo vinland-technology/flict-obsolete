@@ -21,7 +21,8 @@ fi
 DOCKER_DEVEL_CLASSPATH="lib/gson-2.2.2.jar:lib/commons-cli-1.4.jar:lib/flict.jar:."
 CLASSPATH="$JAR_DIR/gson-2.2.2.jar:$JAR_DIR/commons-cli-1.4.jar:$JAR_DIR/flict.jar:$DOCKER_DEVEL_CLASSPATH"
 DEFAULT_LICENSE_ARGS=" --license-dir ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/json "
-DEFAULT_COMPAT_ARGS=" --compatibility-file ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/connections/compatibilities.json"
+#DEFAULT_COMPAT_ARGS=" --compatibility-graph-file ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/connections/compatibilities.json"
+DEFAULT_COMPAT_ARGS=" --compatibility-matrix-file ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/csv/matrix.csv"
 DEFAULT_LATER_ARGS=" --later-file ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/later/later-definitions.json"
 CLASS="com.sandklef.compliance.cli.LicenseChecker"
 
@@ -59,8 +60,11 @@ do
             TMP_MD=tmp.md
             rm -f $TMP_MD
             ;;
-        "--connection-graph"|"-cg")
+        "--compatibility-graph-file"|"-cg")
             CONNECTION_GRAPH=true
+            ;;
+        "--compatibility-matrix-file"|"-cm")
+            CONNECTION_MATRIX=true
             ;;
         "--later-file"|"-lf")
             LATER_FILE=true

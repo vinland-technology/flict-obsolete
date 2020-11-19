@@ -4,13 +4,13 @@
 
 package com.sandklef.compliance.test;
 
+import com.sandklef.compliance.arbiter.LicenseArbiterFactory;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonComponentParser;
 import com.sandklef.compliance.json.JsonLicenseParser;
 import com.sandklef.compliance.json.test.TestJsonComponentParser;
 import com.sandklef.compliance.json.test.TestLicenseParser;
-import com.sandklef.compliance.utils.LicenseArbiter;
-import com.sandklef.compliance.utils.LicenseExpressionParser;
+import com.sandklef.compliance.utils.ComponentArbiter;
 import com.sandklef.compliance.utils.LicenseStore;
 
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class TestAll {
         Map<String, License> licenses = new JsonLicenseParser().readLicenseDir("share/licenses/json");
         LicenseStore.getInstance().addLicenses(licenses);
         Component component = jp.readComponent("com/sandklef/compliance/json/test/archive.json");
-        Report report = LicenseArbiter.report(component, null);
+        Report report = ComponentArbiter.report(LicenseArbiterFactory.defaultArbiter(), component, null);
 
         System.out.println("\n");
         TestComponents.test();

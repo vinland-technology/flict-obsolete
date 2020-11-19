@@ -22,7 +22,10 @@ public class LicenseStore {
   //TODO: add support for Private use, Patent claims, Trademark, Notice
   private final Map<String, License> licenses;
   private final Map<String, LicenseGroup> licenseGroups;
+  // Graph arbiter
   private Map<String, LicenseCompatibility> connectors;
+  // Matrix arbiter
+  private LicenseMatrix matrix;
 
   public Map<String, List<License>> laterLicenses() {
     return laterLicenses;
@@ -123,12 +126,19 @@ public class LicenseStore {
     throw new LicenseCompatibility.LicenseConnectorException("Could not find connector for: " + license.info());
   }
 
-
+  // Graph
   public Map<String, LicenseCompatibility> connectors() {
     return connectors;
   }
-
   public void connector(Map<String, LicenseCompatibility> connector) {
-        this.connectors = connector;
+    this.connectors = connector;
+  }
+
+  // Matrix
+  public LicenseMatrix licenseMatrix() {
+    return matrix;
+  }
+  public void licenseMatrix(LicenseMatrix matrix) {
+    this.matrix = matrix;
   }
 }

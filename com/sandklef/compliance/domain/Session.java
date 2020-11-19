@@ -4,17 +4,23 @@
 
 package com.sandklef.compliance.domain;
 
+import com.sandklef.compliance.arbiter.LicenseArbiterFactory;
+
 public class Session {
 
     private String licenseDir;
     private String componentFile;
     private String policyFile;
     private String connectorFile;
+    private String matrixFile;
 
     private String laterFile;
+    private LicenseArbiterFactory.LICENSE_ARBITER_MODE arbiterMode;
 
     private static Session instance;
-    private Session() { }
+    private Session() {
+        arbiterMode = LicenseArbiterFactory.LICENSE_ARBITER_MODE.LICENSE_ARBITER_MODE_UNSET;
+    }
 
     public static Session getInstance() {
         if (instance==null) {
@@ -23,11 +29,19 @@ public class Session {
         return instance;
     }
 
-    public String lLicenseDir() {
+    public LicenseArbiterFactory.LICENSE_ARBITER_MODE arbiterMode() {
+        return arbiterMode;
+    }
+
+    public void arbiterMode(LicenseArbiterFactory.LICENSE_ARBITER_MODE arbiterMode) {
+        this.arbiterMode = arbiterMode;
+    }
+
+    public String licenseDir() {
         return licenseDir;
     }
 
-    public void lLicenseDir(String licenseDir) {
+    public void licenseDir(String licenseDir) {
         this.licenseDir = licenseDir;
     }
 
@@ -63,5 +77,11 @@ public class Session {
         this.laterFile = laterFile;
     }
 
+    public String matrixFile() {
+        return matrixFile;
+    }
 
+    public void matrixFile(String matrixFile) {
+        this.matrixFile = matrixFile;
+    }
 }

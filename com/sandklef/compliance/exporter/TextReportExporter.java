@@ -55,7 +55,7 @@ public class TextReportExporter implements ReportExporter {
         switch (type) {
             case ALLOWED_LIST:
                 return "";
-            case GRAY_LIST:
+            case AVOID_LIST:
                 return " (gray listed)";
             case DENIED_LIST:
                 return " (denied)";
@@ -74,7 +74,7 @@ public class TextReportExporter implements ReportExporter {
         if (report.policy()!=null) {
             if (report.complianAllowedtPaths().size() == report.compliantPaths().size()) {
                 return "Yes";
-            } else if (report.compliantGrayPaths().size() == report.compliantPaths().size()) {
+            } else if (report.compliantAvoidPaths().size() == report.compliantPaths().size()) {
                 return "Yes, with only gray licenses";
             } else {
                 return "Yes, with some gray licenses";
@@ -86,6 +86,9 @@ public class TextReportExporter implements ReportExporter {
     private void summaryReport(StringBuilder sb) {
 
         sb.append(formatColumn("Compliant: ", compliantResult(report)));
+        sb.append("\n");
+
+        sb.append(formatColumn("Arbiter: ", report.arbiter().name()));
         sb.append("\n");
 
         sb.append(formatColumn("Total license combinations: ", report.componentResults().size()));
@@ -104,7 +107,7 @@ public class TextReportExporter implements ReportExporter {
             sb.append(formatColumn(" * all: ", report.compliantCount()));
             sb.append("\n");
 
-            sb.append(formatColumn(" * gray: ", report.compliantGrayPaths().size()));
+            sb.append(formatColumn(" * gray: ", report.compliantAvoidPaths().size()));
             sb.append("\n");
 
             sb.append(formatColumn(" * denied: ", report.compliantDeniedPaths().size()));
@@ -143,8 +146,8 @@ public class TextReportExporter implements ReportExporter {
         sb.append("Allowed combinations:\n-------------------------------------\n");
         sb.append(report.complianAllowedtPaths());
         sb.append("\n\n");
-        sb.append("Gray combinations:\n-------------------------------------\n");
-        sb.append(report.compliantGrayPaths());
+        sb.append("Avoid combinations:\n-------------------------------------\n");
+        sb.append(report.compliantAvoidPaths());
         sb.append("\n\n");
         sb.append("Denied combinations:\n-------------------------------------\n");
         sb.append(report.nonCompliantPaths());

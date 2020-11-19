@@ -4,15 +4,16 @@
 
 package com.sandklef.compliance.test;
 
+import com.sandklef.compliance.arbiter.LicenseArbiterFactory;
 import com.sandklef.compliance.domain.*;
-import com.sandklef.compliance.utils.LicenseArbiter;
+import com.sandklef.compliance.utils.ComponentArbiter;
 
 import static com.sandklef.compliance.test.Utils.*;
 
 public class TestCanAUseB {
 
   private static boolean testCanAUseB(License user, License usee) throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
-    boolean ret = LicenseArbiter.aCanUseB(user,usee);
+    boolean ret = LicenseArbiterFactory.defaultArbiter().aCanUseB(user,usee);
 //    System.out.println(user.spdxTag() + " using " + usee.spdxTag() + " :::  " + ret);
     return ret;
   }

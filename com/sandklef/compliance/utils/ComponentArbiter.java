@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.sandklef.compliance.domain.*;
+import com.sandklef.compliance.arbiter.*;
 
 
-public class ComponentInflater implements LicenseArbiter {
+public class ComponentArbiter {
 
-    public static String LOG_TAG = ComponentInflater.class.getSimpleName();
+    public static String LOG_TAG = ComponentArbiter.class.getSimpleName();
 
     public static void debug(String msg, int indent) {
         Log.d(LOG_TAG, indent(indent) + msg);
@@ -163,9 +164,9 @@ public class ComponentInflater implements LicenseArbiter {
             if (policy != null && policy.deniedList().contains(l)) {
                 Log.d(LOG_TAG, " type check:   * denied");
                 return ListType.DENIED_LIST;
-            } else if (policy != null && policy.grayList().contains(l)) {
+            } else if (policy != null && policy.avoidList().contains(l)) {
                 Log.d(LOG_TAG, " type check:   * gray");
-                return ListType.GRAY_LIST;
+                return ListType.AVOID_LIST;
             }
         }
 
@@ -175,10 +176,10 @@ public class ComponentInflater implements LicenseArbiter {
                 // if black, return now
                 Log.d(LOG_TAG, " type check:   * deniged");
                 return ListType.DENIED_LIST;
-            } else if (type(d, policy) == ListType.GRAY_LIST) {
+            } else if (type(d, policy) == ListType.AVOID_LIST) {
                 // if gray, store - may be black so continue looking
                 Log.d(LOG_TAG, " type check:   * gray");
-                type = ListType.GRAY_LIST;
+                type = ListType.AVOID_LIST;
             }
         }
 
@@ -302,7 +303,7 @@ public class ComponentInflater implements LicenseArbiter {
         }
     }
 
-    public static boolean compliant(InterimComponent ic, int indent) throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
+    public static boolean compliant(InterimComponent ic, LicenseArbiter arbiter, int indent) throws IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
 //        System.out.println("compliant()");
         debug("compliant:  " + ic.name() + " licenses: " + ic.licenses, indent);
 
@@ -311,7 +312,7 @@ public class ComponentInflater implements LicenseArbiter {
         // - - check if license can be used with deps license(s)
         for (License icLicense : ic.licenses) {
             for (InterimComponent d : ic.dependencies()) {
-                if (!aCanUseB(icLicense, d.licenses)) {
+                if (!arbiter.aCanUseB(icLicense, d.licenses)) {
                     Log.i(LOG_TAG, " * " + icLicense + " cannot use " + d.licenses);
                     debug("compliant:  " + ic.name() + " licenses: " + ic.licenses + "   incompliant since: " + d.licenses, indent);
                     // TODO: thrown exception??
@@ -324,7 +325,7 @@ public class ComponentInflater implements LicenseArbiter {
 
         // Check each dep against their deps
         for (InterimComponent d : ic.dependencies()) {
-            if (!compliant(d, indent + 2)) {
+            if (!compliant(d, arbiter, indent + 2)) {
                 Log.i(LOG_TAG, " * " + d + " is not compliant");
                 debug(" license violation: " + d.name() + "(" + d.licenses + ")", indent + 2);
                 // TODO: thrown exception??
@@ -338,8 +339,8 @@ public class ComponentInflater implements LicenseArbiter {
 
 
 
-    public static String componentsWithLicenses(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
-        Report report = new Report(c, policy);
+    public static String componentsWithLicenses(Component c, LicensePolicy policy, LicenseArbiter arbiter) throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
+        Report report = new Report(c, policy, arbiter);
 
         Log.d(LOG_TAG, " reportConcludeAllPaths: " + c);
         Log.d(LOG_TAG, " reportConcludeAllPaths: " + c.license());
@@ -352,8 +353,8 @@ public class ComponentInflater implements LicenseArbiter {
         return componentWithLicenseList(components);
     }
 
-    public static Report reportConcludeAllPaths(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
-        Report report = new Report(c, policy);
+    public static Report reportConcludeAllPaths(LicenseArbiter arbiter, Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
+        Report report = new Report(c, policy, arbiter);
 
         Log.d(LOG_TAG, " reportConcludeAllPaths: " + c);
         Log.d(LOG_TAG, " reportConcludeAllPaths: " + c.license());
@@ -368,7 +369,7 @@ public class ComponentInflater implements LicenseArbiter {
         // for each InterimComponent
         // - check if it (with its licenses) is compliant with dependency components
         for (InterimComponent ic : components) {
-            boolean compliant = compliant(ic, 2);
+            boolean compliant = compliant(ic, arbiter, 2);
             debug("compliant:  " + ic.name() + " => " + compliant, 2);
             ListType type = type(ic, policy);
             report.addComponentResult(new Report.ComponentResult(type, ic, compliant));
@@ -377,9 +378,9 @@ public class ComponentInflater implements LicenseArbiter {
         return report;
     }
 
-    public static Report report(Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
+    public static Report report(LicenseArbiter arbiter, Component c, LicensePolicy policy) throws LicenseExpressionException, IllegalLicenseExpression, LicenseCompatibility.LicenseConnectorException {
         Log.d(LOG_TAG, "reportViolations()    c: " + c.name());
-        Report report = reportConcludeAllPaths(c, policy);
+        Report report = reportConcludeAllPaths(arbiter, c, policy);
 
         //System.out.println("report: " + report);
 

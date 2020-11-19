@@ -43,7 +43,7 @@ public class JsonPolicyParser {
   private static class LicensePolicyIntermediate {
     private String name;
     private List<String> allowlist;
-    private List<String> graylist;
+    private List<String> avoidlist;
     private List<String> deniedlist;
 
     private List<License> convert(List<String> stringLicenses) throws LicenseExpressionException {
@@ -59,7 +59,7 @@ public class JsonPolicyParser {
     public LicensePolicy export() throws LicenseExpressionException {
       return new LicensePolicy(name,
               convert(allowlist),
-              convert(graylist),
+              convert(avoidlist),
               convert(deniedlist));
     }
   }

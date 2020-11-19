@@ -7,62 +7,67 @@ DATA_DIR=__DATA_DIR__
 PROGRAM_NAME=__PROGRAM_NAME__
 
 JAVA_SOURCES=\
-  com/sandklef/compliance/domain/LicensePolicy.java \
-  com/sandklef/compliance/domain/ListType.java \
-  com/sandklef/compliance/domain/Component.java \
-  com/sandklef/compliance/domain/NoLicenseException.java \
-  com/sandklef/compliance/domain/LicenseConclusion.java \
-  com/sandklef/compliance/domain/LicenseObligation.java \
-  com/sandklef/compliance/domain/Report.java \
-  com/sandklef/compliance/domain/LicenseViolationException.java \
-  com/sandklef/compliance/domain/License.java \
-  com/sandklef/compliance/domain/LicenseGroup.java \
-  com/sandklef/compliance/domain/Obligation.java \
-  com/sandklef/compliance/domain/LicenseViolation.java \
-  com/sandklef/compliance/domain/ObligationState.java \
-  com/sandklef/compliance/domain/LicenseType.java \
-  com/sandklef/compliance/domain/PolicyConcern.java \
-  com/sandklef/compliance/domain/ComplianceAnswer.java \
-  com/sandklef/compliance/domain/PolicyViolation.java \
-  com/sandklef/compliance/utils/LeastPermissiveLicenseComparator.java \
-  com/sandklef/compliance/utils/MostPermissiveLicenseComparator.java \
-  com/sandklef/compliance/utils/Log.java \
-  com/sandklef/compliance/utils/ObligationBuilder.java \
-  com/sandklef/compliance/utils/LicenseUtils.java \
-  com/sandklef/compliance/utils/LicenseStore.java \
-  com/sandklef/compliance/utils/LicenseArbiter.java \
-  com/sandklef/compliance/json/JsonLicenseParser.java \
-  com/sandklef/compliance/json/JsonLaterDefinitionParser.java \
-  com/sandklef/compliance/json/JsonPolicyParser.java \
-  com/sandklef/compliance/json/JsonMetaInfoParser.java \
-  com/sandklef/compliance/exporter/TextReportExporter.java \
-  com/sandklef/compliance/exporter/TestExporterFactory.java \
-  com/sandklef/compliance/json/JsonUtils.java \
-  com/sandklef/compliance/json/JsonComponentParser.java \
-  com/sandklef/compliance/json/JsonLicenseCompatibilityParser.java \
-  com/sandklef/compliance/cli/LicenseChecker.java \
-  com/sandklef/compliance/exporter/ReportExporter.java \
-  com/sandklef/compliance/exporter/ReportExporterFactory.java \
-  com/sandklef/compliance/exporter/JsonExporter.java \
-  com/sandklef/compliance/exporter/MDExporter.java \
-  com/sandklef/compliance/exporter/TextReportExporter.java \
-  com/sandklef/compliance/utils/VirtualLicenseBuilder.java \
-  com/sandklef/compliance/domain/LicenseExpression.java \
-  com/sandklef/compliance/utils/LicenseExpressionParser.java \
-  com/sandklef/compliance/domain/LicenseCompatibility.java \
-  com/sandklef/compliance/domain/MetaData.java \
+  com/sandklef/compliance/arbiter/GraphLicenseArbiter.java  \
+  com/sandklef/compliance/arbiter/LicenseArbiterFactory.java  \
+  com/sandklef/compliance/arbiter/MatrixLicenseArbiter.java  \
+  com/sandklef/compliance/arbiter/LicenseArbiter.java  \
+  com/sandklef/compliance/json/JsonLicenseCompatibilityParser.java  \
+  com/sandklef/compliance/json/JsonPolicyParser.java  \
+  com/sandklef/compliance/json/JsonLaterDefinitionParser.java  \
+  com/sandklef/compliance/json/JsonTags.java  \
+  com/sandklef/compliance/json/JsonComponentParser.java  \
+  com/sandklef/compliance/json/JsonLicenseParser.java  \
+  com/sandklef/compliance/json/JsonMetaInfoParser.java  \
+  com/sandklef/compliance/domain/LicenseExpression.java  \
+  com/sandklef/compliance/domain/LicenseExpressionException.java  \
+  com/sandklef/compliance/domain/MetaData.java  \
+  com/sandklef/compliance/domain/ListType.java  \
+  com/sandklef/compliance/domain/PileComplianceReport.java  \
+  com/sandklef/compliance/domain/Session.java  \
+  com/sandklef/compliance/domain/LicensePolicy.java  \
+  com/sandklef/compliance/domain/License.java  \
+  com/sandklef/compliance/domain/LicenseCompatibility.java  \
+  com/sandklef/compliance/domain/LicenseMatrix.java  \
+  com/sandklef/compliance/domain/Report.java  \
+  com/sandklef/compliance/domain/LicenseGroup.java  \
+  com/sandklef/compliance/domain/NoLicenseException.java  \
+  com/sandklef/compliance/domain/LicenseMatrixException.java  \
+  com/sandklef/compliance/domain/IllegalLicenseExpression.java  \
+  com/sandklef/compliance/domain/Component.java  \
+  com/sandklef/compliance/utils/Version.java  \
+  com/sandklef/compliance/utils/LicenseExpressionParser.java  \
+  com/sandklef/compliance/utils/ComponentArbiter.java  \
+  com/sandklef/compliance/utils/Log.java  \
+  com/sandklef/compliance/utils/LicenseUtils.java  \
+  com/sandklef/compliance/utils/LicenseStore.java  \
+  com/sandklef/compliance/utils/ComponentPileArbiter.java  \
+  com/sandklef/compliance/exporter/JsonExporter.java  \
+  com/sandklef/compliance/exporter/PileComplianceReportExporterFactory.java  \
+  com/sandklef/compliance/exporter/PileComplianceReportExporter.java  \
+  com/sandklef/compliance/exporter/ReportExporterFactory.java  \
+  com/sandklef/compliance/exporter/PileComplianceTextReportExporter.java  \
+  com/sandklef/compliance/exporter/PileComplianceJsonExporter.java  \
+  com/sandklef/compliance/exporter/PileComplianceMDExporter.java  \
+  com/sandklef/compliance/exporter/MDExporter.java  \
+  com/sandklef/compliance/exporter/ReportExporter.java  \
+  com/sandklef/compliance/exporter/TextReportExporter.java  \
+  com/sandklef/compliance/cli/LicenseChecker.java  \
+  com/sandklef/compliance/csv/LicenseMatrixReader.java  \
 
 
 TEST_SOURCES=\
-  com/sandklef/compliance/test/TestAll.java\
-  com/sandklef/compliance/test/Utils.java\
-  com/sandklef/compliance/test/TestComponents.java \
-  com/sandklef/compliance/test/TestCanAUseB.java \
-  com/sandklef/compliance/test/TestPolicy.java \
-  com/sandklef/compliance/test/TestDualLicenses.java \
-  com/sandklef/compliance/json/test/TestLicenseParser.java \
-  com/sandklef/compliance/test/TestLicenseCompatibility.java \
-  com/sandklef/compliance/json/test/TestJsonComponentParser.java \
+  com/sandklef/compliance/test/TestMostPermissiveLicenseComparator.java  \
+  com/sandklef/compliance/test/TestDualLicenses.java  \
+  com/sandklef/compliance/test/TestCanAUseB.java  \
+  com/sandklef/compliance/test/TestAll.java  \
+  com/sandklef/compliance/test/TestLicenseCompatibility.java  \
+  com/sandklef/compliance/test/TestComponents.java  \
+  com/sandklef/compliance/test/Utils.java  \
+  com/sandklef/compliance/test/TestGson.java  \
+  com/sandklef/compliance/test/TestPolicy.java  \
+  com/sandklef/compliance/json/test/TestJsonComponentParser.java  \
+  com/sandklef/compliance/json/test/TestLicenseParser.java  \
+
 
 DOCS := manual design
 FORMATS := pdf text html

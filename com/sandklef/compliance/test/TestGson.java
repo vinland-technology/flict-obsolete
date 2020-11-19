@@ -5,6 +5,7 @@
 package com.sandklef.compliance.test;
 
 import com.google.gson.*;
+import com.sandklef.compliance.domain.IllegalLicenseExpression;
 import com.sandklef.compliance.domain.License;
 import com.sandklef.compliance.domain.LicenseExpressionException;
 import com.sandklef.compliance.domain.LicensePolicy;
@@ -40,7 +41,7 @@ public class TestGson {
         }
     }
 
-    public static void main(String[] args) throws IOException, LicenseExpressionException {
+    public static void main(String[] args) throws IOException, LicenseExpressionException, IllegalLicenseExpression {
 
         String license = "{ \"meta\": { \"software\":\"License Policy Checker\", \"version\":\"0.1\" }, \"license\": { \"name\":\"GNU General Public License v2.0 or later\", \"spdx\":\"GPL-2.0-or-later\"} }";
         String license2 = "{ \"name\":\"GNU General Public License v2.0 or later\", \"spdx\":\"GPL-2.0-or-later\" }";

@@ -4,9 +4,11 @@
 
 package com.sandklef.compliance.domain;
 
+import java.math.BigInteger;
 import java.util.*;
 
 import com.sandklef.compliance.utils.*;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 public class Component {
 
@@ -21,10 +23,188 @@ public class Component {
   private List<License> licenses;
 */
 
-//  private LicenseMeta licenseMeta = LicenseMeta.UNKNOWN_LICENSED ;
+  //  private LicenseMeta licenseMeta = LicenseMeta.UNKNOWN_LICENSED ;
   private List<Component> dependencies;
 
+  private Map<Component, List<List<License>>> allLicensesMap()
+          throws IllegalLicenseExpression, LicenseExpressionException {
 
+    /*
+     Given by the component
+
+                      (Europe - a flict example)
+                      ["GPL-2.0-or-later & MIT"]
+                        /                   \
+                       /                     \
+                      /                       \
+             (Sweden)                       (Germany)
+       ["GPL-2.0-only | Apache-2.0"]      ["GPL-2.0-or-later | MIT & BSD-3-Clause | Apache-2.0"]
+                  /          \                            /      \
+                 /            \                          /        \
+       ("Gothenburg")      ("Stockholm")     ("Dusseldorf")      ("Berlin")
+       ["BSD-3-Clause"]     ["MIT"]       ["GPL-2.0-or-later"]   ["MIT | MPL-1.1"]
+
+    We should return this:
+
+    Gothenburg: [[BSD-3-Clause]]
+    Europe - a flict example: [[GPL-2.0-or-later, MIT], [GPL-3.0-only, MIT]]
+    Sweden: [[GPL-2.0-only], [Apache-2.0]]
+    Stockholm: [[MIT]]
+    Germany: [[GPL-2.0-or-later], [GPL-3.0-only], [MIT, BSD-3-Clause], [Apache-2.0]]
+    Dusseldorf: [[GPL-2.0-or-later], [GPL-3.0-only]]
+    Berlin: [[MIT], [MPL-1.1]]
+     */
+    Map<Component,List<List<License>>> licenseMap = new HashMap<>();
+    licenseMap.put(this,licenseList);
+    System.out.println("HESA-allLicensesMap, put: " + name() +  " ==> size: " + licenseMap.size());
+    System.out.println("HESA-allLicensesMap, put: " + name() +  " MAP: " + licenseMap);
+    for (Component dep : dependencies()) {
+      licenseMap.putAll(dep.allLicensesMap());
+      System.out.println("HESA-allLicensesMap, put: " + dep.name() +  " ==> size: " + licenseMap.size());
+      System.out.println("HESA-allLicensesMap, put: " + dep.name() +  " MAP: " + licenseMap);
+      System.out.println("HESA-allLicensesMap, put: " + dep.name() +  " MAP: " + licenseMap.size());
+      System.out.println("HESA-allLicensesMap, put: " + dep.name() +  " MAP: " + licenseMap.get("libXdmcp.so.6.0.0"));
+    }
+    return licenseMap;
+  }
+
+  private long mapsToCreate(Map<Component, List<List<License>>> allLicensesMap) {
+    System.out.println("HESA-mapsToCreate");
+    long count = 1;
+    for (Map.Entry<Component, List<List<License>>> entry : allLicensesMap.entrySet()) {
+      long size = entry.getValue().size();
+      // TODO: REMOVE below
+      count *= size;
+      System.out.print("size: " + size + " ===> " + count);
+//        System.out.println("mapsToCreate: " + entry.getKey() + " size: " + size + "  count: " + count);
+    }
+
+    System.out.println("APA mapsToCreate: ==> " + count);
+    System.out.println("mapsToCreate: ==> " + allLicensesMap);
+    return count;
+  }
+
+  private static Map<Component, List<List<License>>> cloneLicenseListMap (Map<Component, List<List<License>>> map) {
+    // Create new Map
+    Map<Component, List<List<License>>> clonedMap = new HashMap<>();
+    // Iterate over the Map entries (List<List<License>>)
+    for (Map.Entry<Component, List<List<License>>> entry : map.entrySet()) {
+      Component c = entry.getKey();
+      List<List<License>> list = entry.getValue();
+      List<List<License>> newList = new ArrayList<>();
+      for (List<License> item : list) {
+        newList.add(item);
+      }
+      clonedMap.put(c, newList);
+    }
+    return clonedMap;
+  }
+
+  public List<Map<Component, List<List<License>>>> allLicensesCombinationsList()
+          throws IllegalLicenseExpression, LicenseExpressionException {
+   /* This is what we've got:
+    Gothenburg: [[BSD-3-Clause]]
+    Berlin: [[MIT], [MPL-1.1]]
+
+    Next, create copies of this map (double the size per |) and put in a list
+
+    [
+    Gothenburg: [[BSD-3-Clause]]
+    Berlin: [[MIT], [MPL-1.1]]
+    ,
+    Gothenburg: [[BSD-3-Clause]]
+    Berlin: [[MIT], [MPL-1.1]]
+    ]
+
+    Only one expression in every Map of those list
+    [
+    Gothenburg: [[BSD-3-Clause]]
+    Berlin: [[MIT]]
+
+    Gothenburg: [[BSD-3-Clause]]
+    Berlin: [[MPL-1.1]]
+    ]
+
+    Put Map #01 and Map #02 in a list and return
+    */
+    Map<Component, List<List<License>>> allLicensesMap = allLicensesMap();
+    System.out.println("HESA-allLicensesMap MAP name and size: " + allLicensesMap.size());
+    long count = 1 ;
+    for (Map.Entry<Component,List<List<License>>> entry : allLicensesMap.entrySet()) {
+      count *= entry.getValue().size();
+      System.out.println("HESA-allLicensesMap MAP name license: " + entry.getKey() + ": " + entry.getValue().size() + ": " + count);
+    }
+
+    List<Map<Component, List<List<License>>>> list = new ArrayList<>();
+
+    // Clone the map as many times needed
+    long createMapCount = mapsToCreate(allLicensesMap);
+    System.out.println(" * top list size: " + list.size() + " create count: " + createMapCount);
+    for (int i=0; i<createMapCount ; i++) {
+      list.add(cloneLicenseListMap(allLicensesMap));
+    }
+    System.out.println(" * top list size: " + list.size());
+
+    // the list with maps are now identical, use the first one to
+    // find the maps. The components and their order are
+    List<Component> components = new ArrayList<>(allLicensesMap.keySet());
+//    System.out.println("Components: " + components);
+
+    long perColumn = createMapCount;
+    // Loop through the component list
+    for (Component c : components) {
+      // System.out.println(" * " + c + ": " + list.get(0).get(c).size() + "  (" + perColumn +")  ");
+      // Remember the last list sixe, to update the perColumn variable
+      // 0 causes an exception,
+      // - which should happen if we don't enter the loop below
+      int lastListSize = 0;
+
+      System.out.println(" * component: " + c.name());
+      System.out.println(" * map: " + list.size());
+
+      // Create index
+      int index = 0;
+      // For every List of License Map
+      for (Map<Component, List<List<License>>> componentMap : list) {
+        // find the one and only List of this component
+        // - no need to loop, e simply use .get(c)
+        List<List<License>> componentLicenseList = componentMap.get(c);
+
+        // Calculate the index for the license
+        System.out.println("APA perColumn:                  " +perColumn);
+        System.out.println("APA componentLicenseList.size(): " + componentLicenseList.size());
+        int a1 = (int) (perColumn/componentLicenseList.size());
+        System.out.println(" a1: " + a1);
+        int a2 = (int) (index / a1);
+        System.out.println(" a2: " + a2);
+
+        System.out.println("       calculate index " + index + "/ (" + perColumn + "/" + componentLicenseList.size() +")  => " + (perColumn/componentLicenseList.size()));
+        int currentLicenseIndex = (int) (index / (perColumn/componentLicenseList.size())) % componentLicenseList.size();
+
+        // Get the License List for the index, store in a List
+        List<List<License>> currentLicense = new ArrayList<>();
+        currentLicense.add(componentLicenseList.get(currentLicenseIndex));
+//        System.out.println("       * index: " + currentLicenseIndex + "   ==> " + componentLicenseList.get(currentLicenseIndex) + "=" + currentLicense);
+
+        // Replace the current License List with currentLicense
+        componentMap.put(c, currentLicense);
+/*        System.out.println("       * index: " + currentLicenseIndex + "  ===> " + componentMap.get(c));
+        System.out.println(" ---" );
+        System.out.println(" ---" );
+        System.out.println(" ---" );
+        System.out.println(" ---" );
+        System.out.println("       * index: " + currentLicenseIndex + "  ===> " + componentLicenseList.size());
+*/
+        index++;
+        lastListSize = componentLicenseList.size();
+        System.out.println(" -------- size: " + componentLicenseList.size());
+      }
+      System.out.println(" --- c: " + c);
+      System.out.println(" --- " + components.size() );
+      perColumn = perColumn / lastListSize;
+    }
+    return list;
+  }
 
   // For test clasess
   public Component(String name, List<License> licenses, List<Component> dependencies) {
@@ -250,5 +430,21 @@ public class Component {
   public String toString() {
     return name;
   }
-  
+
+  @Override
+  public boolean equals(Object o) {
+    if (o==null) return false;
+    return name.equals( ((Component)o).name());
+  }
+
+  @Override
+  public int hashCode() {
+    return 7 * 31 * name.hashCode();
+  }
+
+  public long pileCombinations() throws IllegalLicenseExpression, LicenseExpressionException {
+    Map<Component, List<List<License>>> map = allLicensesMap();
+    long createMapCount = mapsToCreate(map);
+    return createMapCount;
+  }
 }

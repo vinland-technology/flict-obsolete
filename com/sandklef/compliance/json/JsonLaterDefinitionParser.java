@@ -29,6 +29,9 @@ public class JsonLaterDefinitionParser {
     public static final String LOG_TAG = JsonLaterDefinitionParser.class.getSimpleName();
 
     public Map<String, List<License>> readLaterDefinition(String fileName) throws IOException, LicenseExpressionException {
+        if(fileName==null) {
+            return new HashMap<>();
+        }
         Log.d(LOG_TAG, " reading from file: " + fileName);
         Log.d(LOG_TAG, "content: " + new String(Files.readAllBytes(Paths.get(fileName))));
         return readLaterDefinitionString(new String(Files.readAllBytes(Paths.get(fileName))));

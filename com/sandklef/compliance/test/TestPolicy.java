@@ -4,10 +4,11 @@
 
 package com.sandklef.compliance.test;
 
+import com.sandklef.compliance.arbiter.LicenseArbiterFactory;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.json.JsonComponentParser;
 import com.sandklef.compliance.json.JsonPolicyParser;
-import com.sandklef.compliance.utils.LicenseArbiter;
+import com.sandklef.compliance.utils.ComponentArbiter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class TestPolicy {
 //    Log.level(Log.DEBUG);
   //  Log.filterTag(LicenseArbiter.class.getSimpleName());
 //    Log.level(Log.DEBUG);
-    Report validReport = LicenseArbiter.report(c, policy);
+    Report validReport = ComponentArbiter.report(LicenseArbiterFactory.defaultArbiter(), c, policy);
 
 
 //    System.exit(0);
@@ -77,7 +78,7 @@ public class TestPolicy {
      */
 //    Log.level(Log.DEBUG);
 //    Log.filterTag(LicenseArbiter.LOG_TAG);
-    Report validReport = LicenseArbiter.report(validComponent(), policy);
+    Report validReport = ComponentArbiter.report(LicenseArbiterFactory.defaultArbiter(), validComponent(), policy);
 
 
     printSubTestStart("Valid component and Copyleft/weak policy");
@@ -102,7 +103,7 @@ public class TestPolicy {
 */
     policy = Utils.copyleftAndWeakPolicy();
 //   Log.level(Log.DEBUG);
-    validReport = LicenseArbiter.report(validComponent(), policy);
+    validReport = ComponentArbiter.report(LicenseArbiterFactory.defaultArbiter(), validComponent(), policy);
 
 
 //    System.out.println("violations: " + validReport.violation().obligations());
@@ -144,7 +145,7 @@ public class TestPolicy {
     // 0 violations
     // 1 conclusion
  //   Log.level(Log.DEBUG);
-    Report report = LicenseArbiter.report(a, policy);
+    Report report = ComponentArbiter.report(LicenseArbiterFactory.defaultArbiter(), a, policy);
 
 
 
@@ -185,7 +186,7 @@ public class TestPolicy {
     // 0 concerns
     // 3 violations
     // 1 conclusion
-    Report report = LicenseArbiter.report(a, policy);
+    Report report = ComponentArbiter.report(LicenseArbiterFactory.defaultArbiter(), a, policy);
 
   //  Log.level(Log.DEBUG);
 

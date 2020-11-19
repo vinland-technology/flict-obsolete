@@ -6,8 +6,6 @@ package com.sandklef.compliance.exporter;
 
 import com.sandklef.compliance.domain.*;
 
-import java.util.List;
-
 public interface ReportExporter {
     String exportReport(Report report);
 }

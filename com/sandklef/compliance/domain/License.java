@@ -16,6 +16,8 @@ public class License {
   private final String spdx;
   private String license_group;
 
+
+
   public String name() {
     return name;
   }
@@ -48,6 +50,13 @@ public class License {
 
   public String licenseGroup() {
     return license_group;
+  }
+
+  @Override
+  public boolean equals(Object lo) {
+    License l = (License) lo;
+//    System.out.println("License.equals: " + this.spdx + ".equals(" + l.spdx + ") = " + l!=null && l.spdx.equals(spdx) );
+    return ( l!=null && l.spdx.equals(spdx) );
   }
 
 }

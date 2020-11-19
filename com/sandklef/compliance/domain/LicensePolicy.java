@@ -11,22 +11,26 @@ public class LicensePolicy {
 
     private String name;
     private List<License> allowedList;
-    private List<License> grayList;
+    private List<License> avoidList;
     private List<License> deniedList;
 
     public LicensePolicy(String name, List<License> allowedList, List<License> grayList, List<License> deniedList) {
         this.name = name;
         this.allowedList = allowedList;
-        this.grayList = grayList;
+        this.avoidList = grayList;
         this.deniedList = deniedList;
     }
 
     public LicensePolicy() {
+        name = "Default (empty policy)";
         allowedList = new ArrayList<>();
-        grayList = new ArrayList<>();
+        avoidList = new ArrayList<>();
         deniedList = new ArrayList<>();
     }
 
+    public String name() {
+        return name;
+    }
     public void addAllowedLicense(License license) {
         allowedList.add(license);
     }
@@ -34,11 +38,11 @@ public class LicensePolicy {
         allowedList = licenses;
     }
 
-    public void addGrayLicense(License license) {
-        grayList.add(license);
+    public void addAvoidLicense(License license) {
+        avoidList.add(license);
     }
     public void grayLicense(List<License> licenses) {
-        grayList = licenses;
+        avoidList = licenses;
     }
 
     public void addDeniedLicense(License license) {
@@ -52,8 +56,8 @@ public class LicensePolicy {
         return allowedList;
     }
 
-    public List<License> grayList() {
-        return grayList;
+    public List<License> avoidList() {
+        return avoidList;
     }
 
     public List<License> deniedList() {
@@ -64,7 +68,7 @@ public class LicensePolicy {
         switch (listType) {
             case ALLOWED_LIST:
                 return "allowedList";
-            case GRAY_LIST:
+            case AVOID_LIST:
                 return "Graylist";
             case DENIED_LIST:
                 return "DeniedList";
@@ -83,10 +87,10 @@ public class LicensePolicy {
         sb.append("allowedList: ");
         sb.append(allowedList);
         sb.append("\n");
-        sb.append("graylist: ");
-        sb.append(grayList);
+        sb.append("avoidlist: ");
+        sb.append(avoidList);
         sb.append("\n");
-        sb.append("DeniedList: ");
+        sb.append("deniedList: ");
         sb.append(deniedList);
         sb.append("\n");
         return sb.toString();

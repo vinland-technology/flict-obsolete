@@ -52,8 +52,8 @@ public class LicenseUtils {
             License license = LicenseStore.getInstance().license(licenseSPDX);
             if (policy.allowedList().contains(license)) {
                 return ListType.ALLOWED_LIST;
-            } else if (policy.grayList().contains(license)) {
-                return ListType.GRAY_LIST;
+            } else if (policy.avoidList().contains(license)) {
+                return ListType.AVOID_LIST;
             } else if (policy.deniedList().contains(license)) {
                 return ListType.DENIED_LIST;
             }

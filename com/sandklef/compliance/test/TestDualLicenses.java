@@ -4,6 +4,7 @@
 
 package com.sandklef.compliance.test;
 
+import com.sandklef.compliance.arbiter.LicenseArbiterFactory;
 import com.sandklef.compliance.domain.*;
 import com.sandklef.compliance.utils.*;
 
@@ -18,7 +19,7 @@ public class TestDualLicenses {
 
 //    Log.filterTag(LOG_TAG);
 
-    Report validReport = LicenseArbiter.report(dualLicensedComponent(), null);
+    Report validReport = ComponentArbiter.report(LicenseArbiterFactory.defaultArbiter(), dualLicensedComponent(), null);
 
     //Log.level(Log.ERROR);
   }
