@@ -1,6 +1,5 @@
 package com.sandklef.compliance.arbiter;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 public class LicenseArbiterFactory {
 
