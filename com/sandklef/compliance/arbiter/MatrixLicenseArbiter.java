@@ -6,7 +6,6 @@ import com.sandklef.compliance.domain.LicenseCompatibility;
 import com.sandklef.compliance.domain.LicenseMatrix;
 import com.sandklef.compliance.utils.LicenseStore;
 import com.sandklef.compliance.utils.Log;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.ArrayList;
 import java.util.Arrays;
