@@ -293,7 +293,7 @@ public class LicenseChecker {
                 System.exit(0);
             }
             if (line.hasOption("json")) {
-                values.put("format", ReportExporterFactory.OutputFormat.JSON);
+                values.put("format", PileComplianceReportExporter.OutputFormat.JSON);
             }
             if (line.hasOption("markdown")) {
                 values.put("format", ReportExporterFactory.OutputFormat.MARKDOWN);
