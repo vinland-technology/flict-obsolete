@@ -4,11 +4,11 @@ SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# flict / FOSS License Compliance Tool
+# flict / FOSS License Compatibility Tool
 
 # Introduction
 
-***FOSS License Compliance Tool*** (***flict***) is a Free and Open
+***FOSS License Compatibility Tool*** (***flict***) is a Free and Open
 Source Software tool to verify license compliance in and between
 [_components_](#component). You can use the tool to automate license
 compliance verification in the compliance work flow.
@@ -112,7 +112,7 @@ The component itself looks like this:
 $ cat components/example.json 
 {
     "meta": {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "version" : "0.1"
     },
     "component": 
@@ -131,7 +131,7 @@ $ cat components/example.json
 Let's run the check:
 ```
 $ docker run -it -v `pwd`/components/:/components sandklef/flict
-FOSS License Compliance Tool - for use in docker
+FOSS License Compatibility Tool - for use in docker
 
 Check components:
 ===========================
@@ -237,7 +237,7 @@ Let's begin with an example component. Let's say we have a program
 ```
 {
     "meta": {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     },
     "component": {
@@ -276,7 +276,7 @@ Here's an example:
 ```
 {
     "meta": {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     },
     "license": {
@@ -339,7 +339,7 @@ and which you prefer not to avoid. Here's an example policy file:
 ```
 {
     "meta" : {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     } ,
     "policy": {
@@ -368,7 +368,7 @@ Let's start with a example:
 ```
 {
     "meta": {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "type": "later-definitions",
         "version":"0.1"
     },
