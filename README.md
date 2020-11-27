@@ -4,14 +4,14 @@ SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# flict / FOSS License Compliance Tool
+# flict / FOSS License Compatibility Tool
 
 # Introduction
 
-***FOSS License Compliance Tool*** (***flict***) is a Free and Open
-Source Software tool to verify license compliance in and between
+***FOSS License Compatibility Tool*** (***flict***) is a Free and Open
+Source Software tool to verify license compatibility in and between
 [_components_](#component). You can use the tool to automate license
-compliance verification in the compliance work flow.
+compatibility verification in the compliance work flow.
 
 flict checks components, with a defined license and with dependencies
 (themselves being components), provided in the flict [format](#component).
@@ -112,7 +112,7 @@ The component itself looks like this:
 $ cat components/example.json 
 {
     "meta": {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "version" : "0.1"
     },
     "component": 
@@ -131,14 +131,14 @@ $ cat components/example.json
 Let's run the check:
 ```
 $ docker run -it -v `pwd`/components/:/components sandklef/flict
-FOSS License Compliance Tool - for use in docker
+FOSS License Compatibility Tool - for use in docker
 
 Check components:
 ===========================
 
   example
   -------------------------
-   * compliance:   yes
+   * compatible:   yes
    * convert report to: pdf html docx opendocument plain json 
 
 ```
@@ -237,7 +237,7 @@ Let's begin with an example component. Let's say we have a program
 ```
 {
     "meta": {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     },
     "component": {
@@ -276,7 +276,7 @@ Here's an example:
 ```
 {
     "meta": {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     },
     "license": {
@@ -339,7 +339,7 @@ and which you prefer not to avoid. Here's an example policy file:
 ```
 {
     "meta" : {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "version":"0.1"
     } ,
     "policy": {
@@ -368,7 +368,7 @@ Let's start with a example:
 ```
 {
     "meta": {
-        "software":"FOSS License Compliance Tool",
+        "software":"FOSS License Compatibility Tool",
         "type": "later-definitions",
         "version":"0.1"
     },
@@ -409,7 +409,7 @@ All other exit codes indicate some kind of error.
 
 ## Report
 
-A report of the component's compliance is created. By default a short
+A report of the component's compatibility is created. By default a short
 text report is created. With the tools also comes a couple of Report
 format that can be used.
 
