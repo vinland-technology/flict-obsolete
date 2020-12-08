@@ -6,6 +6,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # flict / FOSS License Compliance Tool
 
+# NEWS
+
+***flict is currently under heavy development and it may be hard to
+   find a stable version - focused on one company's needs and
+   requirements. If you want to get in touch, drop an email to hesa _aT= sandklef.com***
+
 # Introduction
 
 ***FOSS License Compliance Tool*** (***flict***) is a Free and Open
