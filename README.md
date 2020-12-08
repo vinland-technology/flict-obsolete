@@ -8,9 +8,10 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # NEWS
 
-***flict is currently under heavy development and it may be hard to
-   find a stable version - focused on one company's needs and
-   requirements. If you want to get in touch, drop an email to hesa _aT= sandklef.com***
+***flict is currently under heavy development based on focused on one
+   company's needs and requirements. It may be hard to find a stable
+   version. If you want to get in touch, drop an email to hesa _aT=
+   sandklef.com***
 
 # Introduction
 
