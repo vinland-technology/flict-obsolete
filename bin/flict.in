@@ -18,7 +18,7 @@ then
     JAR_DIR=$INSTALL_DIR/lib
 fi
 
-DOCKER_DEVEL_CLASSPATH="lib/gson-2.2.2.jar:lib/commons-cli-1.4.jar:lib/flict.jar:."
+DOCKER_DEVEL_CLASSPATH="${DATA_DIR}/lib/gson-2.2.2.jar:${DATA_DIR}/lib/commons-cli-1.4.jar:${DATA_DIR}/lib/flict.jar:."
 CLASSPATH="$JAR_DIR/gson-2.2.2.jar:$JAR_DIR/commons-cli-1.4.jar:$JAR_DIR/flict.jar:$DOCKER_DEVEL_CLASSPATH"
 DEFAULT_LICENSE_ARGS=" --license-dir ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/json "
 #DEFAULT_COMPAT_ARGS=" --compatibility-graph-file ${DATA_DIR}/$PROGRAM_DATA_PATH/licenses/connections/compatibilities.json"
