@@ -125,6 +125,7 @@ log " * "
 log " * Information about current check:" 
 log " *   date:     $(date)"
 log " *   os:       $(uname -a)"
+log " *   args:     $*"
 if [ "$IN_DOCKER" = "true" ]
 then
     log " *   executed: run inside docker" 
