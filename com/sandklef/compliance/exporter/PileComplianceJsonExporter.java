@@ -36,9 +36,9 @@ public class PileComplianceJsonExporter implements PileComplianceReportExporter 
         /*
          * Policy
          */
-        Map policyMap = new HashMap<>();
+        Map <String, List<License>>policyMap = new HashMap<>();
         reportMap.put("policy", policyMap);
-        policyMap.put("name",pileComplianceStatus.policy().name() );
+        policyMap.put("allowed",pileComplianceStatus.policy().allowedList() );
         policyMap.put("avoid",pileComplianceStatus.policy().avoidList() );
         policyMap.put("denied",pileComplianceStatus.policy().deniedList() );
 
