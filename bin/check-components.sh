@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 FORMATS="pdf html docx opendocument plain json"
 
@@ -111,11 +114,11 @@ fi
 log ""
 log " *****************************************************"
 log " ***                                               ***"
-log " ***        FOSS License Compliance Tool           ***"
+log " ***        FOSS License Compatibility Tool        ***"
 log " ***                                               ***"
 log " *****************************************************"
 log " * " 
-log " * Information about FOSS License Compliance Tool:" 
+log " * Information about FOSS License Compatibility Tool:" 
 log " *   web site:     https://gitlab.com/sandklef/flict"
 log " *   version:      $($FLICT_BIN --version | head -1)"
 log " * " 
@@ -147,5 +150,5 @@ else
     log "$NR_COMPONENTS components have been checked. Reports are available in $COMPONENTS_DIR/reports"
 fi
 log "" 
-log "..... thanks for using FOSS License Compliance Tool" 
+log "..... thanks for using FOSS License Compatibility Tool" 
 exit 0
