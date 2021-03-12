@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2020 Henrik Sandklef <hesa@sandklef.com>
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-# flict / FOSS License Compatibility Tool
+# OBSOLETE: flict / FOSS License Compatibility Tool
 
 # WARNING
 
