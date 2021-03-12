@@ -6,12 +6,13 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # flict / FOSS License Compatibility Tool
 
-# NEWS
+# WARNING
 
-***flict is currently under heavy development focused on one company's
-   needs and requirements. It may be hard to find a stable version. If
-   you want to get in touch, drop an email to hesa _aT=
-   sandklef.com***
+*** DO NOT USE THIS SOFTWARE, IT HAS BEEN OBSOLETED***
+
+*** This flict has been obsolete be the coming Python version, called 'flict' which used to be the name of this tool***
+
+*** DO NOT USE THIS SOFTWARE, IT HAS BEEN OBSOLETED***
 
 # Introduction
 
